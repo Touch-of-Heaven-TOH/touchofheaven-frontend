@@ -141,7 +141,7 @@ export const accountContent: Record<string, RouteContent> = {
     description:
       "Saved shipping, billing, and mobile-service addresses, added and removed by the customer, each labeled by type.",
     primaryAction: "Save changes",
-    endpoint: "/api/v1/customer/addresses (not yet implemented - see BACKEND_ADDITIONS.md)",
+    endpoint: "/api/v1/customer/addresses, /api/v1/customer/addresses/[addressId]",
     statusItems: [
       "A mobile-service address is only shared with the assigned braider for that appointment.",
       "No address is exposed in a public profile or listing.",
@@ -167,7 +167,7 @@ export const accountContent: Record<string, RouteContent> = {
     description:
       "Per-channel (email, SMS, push) and per-category (bookings, messages, marketing) toggles, defaulting to essential transactional notifications only.",
     primaryAction: "Save preferences",
-    endpoint: "/api/v1/notifications/preferences (not yet implemented - see BACKEND_ADDITIONS.md)",
+    endpoint: "/api/v1/notifications/preferences",
     statusItems: [
       "Essential booking and security notifications cannot be fully disabled.",
       "Marketing notifications default to off, not on.",
@@ -456,7 +456,7 @@ export const studioContent: Record<string, RouteContent> = {
     description:
       "Bank account or payout method connection for earnings withdrawal.",
     primaryAction: "Connect payout method",
-    endpoint: "/api/v1/professional/payouts (not yet implemented - see BACKEND_ADDITIONS.md)",
+    endpoint: "/api/v1/professional/payouts",
     statusItems: [
       "No raw bank details are ever stored by this app directly.",
       "Payout method changes should require recent authentication.",
@@ -482,7 +482,7 @@ export const studioContent: Record<string, RouteContent> = {
     description:
       "Per-channel alerts for new bookings, cancellations, and messages.",
     primaryAction: "Save preferences",
-    endpoint: "/api/v1/notifications/preferences (not yet implemented - see BACKEND_ADDITIONS.md)",
+    endpoint: "/api/v1/notifications/preferences",
     statusItems: [
       "New-booking and cancellation alerts cannot be fully disabled.",
       "SMS requires a verified phone number.",

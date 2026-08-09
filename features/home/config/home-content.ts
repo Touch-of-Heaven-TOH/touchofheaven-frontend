@@ -1,0 +1,189 @@
+import { homeMediaAssets } from "@/features/home/config/hero-media";
+import type {
+  HomeApiContract,
+  HomeFeature,
+  HomeImageCard,
+  HomeLink,
+  HomeSectionIntro,
+} from "@/features/home/types/home.types";
+
+export const homePrimaryActions = {
+  book: { label: "Book a Hairstyle", href: "/book" },
+  marketplace: { label: "Shop Marketplace", href: "/marketplace" },
+  braiders: { label: "Find Braiders", href: "/braiders" },
+  aiStudio: { label: "Start AI Style Preview", href: "/ai-studio" },
+  styleQuiz: { label: "Take the Style Quiz", href: "/style-quiz" },
+} satisfies Record<string, HomeLink>;
+
+export const heroSearchSuggestions = [
+  "Knotless braids",
+  "Cornrows",
+  "Boho braids",
+  "Loc maintenance",
+  "Hair care",
+  "African fashion",
+] as const;
+
+export const trustFeatures = [
+  {
+    title: "Verified Braiders",
+    description: "Public profiles are reviewed before they appear in discovery.",
+    icon: "verified",
+  },
+  {
+    title: "Secure Booking",
+    description: "Sessions stay in HTTP-only cookies with backend CSRF checks.",
+    icon: "lock",
+  },
+  {
+    title: "AI Style Preview",
+    description: "Try a look direction before starting the booking flow.",
+    icon: "sparkles",
+  },
+  {
+    title: "Fast Delivery",
+    description: "Marketplace shipping rules stay separate from appointments.",
+    icon: "delivery",
+  },
+] satisfies HomeFeature[];
+
+export const aiPreviewSteps = [
+  "Upload an approved selfie",
+  "Choose a style direction",
+  "Preview before booking",
+] as const;
+
+export const trendingStyleIntro = {
+  eyebrow: "Trending Styles",
+  title: "Book top looks",
+  description:
+    "Browse protective styles and start the booking journey without exposing private appointment details.",
+  action: { label: "View all styles", href: "/beauty" },
+} satisfies HomeSectionIntro;
+
+export const trendingStyles = [
+  {
+    title: "Knotless Braids",
+    description: "Lightweight, flexible, and polished for everyday wear.",
+    href: "/book?style=knotless-braids",
+    image: homeMediaAssets.primaryHero,
+  },
+  {
+    title: "Boho Braids",
+    description: "Soft texture and movement with a premium finish.",
+    href: "/book?style=boho-braids",
+    image: homeMediaAssets.studioBooking,
+  },
+  {
+    title: "Cornrows",
+    description: "Clean parting and lasting shape from reviewed professionals.",
+    href: "/book?style=cornrows",
+    image: homeMediaAssets.braidingDetail,
+  },
+  {
+    title: "Goddess Braids",
+    description: "Statement braids with an elevated special-occasion feel.",
+    href: "/book?style=goddess-braids",
+    image: homeMediaAssets.stylePortrait,
+  },
+] satisfies HomeImageCard[];
+
+export const marketplaceIntro = {
+  eyebrow: "Marketplace",
+  title: "Shop authentic African products",
+  description:
+    "Preview the product categories planned for the marketplace while the live catalog endpoint comes online.",
+  action: { label: "Open marketplace", href: "/marketplace" },
+} satisfies HomeSectionIntro;
+
+export const marketplaceCategories = [
+  {
+    title: "Hair & Beauty",
+    description: "Oils, creams, bonnets, and aftercare essentials.",
+    href: "/marketplace?category=hair-beauty",
+    image: homeMediaAssets.braidingDetail,
+  },
+  {
+    title: "African Fashion",
+    description: "Print bags, wraps, accessories, and occasion pieces.",
+    href: "/marketplace?category=fashion",
+    image: homeMediaAssets.brandPoster,
+  },
+  {
+    title: "Health & Wellness",
+    description: "Self-care products curated for the community.",
+    href: "/marketplace?category=wellness",
+    image: homeMediaAssets.naturalHairCare,
+  },
+  {
+    title: "Spices & Foods",
+    description: "Pantry favorites for home, gifting, and gatherings.",
+    href: "/marketplace?category=spices-foods",
+    image: homeMediaAssets.studioBooking,
+  },
+] satisfies HomeImageCard[];
+
+export const communityIntro = {
+  eyebrow: "From our community",
+  title: "Real styles. Real people. Real confidence.",
+  description:
+    "Public portfolio media will come from approved braider profiles and customer consent workflows.",
+  action: { label: "Explore styles", href: "/beauty" },
+} satisfies HomeSectionIntro;
+
+export const communityLooks = [
+  {
+    title: "Braiding in progress",
+    description: "Detail-focused parting and steady hands.",
+    href: "/beauty?gallery=process",
+    image: homeMediaAssets.braidingDetail,
+  },
+  {
+    title: "Studio appointment",
+    description: "A calm salon experience with digital booking support.",
+    href: "/how-it-works",
+    image: homeMediaAssets.studioBooking,
+  },
+  {
+    title: "Protective style",
+    description: "A finished style with clean parting and shine.",
+    href: "/beauty?gallery=protective-styles",
+    image: homeMediaAssets.stylePortrait,
+  },
+  {
+    title: "Natural hair care",
+    description: "Care routines for every texture and appointment type.",
+    href: "/beauty?gallery=hair-care",
+    image: homeMediaAssets.naturalHairCare,
+  },
+] satisfies HomeImageCard[];
+
+export const appPromoFeatures = [
+  "Book appointments on the go",
+  "Review braider profiles",
+  "Track marketplace orders",
+] as const;
+
+export const requiredHomeApiContracts = [
+  {
+    name: "Public homepage feed",
+    endpoint: "/api/v1/public/homepage",
+    purpose:
+      "Single response for public activity, featured braiders, published services, and marketplace previews.",
+    status: "pending",
+  },
+  {
+    name: "Nearby braiders",
+    endpoint: "/api/v1/braiders/nearby",
+    purpose:
+      "Already used by discovery map; homepage can reuse it for location-aware braider cards once approved.",
+    status: "available",
+  },
+  {
+    name: "Marketplace catalog preview",
+    endpoint: "/api/v1/marketplace/public/products",
+    purpose:
+      "Published product cards with public price/rating data only; no private inventory or seller details.",
+    status: "pending",
+  },
+] satisfies HomeApiContract[];

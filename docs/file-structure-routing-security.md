@@ -211,9 +211,11 @@ Frontend_for_HOF/
 └── README.md
 ```
 
-Not yet present, and not needed until the work that requires them is actually
-scheduled: `.github/` (no CI workflow or PR template yet - see "Definition of
-Done"), `.husky/` (no pre-commit hook automation yet), `stores/` (no Zustand -
+`.github/workflows/ci.yml` and `.github/PULL_REQUEST_TEMPLATE.md` now exist,
+added alongside this document (lint, typecheck, and unit tests run on every
+PR and every push to `main`; see "Definition of Done"). Still not present,
+and not needed until the work that requires them is actually scheduled:
+`.husky/` (no pre-commit hook automation yet), `stores/` (no Zustand -
 nothing needs cross-tree client state yet), a `src/` wrapper (not this
 repo's convention).
 

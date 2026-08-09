@@ -415,3 +415,52 @@ on every single response, never reused. `'unsafe-inline'` never appears in
 doesn't include - it lets the nonce'd root script propagate trust to the
 scripts it dynamically loads (Next's own chunking depends on this) without
 widening the static allowlist further.
+
+## Route Security Table and robots/sitemap Rules
+
+The full per-route-group table - auth requirement, role, MFA policy, denied
+redirect, cache policy, indexing, and which backend endpoints each group
+actually calls - already lives in `docs/route-access-matrix.md`, generated
+from `config/route-access.ts`. That file is more granular than the vision
+doc's version (it also tracks cache policy and the specific backend
+endpoints each route family depends on), so it isn't duplicated here; treat
+it as this section's detail table.
+
+The one-line summary, matching the vision doc's own framing: every protected
+family redirects to `/sign-in` when signed out except `(braider)` and
+`(admin)`, which redirect to `/account` - silently, with no indication a
+studio or admin section exists at all, exactly as the vision doc specifies
+for `/studio`. `(admin)` is the only family with MFA policy set to
+`required` rather than `backend-enforced`.
+
+**`app/robots.ts`** blocks exactly what the vision doc asks for - verified
+directly against the file, not assumed:
+
+```text
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /studio
+Disallow: /admin
+Disallow: /book
+Disallow: /checkout
+Disallow: /api
+Sitemap: https://touchofheavenafricanhairbraiding.com/sitemap.xml
+```
+
+**`app/sitemap.ts`** includes the homepage, `/about`, `/how-it-works`,
+`/braiders`, `/beauty`, `/legal`, `/map`, `/contact`, and every slug in
+`config/legal.ts`'s `legalPolicies` list. It does not include per-braider
+profile pages, marketplace category/product pages, `/ai-studio`,
+`/style-quiz`, `/community`, `/careers`, or `/press` - not because of an
+oversight, but because none of those pages exist yet (see "Page Reference"
+below). A sitemap can only be honest about pages that are real; adding
+placeholder sitemap entries for routes that 404 would be worse than leaving
+them out.
+
+Both files independently enforce the same boundary `proxy.ts` and every
+protected layout already enforce - a crawler that indexed `/account/settings/security`
+would have learned something about this platform's structure that was never
+meant to be public, even though the page itself would still correctly reject
+an unauthenticated crawler. Defense in depth applies to discoverability, not
+just access.

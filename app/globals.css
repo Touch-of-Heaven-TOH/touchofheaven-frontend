@@ -1,18 +1,17 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/typography.css";
+@import "../styles/utilities.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* Touch of Heaven brand gold - used for verification rings, primary CTAs,
-     and availability accents across the braider discovery map. */
-  --color-gold: #c9963c;
-  --color-gold-light: #e8d3a8;
+  --background: var(--color-page);
+  --foreground: var(--color-text-primary);
   /* Brand purple - the "you are here" marker, filter chip accents, and the
      map's custom lavender water color (see docs/map-feature.md for where
      this needs to be configured in the Google Cloud Console, since a Map
      ID's styling isn't runtime-configurable the way it was on Mapbox). */
-  --color-brand-purple: #7c3aed;
-  --color-brand-purple-light: #ede9fe;
+  --color-brand-purple: var(--color-brand);
+  --color-brand-purple-light: var(--color-brand-soft);
 }
 
 @theme inline {
@@ -22,20 +21,25 @@
   --color-gold-light: var(--color-gold-light);
   --color-brand-purple: var(--color-brand-purple);
   --color-brand-purple-light: var(--color-brand-purple-light);
+  --color-brand: var(--color-brand);
+  --color-accent: var(--color-accent);
   --font-sans: var(--font-inter);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Braider discovery map markers - built as plain DOM nodes for Google

@@ -1,0 +1,102 @@
+import type { HeroMediaItem, HomeMediaAsset } from "@/features/home/types/home.types";
+
+const imageBase = "/images/home/images";
+
+export const homeMediaAssets = {
+  primaryHero: {
+    src: `${imageBase}/braiding-appointment-hero.png`,
+    alt: "A professional braider finishing long braids for a smiling client in a warm salon.",
+    width: 1717,
+    height: 916,
+    aspectRatio: 1.87,
+    focalPoint: "72% center",
+  },
+  braidingDetail: {
+    src: `${imageBase}/her0.jpg`,
+    alt: "Close detail of hands creating neat braided parts.",
+    width: 736,
+    height: 920,
+    aspectRatio: 0.8,
+    focalPoint: "center center",
+  },
+  naturalHairCare: {
+    src: `${imageBase}/hero2.jpg`,
+    alt: "A relaxed client with natural hair during a care appointment.",
+    width: 736,
+    height: 717,
+    aspectRatio: 1.03,
+    focalPoint: "center center",
+  },
+  studioBooking: {
+    src: `${imageBase}/hero4.png`,
+    alt: "A Touch of Heaven stylist working while a client checks appointment details on a phone.",
+    width: 1122,
+    height: 1402,
+    aspectRatio: 0.8,
+    focalPoint: "50% 34%",
+  },
+  brandPoster: {
+    src: `${imageBase}/project-logo-fivcon.png`,
+    alt: "Touch of Heaven Beauty and Marketplace illustrated brand poster.",
+    width: 1024,
+    height: 1536,
+    aspectRatio: 0.67,
+    focalPoint: "center 56%",
+  },
+  stylePortrait: {
+    src: `${imageBase}/style-hero.jpg`,
+    alt: "A finished braided style with silver-toned braids and clean parting.",
+    width: 720,
+    height: 877,
+    aspectRatio: 0.82,
+    focalPoint: "center 28%",
+  },
+} satisfies Record<string, HomeMediaAsset>;
+
+export const homepageVideoSource =
+  "/images/home/videos/From%20Klickpin.com-%20Beginner-friendly%20family%20dinner%20ideas%20for%20your%20next%20inspiration%20board%20with%20thoughtful%20touches%20that%20make%20everything%20feel%20complet.mp4";
+
+export const heroMediaItems = [
+  {
+    id: "salon-appointment",
+    type: "image",
+    source: homeMediaAssets.primaryHero.src,
+    mobileSource: homeMediaAssets.primaryHero.src,
+    alternativeText: homeMediaAssets.primaryHero.alt,
+    focalPoint: "74% center",
+    displayDurationMs: 6500,
+    priority: true,
+    autoplay: true,
+    loop: false,
+    overlayStrength: "medium",
+    ctaRelation: "book",
+  },
+  {
+    id: "studio-trust",
+    type: "image",
+    source: homeMediaAssets.studioBooking.src,
+    mobileSource: homeMediaAssets.studioBooking.src,
+    alternativeText: homeMediaAssets.studioBooking.alt,
+    focalPoint: "48% 30%",
+    displayDurationMs: 6200,
+    priority: false,
+    autoplay: true,
+    loop: false,
+    overlayStrength: "strong",
+    ctaRelation: "book",
+  },
+  {
+    id: "braiding-motion",
+    type: "video",
+    source: homepageVideoSource,
+    poster: homeMediaAssets.primaryHero.src,
+    alternativeText: "Short muted promotional homepage video for Touch of Heaven beauty services.",
+    focalPoint: "center center",
+    displayDurationMs: 8500,
+    priority: false,
+    autoplay: true,
+    loop: false,
+    overlayStrength: "strong",
+    ctaRelation: "ai-preview",
+  },
+] satisfies HeroMediaItem[];

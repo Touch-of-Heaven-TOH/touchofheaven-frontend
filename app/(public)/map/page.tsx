@@ -7,14 +7,13 @@ export const metadata: Metadata = {
     'Discover verified braiders near you on an interactive map and book directly.',
 };
 
-// Step 1 of the braider discovery map build: proves the map renders. The
-// surrounding page chrome (search panel, sidebar, profile card) is
-// assembled in a later step - this page intentionally stays minimal until
-// then.
+// This page is intentionally minimal until step 8 assembles the full
+// experience (search panel, sidebar, profile card, and the
+// useNearbyBraiders data flow that feeds this component's braiders prop).
 export default function MapPage() {
   return (
     <main className="h-dvh w-full">
-      <BraiderMap />
+      <BraiderMap braiders={[]} />
     </main>
   );
 }

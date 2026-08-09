@@ -7,6 +7,12 @@
      and availability accents across the braider discovery map. */
   --color-gold: #c9963c;
   --color-gold-light: #e8d3a8;
+  /* Brand purple - the "you are here" marker, filter chip accents, and the
+     map's custom lavender water color (see docs/map-feature.md for where
+     this needs to be configured in the Google Cloud Console, since a Map
+     ID's styling isn't runtime-configurable the way it was on Mapbox). */
+  --color-brand-purple: #7c3aed;
+  --color-brand-purple-light: #ede9fe;
 }
 
 @theme inline {
@@ -14,6 +20,8 @@
   --color-foreground: var(--foreground);
   --color-gold: var(--color-gold);
   --color-gold-light: var(--color-gold-light);
+  --color-brand-purple: var(--color-brand-purple);
+  --color-brand-purple-light: var(--color-brand-purple-light);
   --font-sans: var(--font-inter);
 }
 
@@ -28,4 +36,135 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Braider discovery map markers - built as plain DOM nodes for Google
+   Maps' AdvancedMarkerElement (see components/map/marker-content.ts), so
+   they're styled here rather than with Tailwind's JSX-oriented utilities. */
+
+.toh-marker {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: transform 150ms ease-out;
+}
+
+@media (min-width: 768px) {
+  .toh-marker {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toh-marker:hover,
+  .toh-marker--active {
+    transform: scale(1.18);
+    z-index: 10;
+  }
+  .toh-marker:hover .toh-marker-tooltip,
+  .toh-marker--active .toh-marker-tooltip {
+    opacity: 1;
+    transform: translate(-50%, -4px);
+  }
+}
+
+.toh-marker-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: var(--color-brand-purple-light);
+  background-size: cover;
+  background-position: center;
+  box-sizing: border-box;
+  border: 2.5px solid var(--color-gold);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.toh-marker-photo-placeholder {
+  background-image: none;
+}
+
+.toh-marker-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+}
+
+.toh-marker-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #171717;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+/* User's own position: a solid dot with two rings expanding and fading
+   outward on a staggered loop - pure CSS, no JS animation loop needed. */
+.toh-user-location {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.toh-user-location-dot {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--color-brand-purple);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.toh-user-location-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-brand-purple);
+  animation: toh-pulse-ring 2.4s ease-out infinite;
+}
+
+.toh-user-location-ring-outer {
+  animation-delay: 1.2s;
+}
+
+@keyframes toh-pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toh-user-location-ring {
+    animation: none;
+    opacity: 0;
+  }
 }

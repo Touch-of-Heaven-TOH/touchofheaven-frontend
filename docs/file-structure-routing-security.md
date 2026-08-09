@@ -564,3 +564,107 @@ is the reference implementation: an SWR hook wrapping a typed fetch function,
 never a bare `fetch()` call inside a component. This is the same rule the
 vision doc states - "no client component calls fetch() directly" - and it
 holds without exception in the code that exists today.
+
+## Page Reference: Built vs. Not Yet Built
+
+The vision doc describes 68 pages across a marketplace, an AI try-on studio,
+a style quiz, a community gallery, a full Resolution Center, and complete
+studio/admin feature sets. The real, current page inventory - URL, page
+name, primary content, primary action - lives in `docs/architecture.md`'s
+"Page Inventory" table and isn't repeated here. What belongs in *this*
+document is the reconciliation: which parts of the vision doc's page list
+this reflects, and which don't exist yet.
+
+**Built and matching the vision doc's intent**, even where the URL or exact
+shape differs slightly: home, about, how it works, braider discovery
+(`/braiders` and `/map` - the vision doc splits these into `/braiders` and
+`/braiders/map`; this app uses `/braiders` and `/map` as siblings instead),
+beauty/service discovery, contact, the full legal policy library (one
+dynamic `/legal/[policySlug]` route instead of one folder per policy - see
+"Current File Structure"), sign in/up, verify email, forgot/reset password,
+MFA, the booking funnel (one `/book/[[...step]]` catch-all instead of five
+separate step folders), account overview and settings, bookings, support,
+professional application, studio (Today/calendar/appointments/services/
+portfolio/earnings/settings, one `/studio/[[...section]]` catch-all), and
+admin (overview/applications/braiders/appointments/payments/support/
+policies/audit/system, one `/admin/[[...section]]` catch-all).
+
+Every catch-all section that doesn't have real content wired up yet renders
+`RouteStatusPage` (`components/layout/RouteStatusPage.tsx`) with copy from
+`config/page-content.ts` - a real, intentional "this part isn't built yet"
+page, not a 404 and not a silent crash. That's the same principle "Route
+Security Table" applies to the sitemap: honest about what's real.
+
+**Described in the vision doc, not built, and not planned until product work
+schedules it:** the TOHAEM marketplace beyond a preview page (no product
+catalog, cart, checkout, or per-product pages - see
+`docs/future-marketplace-expansion.md`), the AI try-on studio and its shared
+result pages, the style quiz, the community gallery, careers, press, and the
+full Resolution Center dispute flow (case creation, evidence upload, admin
+decision interface). None of these have a route, a component folder, or a
+backend endpoint today. Scaffolding empty folders for them now, ahead of the
+product and backend work that would give them real content, was explicitly
+decided against for this reconciliation pass - see the top of this
+document.
+
+## Definition of Done
+
+Unchanged from `docs/architecture.md`, restated here in full because the
+vision doc's phrasing ("a page is not done until...") is worth keeping
+verbatim - it reads as a gate, not a suggestion:
+
+A page is not done until:
+
+- It renders correctly at **375px** (mobile) and **1280px** (desktop) width.
+- Every interactive element is **keyboard-reachable** and has a **visible
+  focus ring**.
+- Every loading state has a skeleton or spinner - not a blank screen.
+- Every error state has a clear message and a recovery action - not a dead
+  end (see the map feature's error-state work: a failed fetch shows "Couldn't
+  load braiders" with the real error text, not the same copy as a genuine
+  empty result).
+- The page **title** and **meta description** are set via Next.js metadata
+  exports.
+- The **Open Graph image** is configured.
+- It scores **90+ on Lighthouse mobile**.
+- A **screen reader** can navigate it completely, with no mouse.
+
+The map feature (`components/map/`, `app/(public)/map/`) is the first part
+of this codebase to have all eight verified end-to-end rather than assumed:
+375px/1280px layouts, full keyboard tab order confirmed with a real
+Playwright-driven keyboard walk, loading/error/empty states with dedicated
+tests (`tests/e2e/map.spec.ts`), metadata and OG image, and a 0-violation
+axe-core WCAG 2 A/AA scan (also in `tests/e2e/map.spec.ts`) run against real
+data, not an empty page. Use it as the reference for what "done" against
+this checklist actually looks like in code and in tests, not just in intent.
+
+## Final Rules for the Developer
+
+The vision doc's "never do these things" list, checked against this
+codebase rather than restated on faith:
+
+- **Never use `any`.** Mostly holds (see "Naming Conventions" for the one
+  honest caveat: no dedicated lint rule yet, strict mode plus review only).
+- **Never commit `.env.local`.** Enforced - `.gitignore`'s `.env.*` /
+  `.env` pattern with an explicit `!.env.example` exception.
+- **Never put a secret in a `NEXT_PUBLIC_*` variable.** Holds - see
+  "Environment Variables."
+- **Never make a database call from a component.** Holds structurally -
+  this app has no database client at all; every data access goes through
+  `lib/api/` to Backend-of-TOH.
+- **Never bypass the middleware for authentication, never return 401/403
+  from it.** Holds - see "The Security Gate."
+- **Never hardcode URLs; use environment variables for API calls.** Holds -
+  `lib/env/client.ts` and `lib/env/server.ts` are the only place
+  `NEXT_PUBLIC_API_URL`/`BACKEND_INTERNAL_API_URL` are read, and every API
+  call goes through `lib/api/`, which reads from there.
+- **Never use `document`/`window` directly without an environment check.**
+  Holds in the code reviewed for this document - browser-only APIs
+  (`navigator.geolocation`, the Google Maps SDK, `IntersectionObserver`)
+  are only ever touched inside client components' effects, which by
+  definition only run in the browser.
+
+This document, and the code it describes, will drift the moment either one
+changes without the other. Treat a diff to `proxy.ts`, `config/route-access.ts`,
+`next.config.ts`'s `headers()`, or the route groups themselves as a diff that
+owes this document an update in the same PR - not a follow-up.

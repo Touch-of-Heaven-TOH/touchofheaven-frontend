@@ -77,3 +77,142 @@ copy — the backend owns validation and is the shared source of truth),
 `@stripe/stripe-js`, `next-auth`, `@supabase/supabase-js`, `sharp`,
 `clsx`/`tailwind-merge`, `date-fns`. Adding any of these should happen when the
 feature that needs it is actually being built, not speculatively.
+
+## Current File Structure
+
+This is the real top-level layout on `main` today — not the vision doc's
+aspirational tree. Two structural choices are worth calling out because they
+depart from the vision doc on purpose, not by accident:
+
+- **No `src/` wrapper.** `app/`, `components/`, `lib/`, etc. live at the
+  repository root. The vision doc nests everything under `src/`; this repo's
+  starter convention doesn't, and nothing about the security model depends on
+  which one is used.
+- **`middleware.ts` is `proxy.ts`.** Next.js 16 renamed the file (the
+  exported function is also named `proxy`, not `middleware`). Same file, same
+  responsibility, same "must be at the project root" requirement — see "The
+  Security Gate" below.
+
+```text
+Frontend_for_HOF/
+├── app/                          # Next.js App Router - every route lives here
+│   ├── layout.tsx                  # root layout - HTML shell, fonts, providers
+│   ├── globals.css                 # Tailwind v4 entry - imports styles/ tokens
+│   ├── not-found.tsx               # global 404
+│   ├── error.tsx / global-error.tsx# error boundaries (route-level / root-level)
+│   ├── loading.tsx                 # global loading fallback
+│   ├── icon.tsx / opengraph-image.tsx / manifest.ts   # generated SEO/PWA assets
+│   ├── robots.ts / sitemap.ts      # dynamic - see "Route Security" below
+│   ├── access-denied/page.tsx      # shown for a denied action, not a route probe
+│   │
+│   ├── (public)/                 # route group - no auth check, see "Route Groups"
+│   │   ├── layout.tsx               # public chrome: PublicHeader + PublicFooter
+│   │   ├── page.tsx                 # / - homepage
+│   │   ├── about/, how-it-works/, contact/, beauty/, braiders/, map/,
+│   │   │   marketplace/             # each a real page.tsx today (marketplace is
+│   │   │                            # a preview page, not a shopping flow - see
+│   │   │                            # docs/future-marketplace-expansion.md)
+│   │   └── legal/
+│   │       ├── page.tsx             # policy index
+│   │       └── [policySlug]/page.tsx# one dynamic route serves every policy
+│   │
+│   ├── (auth)/                   # guest-only route group
+│   │   ├── layout.tsx               # centered card, no main nav
+│   │   └── sign-in/, sign-up/, verify-email/, forgot-password/,
+│   │       reset-password/, mfa/, auth-error/
+│   │
+│   ├── (booking)/                # protected route group
+│   │   ├── layout.tsx
+│   │   └── book/[[...step]]/page.tsx  # ONE catch-all route drives the whole
+│   │                                  # booking funnel (service -> time ->
+│   │                                  # consultation -> review -> payment ->
+│   │                                  # confirmation) via a `step` param, rather
+│   │                                  # than a page.tsx per step. See "Naming
+│   │                                  # Conventions" for why this pattern is
+│   │                                  # used instead of the vision doc's
+│   │                                  # one-folder-per-step layout.
+│   │
+│   ├── (account)/                # protected route group
+│   │   ├── layout.tsx
+│   │   ├── account/[[...section]]/page.tsx        # dashboard + every settings
+│   │   │                                          # sub-page via one catch-all
+│   │   ├── bookings/[[...appointmentId]]/page.tsx
+│   │   ├── support/[[...caseId]]/page.tsx
+│   │   └── professional-application/[[...section]]/page.tsx
+│   │
+│   ├── (braider)/                # protected route group - BRAIDER role
+│   │   ├── layout.tsx
+│   │   └── studio/[[...section]]/page.tsx  # Today/calendar/services/portfolio/
+│   │                                       # earnings/settings, one catch-all
+│   │
+│   ├── (admin)/                  # protected route group - ADMIN role
+│   │   ├── layout.tsx
+│   │   └── admin/[[...section]]/page.tsx
+│   │
+│   └── api/v1/braiders/nearby/route.ts   # the one frontend-owned API route
+│                                          # today - a public GET, no auth,
+│                                          # rate-limited by IP. Everything else
+│                                          # is a server/browser call straight to
+│                                          # Backend-of-TOH; see lib/api/.
+│
+├── components/
+│   ├── layout/                     # PublicHeader, PublicFooter, DashboardShell,
+│   │                                # RouteStatusPage (the shared "coming soon /
+│   │                                # not built yet" panel every catch-all
+│   │                                # section renders until it's implemented)
+│   ├── map/                        # BraiderMap, BraiderProfileCard,
+│   │                                # BraiderListSidebar, MapSearchPanel,
+│   │                                # MapPageClient, marker-content.ts
+│   └── feedback/                   # shared feedback/toast-style components
+│
+├── features/                     # feature-scoped modules (api/components/schemas)
+│   ├── home/                       # homepage section data + components
+│   └── auth/                       # sign-in/sign-up form components
+│
+├── hooks/
+│   ├── useGeolocation.ts           # all 6 permission states, 8s timeout
+│   └── useNearbyBraiders.ts        # SWR wrapper around the nearby-braiders API
+│
+├── lib/
+│   ├── api/                        # browser.ts, server.ts, errors.ts, shared.ts,
+│   │                                # types.ts - the ONLY place fetch() is called
+│   ├── auth/session.ts             # getCurrentUser/requireUser/requireRole -
+│   │                                # server-only, calls Backend-of-TOH's
+│   │                                # /api/v1/auth/me, never touches a database
+│   ├── discovery/                  # types.ts, format.ts for the map feature
+│   ├── env/                        # client.ts, server.ts - typed env accessors
+│   ├── maps/                       # config.ts, loader.ts, geocoding.ts, types.ts
+│   └── security/safe-return-url.ts # same-origin-only redirect validation
+│
+├── config/
+│   ├── navigation.ts               # publicNavigation, role-aware nav items
+│   ├── route-access.ts             # the source of truth proxy.ts and
+│   │                                # docs/route-access-matrix.md are both
+│   │                                # generated from / kept in sync with
+│   │   site.ts                     # siteConfig (name, url, description)
+│   ├── legal.ts                    # legalPolicies list backing /legal/*
+│   └── page-content.ts             # RouteStatusPage copy per unbuilt section
+│
+├── types/                        # auth.ts, content.ts
+├── styles/                       # tokens.css, typography.css, utilities.css
+├── tests/                        # setup.ts (Vitest), e2e/ (Playwright specs)
+├── docs/                         # this file and its siblings
+├── public/                       # static assets - no secrets, ever
+│
+├── proxy.ts                      # THE SECURITY GATE - see next section
+├── next.config.ts                # security headers, image domains
+├── eslint.config.mjs             # flat ESLint config (Next.js 16 default)
+├── vitest.config.mts             # unit/component test runner config
+├── playwright.config.ts          # E2E config
+├── tsconfig.json
+├── package.json / package-lock.json
+├── .env.example                  # committed template, no real values
+├── .gitignore
+└── README.md
+```
+
+Not yet present, and not needed until the work that requires them is actually
+scheduled: `.github/` (no CI workflow or PR template yet - see "Definition of
+Done"), `.husky/` (no pre-commit hook automation yet), `stores/` (no Zustand -
+nothing needs cross-tree client state yet), a `src/` wrapper (not this
+repo's convention).

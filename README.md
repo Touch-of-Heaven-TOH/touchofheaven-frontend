@@ -107,6 +107,8 @@ its own dev server if `E2E_BASE_URL` isn't set (see `playwright.config.ts`).
 
 ## Documentation
 
+- `docs/file-structure-routing-security.md` — reconciles the original
+  file-structure/routing/security vision doc against what's actually built
 - `docs/architecture.md`
 - `docs/route-access-matrix.md`
 - `docs/frontend-threat-model.md`

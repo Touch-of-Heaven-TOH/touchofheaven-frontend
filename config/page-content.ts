@@ -122,6 +122,58 @@ export const accountContent: Record<string, RouteContent> = {
       "Recent auth may be required for sensitive changes.",
     ],
   },
+  beautyProfile: {
+    eyebrow: "Settings",
+    title: "Beauty profile.",
+    description:
+      "Hair length, texture, sensitivities, and style history help braiders prepare before a first appointment and speed up consultation.",
+    primaryAction: "Save changes",
+    endpoint: "/api/v1/customer/beauty-profile (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "No hair-health or allergy data is inferred without the customer entering it.",
+      "Braiders only see this profile for their own upcoming appointments.",
+      "Customers can clear their style history at any time.",
+    ],
+  },
+  addresses: {
+    eyebrow: "Settings",
+    title: "Addresses.",
+    description:
+      "Saved shipping, billing, and mobile-service addresses, added and removed by the customer, each labeled by type.",
+    primaryAction: "Save changes",
+    endpoint: "/api/v1/customer/addresses (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "A mobile-service address is only shared with the assigned braider for that appointment.",
+      "No address is exposed in a public profile or listing.",
+      "Deleting an address never affects a completed appointment's historical record.",
+    ],
+  },
+  paymentMethods: {
+    eyebrow: "Settings",
+    title: "Payment methods.",
+    description:
+      "Saved cards and bank accounts, managed through the payment provider's own hosted elements - this app never stores or transmits raw card numbers.",
+    primaryAction: "Manage",
+    endpoint: "/api/v1/customer/payment-methods (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Card data is tokenized by the payment provider, never touched by this app's servers.",
+      "Removing a saved method never cancels an appointment already paid for.",
+      "A default method can be set for faster future deposits.",
+    ],
+  },
+  notifications: {
+    eyebrow: "Settings",
+    title: "Notifications.",
+    description:
+      "Per-channel (email, SMS, push) and per-category (bookings, messages, marketing) toggles, defaulting to essential transactional notifications only.",
+    primaryAction: "Save preferences",
+    endpoint: "/api/v1/notifications/preferences (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Essential booking and security notifications cannot be fully disabled.",
+      "Marketing notifications default to off, not on.",
+      "Preferences apply immediately to the next notification sent.",
+    ],
+  },
   security: {
     eyebrow: "Settings",
     title: "Password, MFA, and sessions.",

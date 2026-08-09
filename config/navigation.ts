@@ -21,8 +21,13 @@ export const accountNavigation: NavigationItem[] = [
   { label: "Support", href: "/support" },
   { label: "Apply", href: "/professional-application" },
   { label: "Profile", href: "/account/settings/profile" },
+  { label: "Beauty profile", href: "/account/settings/beauty-profile" },
+  { label: "Addresses", href: "/account/settings/addresses" },
+  { label: "Payment methods", href: "/account/settings/payment-methods" },
+  { label: "Notifications", href: "/account/settings/notifications" },
   { label: "Security", href: "/account/settings/security" },
   { label: "Privacy", href: "/account/settings/privacy" },
+  { label: "Delete account", href: "/account/settings/danger" },
 ];
 
 export const bookingNavigation: NavigationItem[] = [

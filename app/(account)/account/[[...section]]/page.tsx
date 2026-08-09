@@ -7,20 +7,15 @@ type AccountPageProps = {
   params: Promise<{ section?: string[] }>;
 };
 
+// Every /account/settings/* path now has its own page.tsx (see
+// app/(account)/account/settings/*/page.tsx), which Next.js always
+// resolves before this catch-all - so this function only ever sees the
+// segments those literal routes don't own: no segments (overview),
+// /appointments, or a genuinely unrecognized path, which falls back to
+// overview rather than a hard 404.
 function contentKey(segments: string[] | undefined): keyof typeof accountContent {
   if (!segments?.length) return "overview";
   if (segments[0] === "appointments") return "appointments";
-  if (segments[0] === "settings" && segments[1]) {
-    const key = segments[1];
-    if (
-      key === "profile" ||
-      key === "security" ||
-      key === "privacy" ||
-      key === "danger"
-    ) {
-      return key;
-    }
-  }
 
   return "overview";
 }

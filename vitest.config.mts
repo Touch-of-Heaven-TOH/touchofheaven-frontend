@@ -12,13 +12,11 @@ export default defineConfig({
     // The default forked-process pool can exceed Vitest's worker-startup
     // timeout on a slow filesystem (this repo's dev servers hit the same
     // thing - see the "Slow filesystem detected" warning `next dev` logs).
-    // worker_threads start faster than forked processes; a single thread avoids
+    // worker_threads start faster than forked processes; one worker avoids
     // spawning several workers that can time out concurrently on this machine.
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
+    maxWorkers: 1,
+    fileParallelism: false,
+    testTimeout: 20_000,
   },
 });

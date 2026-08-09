@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Touch of Heaven — Frontend
 
-## Getting Started
+The customer- and braider-facing web application for Touch of Heaven, built on Next.js 16 (App Router), React 19, and TypeScript. This app renders the platform's UI and talks to the backend exclusively over its public REST API — it never accesses PostgreSQL, Prisma, or any database directly.
 
-First, run the development server:
+## Related repositories
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Touch of Heaven is split across two repositories under the [Touch-of-Heaven-TOH](https://github.com/Touch-of-Heaven-TOH) organization:
+
+| Repository | Purpose |
+| --- | --- |
+| [`Backend-of-TOH`](https://github.com/Touch-of-Heaven-TOH/Backend-of-TOH) | Next.js API-only backend — Prisma/PostgreSQL, authentication, bookings, payments, and every `/api/v1/*` route this app calls. |
+| [`touchofheaven-frontend`](https://github.com/Touch-of-Heaven-TOH/touchofheaven-frontend) (this repo) | The browser application — pages, components, and client-side data fetching against the backend's API. |
+
+This app's `NEXT_PUBLIC_API_URL` (see below) points at a running instance of the backend. Both repos are developed together but deployed and versioned independently.
+
+## Stack
+
+- Next.js 16 App Router, React 19, strict TypeScript
+- Tailwind CSS v4
+- Framer Motion for UI animation
+- Google Maps JavaScript API + Geocoding API for the braider discovery map (see [`docs/map-feature.md`](./docs/map-feature.md) once the map feature lands)
+- Vitest for unit/integration tests, Playwright for end-to-end tests
+- ESLint (flat config) and Prettier
+
+## Install and configure
+
+```powershell
+npm install
+Copy-Item .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Replace every placeholder in `.env.local`. Never commit `.env.local` — it's already covered by `.gitignore`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | Base URL of the backend API (e.g. `http://localhost:3001` in development) |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Client-side Google Maps JavaScript API key, restricted to this app's domain(s) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development
 
-## Learn More
+```powershell
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Requires the backend (`Backend-of-TOH`) running separately and reachable at `NEXT_PUBLIC_API_URL`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```powershell
+npm run test:unit
+npm run test:e2e
+```

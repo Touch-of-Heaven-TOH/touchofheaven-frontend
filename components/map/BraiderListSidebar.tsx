@@ -14,6 +14,12 @@ export type BraiderListSidebarProps = {
   selectedBraiderId?: string | null;
   onSelectBraider: (id: string) => void;
   isLoading?: boolean;
+  // When set, the empty state shows this instead of the generic "no
+  // braiders found" copy - a failed request isn't the same situation as a
+  // real empty result set, and telling a visitor to "try widening your
+  // search" when the actual problem is a network/server error is
+  // actively misleading.
+  error?: string | null;
 };
 
 const ROW_HEIGHT_PX = 108;
@@ -37,6 +43,7 @@ export default function BraiderListSidebar({
   selectedBraiderId,
   onSelectBraider,
   isLoading,
+  error,
 }: BraiderListSidebarProps) {
   // @tanstack/react-virtual's useVirtualizer returns functions the React
   // Compiler can't safely memoize (see its own incompatible-library lint
@@ -59,6 +66,15 @@ export default function BraiderListSidebar({
     if (index === -1) return;
     virtualizer.scrollToIndex(index, { align: 'auto' });
   }, [selectedBraiderId, braiders, virtualizer]);
+
+  if (!isLoading && error) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-1 p-8 text-center">
+        <p className="text-sm font-medium text-gray-900">Couldn&apos;t load braiders</p>
+        <p className="text-xs text-gray-500">{error}</p>
+      </div>
+    );
+  }
 
   if (!isLoading && braiders.length === 0) {
     return (

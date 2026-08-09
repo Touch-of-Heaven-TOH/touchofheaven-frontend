@@ -23,6 +23,11 @@ export type MapMoveEvent = {
   zoom: number;
 };
 
+export type MapFocusRequest = {
+  coordinates: Coordinates;
+  zoom?: number;
+};
+
 export type BraiderMapProps = {
   braiders: NearbyBraider[];
   userCoordinates?: Coordinates | null;
@@ -35,6 +40,14 @@ export type BraiderMapProps = {
   onMapMove?: (event: MapMoveEvent) => void;
   isLoading?: boolean;
   selectedBraiderId?: string | null;
+  // Set this to a *new object* (not a mutated one) to command the map to
+  // pan/zoom there - e.g. when the search bar's Places autocomplete
+  // resolves a selection. Unlike userCoordinates (which only ever flies
+  // once, the first time it's granted), every new focusRequest re-fires,
+  // since each is a distinct, explicit user action. Plain map dragging
+  // never goes through this - the camera is already where the user put
+  // it, so only onMapMove/searchCenterRef need to know about that.
+  focusRequest?: MapFocusRequest | null;
 };
 
 function haversineMeters(a: Coordinates, b: Coordinates): number {
@@ -92,6 +105,7 @@ export default function BraiderMap({
   onMapMove,
   isLoading,
   selectedBraiderId,
+  focusRequest,
 }: BraiderMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -183,15 +197,25 @@ export default function BraiderMap({
             if (!center || zoom === undefined) return;
 
             const currentCenter: Coordinates = { lat: center.lat(), lng: center.lng() };
-            onMapMoveRef.current?.({ center: currentCenter, zoom });
-
             const distanceFromSearchCenter = haversineMeters(
               searchCenterRef.current,
               currentCenter,
             );
-            setShowSearchThisArea(
-              distanceFromSearchCenter > SEARCH_THIS_AREA_THRESHOLD_METERS,
-            );
+
+            // Within the threshold: chase the pan silently, same as the
+            // spec's "debounced pan -> re-fetch". Beyond it: only surface
+            // the "Search this area" pill and wait for an explicit click
+            // (handleSearchThisArea) rather than re-fetching out from under
+            // the user - a small nudge shouldn't refetch the same way a
+            // fast pan across the map to a different city does.
+            if (distanceFromSearchCenter > SEARCH_THIS_AREA_THRESHOLD_METERS) {
+              setShowSearchThisArea(true);
+              return;
+            }
+
+            searchCenterRef.current = currentCenter;
+            setShowSearchThisArea(false);
+            onMapMoveRef.current?.({ center: currentCenter, zoom });
           }, PAN_DEBOUNCE_MS);
         });
 
@@ -300,6 +324,18 @@ export default function BraiderMap({
       cancelled = true;
     };
   }, [userCoordinates, mapReady]);
+
+  // Pan/zoom to an explicit focus request (e.g. a search bar selection).
+  // Keyed on object identity, not coordinate value, so re-selecting the
+  // same place still re-centres the map - see MapFocusRequest's doc
+  // comment on BraiderMapProps.
+  useEffect(() => {
+    if (!mapReady || !mapRef.current || !focusRequest) return;
+    searchCenterRef.current = focusRequest.coordinates;
+    mapRef.current.panTo(focusRequest.coordinates);
+    mapRef.current.setZoom(focusRequest.zoom ?? GEOLOCATION_FLY_TO_ZOOM);
+    setShowSearchThisArea(false);
+  }, [focusRequest, mapReady]);
 
   function handleSearchThisArea() {
     if (!mapRef.current) return;

@@ -56,6 +56,30 @@ export const legalPolicies: LegalPolicy[] = [
     primaryAction: "Review refund rules",
   },
   {
+    slug: "shipping",
+    title: "Shipping & Returns",
+    effectiveDate: "2026-08-01",
+    summary:
+      "Delivery windows, carriers, and the return process for TOHAEM marketplace orders once the marketplace ships.",
+    primaryAction: "Review shipping terms",
+  },
+  {
+    slug: "seller-rules",
+    title: "Seller Rules",
+    effectiveDate: "2026-08-01",
+    summary:
+      "Standards for professionals selling through the TOHAEM marketplace: listing accuracy, fulfillment timelines, and prohibited items.",
+    primaryAction: "Review seller standards",
+  },
+  {
+    slug: "payout-policy",
+    title: "Payout Policy",
+    effectiveDate: "2026-08-01",
+    summary:
+      "How and when professional earnings become available for payout, minimum payout thresholds, and payout method requirements.",
+    primaryAction: "Review payout terms",
+  },
+  {
     slug: "braider-conduct",
     title: "Braider Conduct",
     effectiveDate: "2026-08-01",

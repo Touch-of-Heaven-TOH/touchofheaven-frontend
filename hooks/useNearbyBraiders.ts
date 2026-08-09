@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { browserApiFetch } from '@/lib/api/browser';
 import type { Coordinates } from '@/lib/maps/types';
 import type {
@@ -11,6 +11,20 @@ import type {
 
 const DEFAULT_RADIUS_KM = 25;
 
+// A pan of a few hundred metres shouldn't re-fetch when the previous
+// result set (a DISCOVERY_DEFAULT_RADIUS_KM=25 circle on the backend)
+// already covers it. Rounding to 3 decimal places (~111m at the equator)
+// before the coordinates become part of the SWR cache key means small
+// jitters and re-visits reuse the existing entry; it's coarser than a
+// city block and far finer than the search radius itself, so it never
+// meaningfully changes which braiders come back.
+const CACHE_KEY_PRECISION = 3;
+
+// How long a cache entry is treated as fresh - see SWR's dedupingInterval:
+// a second render asking for the same key within this window reuses the
+// in-flight/last response instead of firing a new request.
+const STALE_TIME_MS = 30_000;
+
 export type UseNearbyBraidersResult = {
   braiders: NearbyBraider[];
   total: number;
@@ -18,14 +32,19 @@ export type UseNearbyBraidersResult = {
   error: string | null;
 };
 
+function roundForCacheKey(value: number): number {
+  const factor = 10 ** CACHE_KEY_PRECISION;
+  return Math.round(value * factor) / factor;
+}
+
 function buildNearbyPath(
   center: Coordinates,
   filters: DiscoveryFilters,
   radiusKm: number,
 ): string {
   const params = new URLSearchParams({
-    lat: String(center.lat),
-    lng: String(center.lng),
+    lat: String(roundForCacheKey(center.lat)),
+    lng: String(roundForCacheKey(center.lng)),
     radius: String(radiusKm),
   });
   if (filters.locationType) params.set('locationType', filters.locationType);
@@ -34,71 +53,43 @@ function buildNearbyPath(
   return `/api/v1/braiders/nearby?${params.toString()}`;
 }
 
+function fetchNearby(path: string): Promise<NearbyBraidersResponse> {
+  return browserApiFetch<NearbyBraidersResponse>(path);
+}
+
 /**
  * Fetches braiders near `center` (Backend-of-TOH's public, rate-limited
- * GET /api/v1/braiders/nearby - see discovery.schemas.ts), re-running
- * whenever the center or any filter changes. `center` is null until the
+ * GET /api/v1/braiders/nearby - see discovery.schemas.ts) via SWR, keyed
+ * on the rounded coordinates plus every filter. `center` is null until the
  * map page has resolved a starting point (geolocation, its fallback, or a
- * search selection) - no request is made before then. Uses browserApiFetch
- * (not a raw fetch) for the shared request-id header and response-envelope
- * handling every other client request in this app already goes through;
- * GET requests skip CSRF automatically, and this endpoint needs none since
- * it's public.
+ * search selection) - passing a null key to useSWR skips the request
+ * entirely until then.
  *
- * An in-flight request is aborted (not just ignored) if center or filters
- * change again before it resolves, so a fast pan or filter toggle can't
- * have an earlier, slower response clobber a later one.
- *
- * `center` and `filters` are compared by reference, not by value - callers
- * should hold them in state (or memoize them) rather than constructing a
- * fresh object every render, or every render would trigger a re-fetch.
+ * keepPreviousData means a filter toggle or a pan into a new cache key
+ * doesn't flash the list/map to empty while the new request is in
+ * flight - the previous result set stays visible (isLoading still
+ * reflects the in-flight request) until the new one resolves.
  */
 export function useNearbyBraiders(
   center: Coordinates | null,
   filters: DiscoveryFilters,
   radiusKm: number = DEFAULT_RADIUS_KM,
 ): UseNearbyBraidersResult {
-  const [braiders, setBraiders] = useState<NearbyBraider[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const key = center ? buildNearbyPath(center, filters, radiusKm) : null;
 
-  useEffect(() => {
-    if (!center) return;
+  const { data, error, isLoading } = useSWR<NearbyBraidersResponse>(key, fetchNearby, {
+    dedupingInterval: STALE_TIME_MS,
+    keepPreviousData: true,
+  });
 
-    const controller = new AbortController();
+  return {
+    braiders: data?.braiders ?? [],
+    total: data?.total ?? 0,
+    isLoading,
+    error: error ? errorMessage(error) : null,
+  };
+}
 
-    // The whole chain, including the loading/error reset, runs through
-    // .then() rather than synchronously in the effect body - an effect is
-    // meant to subscribe to an external system and report changes through
-    // a callback, not set state directly on every run (see this project's
-    // react-hooks/set-state-in-effect lint rule). Promise.resolve().then()
-    // still flushes as a microtask before the next paint, so there's no
-    // user-visible delay versus calling setIsLoading(true) synchronously.
-    Promise.resolve()
-      .then(() => {
-        setIsLoading(true);
-        setError(null);
-        return browserApiFetch<NearbyBraidersResponse>(
-          buildNearbyPath(center, filters, radiusKm),
-          { signal: controller.signal },
-        );
-      })
-      .then((data) => {
-        setBraiders(data.braiders);
-        setTotal(data.total);
-      })
-      .catch((err: unknown) => {
-        if (controller.signal.aborted) return;
-        setError(err instanceof Error ? err.message : 'Failed to load nearby braiders.');
-      })
-      .finally(() => {
-        if (controller.signal.aborted) return;
-        setIsLoading(false);
-      });
-
-    return () => controller.abort();
-  }, [center, filters, radiusKm]);
-
-  return { braiders, total, isLoading, error };
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Failed to load nearby braiders.';
 }

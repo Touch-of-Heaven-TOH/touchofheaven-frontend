@@ -1,9 +1,10 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import BraiderListSidebar from '@/components/map/BraiderListSidebar';
-import BraiderMap, { type MapFocusRequest } from '@/components/map/BraiderMap';
+import type { MapFocusRequest } from '@/components/map/BraiderMap';
 import BraiderProfileCard from '@/components/map/BraiderProfileCard';
 import MapSearchPanel from '@/components/map/MapSearchPanel';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -13,6 +14,24 @@ import type { Coordinates } from '@/lib/maps/types';
 import { EMPTY_DISCOVERY_FILTERS, type DiscoveryFilters } from '@/lib/discovery/types';
 
 const TERMINAL_UNRESOLVED_STATUSES = new Set(['denied', 'timeout', 'unsupported']);
+
+// The Google Maps JS SDK (and BraiderMap's own client-only DOM/marker
+// work) has no business being in the server-rendered payload or the
+// initial client bundle - it's pure browser interactivity, and `ssr:
+// false` plus this loading fallback keep it out of both until the page
+// actually needs it.
+const BraiderMap = dynamic(() => import('@/components/map/BraiderMap'), {
+  ssr: false,
+  loading: () => (
+    <div
+      role="status"
+      aria-label="Loading map"
+      className="flex h-full w-full items-center justify-center bg-purple-50"
+    >
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-300 border-t-purple-700" />
+    </div>
+  ),
+});
 
 /**
  * Wires the discovery map's pieces together: useGeolocation resolves a
@@ -177,6 +196,7 @@ export default function MapPageClient() {
                 selectedBraiderId={selectedBraiderId}
                 onSelectBraider={handleSelectBraider}
                 isLoading={isLoading}
+                error={error}
               />
             </div>
           </motion.div>

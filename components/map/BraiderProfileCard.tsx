@@ -136,10 +136,14 @@ function CoverAndProfilePhoto({ braider }: { braider: NearbyBraider }) {
         ) : null}
       </div>
       {braider.acceptsNewClients ? (
+        // bg-[#8f6a1e], not the lighter brand gold: white text directly on
+        // #c9963c is 2.65:1, under WCAG AA's 4.5:1 for text (axe-core:
+        // color-contrast) - see MapSearchPanel's CHIP_ACTIVE_CLASSES
+        // comment for the same fix and the contrast math.
         <span
           aria-label="Verified braider"
           title="Verified"
-          className="absolute -bottom-8 left-12 flex h-5 w-5 translate-x-1 items-center justify-center rounded-full border-2 border-white bg-(--color-gold,#c9963c) text-[10px] text-white"
+          className="absolute -bottom-8 left-12 flex h-5 w-5 translate-x-1 items-center justify-center rounded-full border-2 border-white bg-[#8f6a1e] text-[10px] text-white"
         >
           ✓
         </span>
@@ -255,10 +259,12 @@ function Actions({
 }) {
   return (
     <div>
+      {/* bg-[#8f6a1e], not the brand gold - see CoverAndProfilePhoto's
+          verified-badge comment on the contrast fix. */}
       <button
         type="button"
         onClick={() => onBookNow?.(braider)}
-        className="w-full rounded-lg bg-(--color-gold,#c9963c) py-3 text-sm font-semibold text-white transition hover:brightness-95"
+        className="w-full rounded-lg bg-[#8f6a1e] py-3 text-sm font-semibold text-white transition hover:brightness-95"
       >
         Book Now
       </button>

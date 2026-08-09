@@ -30,7 +30,12 @@ const LOCATION_TYPE_CHIPS: { value: DiscoveryLocationType | null; label: string 
 
 const CHIP_BASE_CLASSES =
   'shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium transition whitespace-nowrap';
-const CHIP_ACTIVE_CLASSES = 'border-(--color-gold,#c9963c) bg-(--color-gold,#c9963c) text-white';
+// The brand gold (#c9963c) only contrasts white text at 2.65:1 - well
+// under WCAG AA's 4.5:1 for normal text (axe-core: color-contrast). This
+// darker shade keeps the same hue but reaches ~4.9:1; the lighter brand
+// gold is still used everywhere it's decorative (borders, the rating
+// star), just not behind white text.
+const CHIP_ACTIVE_CLASSES = 'border-[#8f6a1e] bg-[#8f6a1e] text-white';
 const CHIP_INACTIVE_CLASSES =
   'border-gray-200 bg-white text-gray-700 hover:border-(--color-gold,#c9963c)';
 

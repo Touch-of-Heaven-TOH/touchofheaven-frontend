@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BraiderListSidebar from '@/components/map/BraiderListSidebar';
 import type { MapFocusRequest } from '@/components/map/BraiderMap';
@@ -11,7 +12,11 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { useNearbyBraiders } from '@/hooks/useNearbyBraiders';
 import { KATHLEEN_GEORGIA_CENTER } from '@/lib/maps/config';
 import type { Coordinates } from '@/lib/maps/types';
-import { EMPTY_DISCOVERY_FILTERS, type DiscoveryFilters } from '@/lib/discovery/types';
+import {
+  EMPTY_DISCOVERY_FILTERS,
+  type DiscoveryFilters,
+  type NearbyBraider,
+} from '@/lib/discovery/types';
 
 const TERMINAL_UNRESOLVED_STATUSES = new Set(['denied', 'timeout', 'unsupported']);
 
@@ -42,6 +47,7 @@ const BraiderMap = dynamic(() => import('@/components/map/BraiderMap'), {
  * Rendered by app/(public)/map/page.tsx, which owns the page's metadata.
  */
 export default function MapPageClient() {
+  const router = useRouter();
   const geolocation = useGeolocation();
   const [searchCenter, setSearchCenter] = useState<Coordinates | null>(null);
   const [filters, setFilters] = useState<DiscoveryFilters>(EMPTY_DISCOVERY_FILTERS);
@@ -86,6 +92,16 @@ export default function MapPageClient() {
   function handleSelectBraider(id: string) {
     setSelectedBraiderId(id);
     setMobileListOpen(false);
+  }
+
+  // /book/[braiderId] exists as a route today but only renders a "coming
+  // soon" RouteStatusPage stub - the real booking flow (Model 9/10) isn't
+  // built yet. Navigating there anyway is still the honest behavior: it's
+  // the platform's actual intended URL for this action, and landing on a
+  // real, intentional stub is correct where fabricating booking logic
+  // that belongs to a different feature would not be.
+  function handleBookNow(braider: NearbyBraider) {
+    router.push(`/book/${braider.braiderId}`);
   }
 
   function handleMapMove(event: { center: Coordinates }) {
@@ -164,6 +180,7 @@ export default function MapPageClient() {
         <BraiderProfileCard
           braider={selectedBraider}
           onClose={() => setSelectedBraiderId(null)}
+          onBookNow={handleBookNow}
         />
       </div>
 

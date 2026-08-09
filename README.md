@@ -63,17 +63,47 @@ credentials, TOTP keys, email credentials, or Sentry upload tokens in
 See `docs/architecture.md` and `docs/route-access-matrix.md` for the route
 inventory and access rules.
 
+## Map feature
+
+`/map` is the braider discovery map: `useGeolocation` (`hooks/useGeolocation.ts`)
+resolves a starting point - falling back to Kathleen, GA on denial, timeout, or
+an unsupported browser, never surfacing a permission prompt as an error -
+which `useNearbyBraiders` (`hooks/useNearbyBraiders.ts`, built on SWR) feeds
+into `GET /api/v1/braiders/nearby` on Backend-of-TOH. `MapPageClient`
+(`components/map/MapPageClient.tsx`) wires that data into `BraiderMap`
+(Google Maps, lazy-loaded via `next/dynamic({ssr:false})`), `MapSearchPanel`
+(Places autocomplete plus style/location-type/availability filter chips),
+`BraiderListSidebar` (virtualized, kept in sync with the map's selection),
+and `BraiderProfileCard` (desktop panel / mobile bottom sheet).
+
+Requires `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` and `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`
+(see Environment above) - without both, the map renders a "Map coming soon"
+fallback instead of failing silently or crashing. Raw GPS coordinates are read
+once client-side to build the API request and are never logged or persisted
+anywhere in this app; PRIVATE_STUDIO and MOBILE braiders' coordinates are
+fuzzed server-side before this app ever sees them (see
+`modules/discovery/location-privacy.ts` in Backend-of-TOH).
+
+Selection is keyed by `NearbyBraider.id` (the location/service-area entry
+backing a pin), not `braiderId` (the underlying user) - a braider can have
+more than one discoverable entry, and the map, sidebar, and profile card all
+need to agree on which one is selected. See the doc comment on
+`BraiderMapProps` in `components/map/BraiderMap.tsx`.
+
 ## Scripts
 
 ```powershell
 npm run dev
 npm run lint
 npm run build
+npm run test        # Vitest - hooks, filter logic, formatting
+npm run test:e2e    # Playwright - tests/e2e/map.spec.ts
 ```
 
-Testing dependencies and scripts are not installed in this repository yet. Add
-Vitest, Testing Library, Playwright, and axe before claiming the full production
-definition of done.
+`test:e2e` mocks `GET /api/v1/braiders/nearby` at the network layer rather
+than requiring a running, seeded Backend-of-TOH - this app never touches the
+database directly, so its own E2E suite shouldn't need one either. It starts
+its own dev server if `E2E_BASE_URL` isn't set (see `playwright.config.ts`).
 
 ## Documentation
 

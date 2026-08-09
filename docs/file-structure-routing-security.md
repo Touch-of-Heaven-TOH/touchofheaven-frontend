@@ -265,3 +265,64 @@ If `proxy.ts`'s cookie-presence check is ever wrong or bypassed, the layout's
 server-side call to the backend's `/api/v1/auth/me` still blocks the render -
 this is why "defense in depth" in `docs/frontend-threat-model.md` isn't just
 a phrase, it's two independently-verifiable code paths.
+
+## The Security Gate
+
+`proxy.ts`, at the project root, is the single most important security file
+in this repository - the vision doc is right to call the equivalent file out
+this way. It runs on Vercel's Edge Runtime, before any page or layout
+renders, matched against every request except static assets and Next's own
+internal routes (see its `config.matcher`).
+
+What it actually checks, in order, reading directly from the code:
+
+1. **Guest-only routes with a session already present redirect to
+   `/account`.** `startsWithRoute(pathname, guestOnlyRoutePrefixes) &&
+   hasSession` - a signed-in visitor hitting `/sign-in` doesn't see the form
+   again, they're sent to their account.
+2. **`/mfa` with neither a pending-MFA cookie nor a session redirects to
+   `/sign-in`.** You can't land on the MFA challenge screen out of nowhere.
+3. **Protected routes without a session redirect to `/sign-in?callbackUrl=...`.**
+   `startsWithRoute(pathname, protectedRoutePrefixes) && !hasSession` - the
+   callback URL is the original path *and query string*, URL-encoded, so the
+   visitor lands back exactly where they meant to go after signing in (see
+   the map feature's E2E test for a concrete example: clicking "Book Now"
+   while signed out lands on `/sign-in?callbackUrl=%2Fbook%2F...`, not a dead
+   end).
+4. **Every response, on every path, gets the full security header set** -
+   see "Security Headers and CSP" below - via `withSecurityHeaders()`,
+   whether the request was allowed, redirected, or fell through as neither
+   explicitly public nor explicitly protected.
+
+This codebase's session model is its own, not NextAuth (see "Environment
+Variables" below), and that shapes how the proxy checks state: session
+presence is read from **cookie presence only** - `toh_session` /
+`__Host-toh_session` for a session, `toh_mfa_pending` / `__Host-toh_mfa_pending`
+for the MFA-pending case - never decoded or verified at the edge. The proxy answers
+"is a session cookie present," not "is this session valid" - that
+verification happens in the layout's call to `/api/v1/auth/me`, which is the
+backend, the only place that can actually check a session against its store.
+This split matters: the edge check has to be cheap and cookie-only to run on
+every request without a database round trip, and the backend check is the
+one that's actually authoritative.
+
+**Role checks do not happen in `proxy.ts` at all** in this implementation -
+they happen in the layout (see "Route Groups" above). This is a real
+deviation from the vision doc, which describes the middleware itself
+checking for `BRAIDER`/`ADMIN` roles and MFA-completion state. The roles a
+session holds aren't knowable from a cookie's presence alone without
+decoding a JWT or calling the backend - and calling the backend from
+the edge on every request defeats the edge's speed advantage. This codebase
+resolves that by pushing role/MFA verification to the layout (still before
+any protected content renders, still before the client receives anything),
+and keeping the edge check limited to what a cookie's mere presence can
+answer safely: "is *some* session active," "is *MFA* pending." Functionally
+the same guarantee (nothing protected renders without the right role, MFA
+completion is enforced for admin), implemented one layer later than the
+vision doc specifies.
+
+🔒 **The rule the vision doc states, this code follows exactly:** the proxy
+never returns `401` or `403`. Every denial is a redirect - to `/sign-in`, to
+`/account`, or (for `/mfa` reached without a pending state) back to
+`/sign-in`. A `401`/`403` confirms a protected route exists; a redirect to
+`/sign-in` tells an attacker nothing they didn't already know.

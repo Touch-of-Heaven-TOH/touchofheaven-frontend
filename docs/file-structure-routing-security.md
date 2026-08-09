@@ -504,3 +504,63 @@ error-tracking installed, has no ISR revalidation webhook, and has no OAuth
 providers wired up (`/sign-in` is email/password only today). Add each
 variable when the feature that needs it is actually being built, with its
 own `.env.example` entry and description at the same time - not before.
+
+## Naming Conventions and Server/Client Rules
+
+These match the vision doc closely, because they're standard, sound Next.js
+App Router practice rather than anything project-specific - restated here so
+they're written down once, in one place, instead of only living as tribal
+knowledge.
+
+**File naming.** Route files are always `page.tsx`/`layout.tsx` - Next.js
+convention, not a choice. Component files are PascalCase matching the
+export: `BraiderMap.tsx` exports `BraiderMap`, `DashboardShell.tsx` exports
+`DashboardShell`. Hook files are camelCase with a `use` prefix:
+`useGeolocation.ts` exports `useGeolocation`, `useNearbyBraiders.ts` exports
+`useNearbyBraiders`. Utility, config, and type files are camelCase:
+`route-access.ts`, `format.ts`, `auth.ts`. The one exception the vision doc
+calls out still holds in this codebase's Next.js 16 form: the security gate
+must be lowercase and at the project root to be found by the framework - it's
+`proxy.ts` here rather than `middleware.ts` (see "The Security Gate"), but
+the "must be root, must be lowercase, framework won't find it otherwise"
+rule is identical.
+
+**Component rules.** Every component is a typed function component. A
+props interface sits directly above the component it describes, named
+`ComponentNameProps` - `BraiderMapProps` above `BraiderMap`,
+`BraiderListSidebarProps` above `BraiderListSidebar`, and so on throughout
+`components/map/`. No component imports backend code, makes a database call,
+or contains business logic; a component receives data through props and
+renders it, and anything that needs to fetch or compute goes through a hook
+(`hooks/`) or a typed API function (`lib/api/`). `tsconfig.json` has
+`"strict": true`, though there is currently no dedicated ESLint rule
+(`@typescript-eslint/no-explicit-any`) blocking `any` outright - the vision
+doc's "never use `any`" is enforced by strict mode catching most of its
+consequences and by review discipline today, not by a standalone lint gate.
+Adding that rule would be a reasonable, low-risk follow-up.
+
+**Server vs. client components.** Every component is a server component by
+default - the App Router's own default, not a project convention layered on
+top of it. A component only becomes a client component by adding
+`"use client"` as its first line, and that should only happen when it
+genuinely needs browser APIs, React state, or event handlers. In this
+codebase: `BraiderMap`, `MapSearchPanel`, `BraiderListSidebar`,
+`BraiderProfileCard`, and `MapPageClient` are all client components, because
+the map needs the Google Maps SDK (a browser-only API), geolocation needs
+`navigator.geolocation`, and the list/card/panel need interactive selection
+state. `app/(public)/map/page.tsx` itself stays a server component - it only
+owns page metadata and renders `MapPageClient`, so it doesn't need to be a
+client component just because its child is one. The general pattern this
+repo follows: push `"use client"` as far down the tree as the actual browser
+requirement lives, never up.
+
+**Data fetching rules.** Server components and layouts call the backend
+directly with `lib/api/server.ts`'s `serverApiFetch`, forwarding incoming
+cookies (see `lib/auth/session.ts`'s `getCurrentUser`). Client components
+never call `fetch()` directly - they go through a hook that wraps
+`lib/api/browser.ts`'s `browserApiFetch`, which attaches a request ID and,
+for mutations, a CSRF token retrieved from the backend. `hooks/useNearbyBraiders.ts`
+is the reference implementation: an SWR hook wrapping a typed fetch function,
+never a bare `fetch()` call inside a component. This is the same rule the
+vision doc states - "no client component calls fetch() directly" - and it
+holds without exception in the code that exists today.

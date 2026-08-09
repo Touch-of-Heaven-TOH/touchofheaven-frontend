@@ -26,7 +26,12 @@ export type MapMoveEvent = {
 export type BraiderMapProps = {
   braiders: NearbyBraider[];
   userCoordinates?: Coordinates | null;
-  onBraiderSelect?: (braiderId: string) => void;
+  // Both of these carry a NearbyBraider's `id` (the location/service-area
+  // row backing its pin) - not `braiderId` (the underlying user). A
+  // braider can have more than one discoverable entry, and each entry gets
+  // its own marker, so the pin/list selection contract has to key off the
+  // entry, not the person. BraiderListSidebar uses this same `id`.
+  onBraiderSelect?: (id: string) => void;
   onMapMove?: (event: MapMoveEvent) => void;
   isLoading?: boolean;
   selectedBraiderId?: string | null;
@@ -217,11 +222,11 @@ export default function BraiderMap({
 
       const markers = braiders.map((braider) => {
         const content = buildBraiderMarkerContent(braider);
-        content.addEventListener('click', () => onBraiderSelect?.(braider.braiderId));
+        content.addEventListener('click', () => onBraiderSelect?.(braider.id));
         content.addEventListener('keydown', (event) => {
           if (event instanceof KeyboardEvent && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault();
-            onBraiderSelect?.(braider.braiderId);
+            onBraiderSelect?.(braider.id);
           }
         });
 

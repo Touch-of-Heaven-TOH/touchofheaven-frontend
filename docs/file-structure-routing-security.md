@@ -216,3 +216,52 @@ scheduled: `.github/` (no CI workflow or PR template yet - see "Definition of
 Done"), `.husky/` (no pre-commit hook automation yet), `stores/` (no Zustand -
 nothing needs cross-tree client state yet), a `src/` wrapper (not this
 repo's convention).
+
+## Route Groups and Why They Exist
+
+This repository implements exactly the six route groups the vision doc
+describes, with exactly the property that makes them worth having: Next.js
+App Router route groups — folders in parentheses, `(public)`, `(auth)`,
+`(booking)`, `(account)`, `(braider)`, `(admin)` — are invisible in the URL.
+`/studio` doesn't contain the word "braider" anywhere in the path. `/admin`
+looks like any other route. An attacker scanning URLs cannot tell from the
+path alone whether a route is public, guest-only, or protected, or what role
+it requires — that information lives only in `proxy.ts` and
+`config/route-access.ts`, not in the URL.
+
+| Group | Real routes today | Layout chrome |
+| --- | --- | --- |
+| `(public)` | `/`, `/about`, `/how-it-works`, `/braiders`, `/map`, `/beauty`, `/marketplace`, `/contact`, `/legal/*` | `PublicHeader` + `PublicFooter` (`components/layout/`) |
+| `(auth)` | `/sign-in`, `/sign-up`, `/verify-email`, `/forgot-password`, `/reset-password`, `/mfa`, `/auth-error` | Centered card, no main nav |
+| `(booking)` | `/book/[[...step]]` | Booking funnel chrome |
+| `(account)` | `/account/[[...section]]`, `/bookings/[[...appointmentId]]`, `/support/[[...caseId]]`, `/professional-application/[[...section]]` | `DashboardShell` sidebar chrome |
+| `(braider)` | `/studio/[[...section]]` | `DashboardShell` sidebar chrome, BRAIDER-role variant |
+| `(admin)` | `/admin/[[...section]]` | `DashboardShell` sidebar chrome, ADMIN-role variant |
+
+Each group's `layout.tsx` applies chrome appropriate to that context, exactly
+as the vision doc describes — a developer who accidentally renders admin
+content under `(public)` gets an immediate, visible layout break rather than
+a silent leak.
+
+**The route groups are organizational, not the security boundary.** Grouping
+files this way makes the intent legible to a developer reading the tree, but
+it enforces nothing by itself — Next.js route groups have no runtime
+authorization behavior. The real boundary is two layers, both driven by the
+single source of truth in `config/route-access.ts`:
+
+1. `proxy.ts`, at the edge, before any page renders (see "The Security Gate").
+2. Each protected group's own `layout.tsx`, which calls `requireUser()` -
+   or, for `(braider)`/`(admin)`, `requireRole("BRAIDER" | "ADMIN", "/account")`
+   - from `lib/auth/session.ts` before rendering `children`. Confirmed
+   directly in the code: `app/(account)/layout.tsx`, `app/(braider)/layout.tsx`,
+   and `app/(admin)/layout.tsx` all call this, all render through the shared
+   `DashboardShell` component with a `tone` prop (`"account"` / `"studio"` /
+   `"admin"`) for the visual distinction the vision doc asks for, and all set
+   `robots: { index: false, follow: false }` in their own metadata as a second,
+   independent line of defense alongside `app/robots.ts` (see "Route Security
+   Table" below).
+
+If `proxy.ts`'s cookie-presence check is ever wrong or bypassed, the layout's
+server-side call to the backend's `/api/v1/auth/me` still blocks the render -
+this is why "defense in depth" in `docs/frontend-threat-model.md` isn't just
+a phrase, it's two independently-verifiable code paths.

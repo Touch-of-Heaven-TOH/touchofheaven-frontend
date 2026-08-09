@@ -12,6 +12,6 @@ export const siteConfig = {
 } as const;
 
 export const brandAssets = {
-  heroImage: "/images/home/braiding-appointment-hero.png",
+  heroImage: "/images/home/images/braiding-appointment-hero.png",
   ogImage: "/opengraph-image",
 } as const;

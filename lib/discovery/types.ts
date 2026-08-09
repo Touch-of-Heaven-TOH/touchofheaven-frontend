@@ -3,6 +3,23 @@
  * directly, since this app never imports backend code. */
 export type NextAvailableSlotBucket = 'TODAY' | 'THIS_WEEK' | 'LATER' | 'NONE';
 
+export type DiscoveryLocationType = 'PUBLIC_SALON' | 'PRIVATE_STUDIO' | 'MOBILE';
+
+/** The map search panel's filter state - mirrors
+ * discovery.schemas.ts's locationType/category/acceptingNewClients query
+ * params in Backend-of-TOH (nulls/false mean "no filter applied"). */
+export type DiscoveryFilters = {
+  locationType: DiscoveryLocationType | null;
+  category: string | null;
+  acceptingNewClients: boolean;
+};
+
+export const EMPTY_DISCOVERY_FILTERS: DiscoveryFilters = {
+  locationType: null,
+  category: null,
+  acceptingNewClients: false,
+};
+
 export type NearbyBraider = {
   id: string;
   kind: 'location' | 'serviceArea';
@@ -10,7 +27,7 @@ export type NearbyBraider = {
   professionalName: string;
   bio: string | null;
   locationLabel: string | null;
-  locationModel: 'PUBLIC_SALON' | 'PRIVATE_STUDIO' | 'MOBILE';
+  locationModel: DiscoveryLocationType;
   isApproximateLocation: boolean;
   address: string | null;
   latitude: number;

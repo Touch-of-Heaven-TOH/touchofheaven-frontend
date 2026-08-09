@@ -326,3 +326,92 @@ never returns `401` or `403`. Every denial is a redirect - to `/sign-in`, to
 `/account`, or (for `/mfa` reached without a pending state) back to
 `/sign-in`. A `401`/`403` confirms a protected route exists; a redirect to
 `/sign-in` tells an attacker nothing they didn't already know.
+
+## Security Headers and CSP
+
+Headers are set in two places, which is worth being explicit about since it
+looks redundant at first read and isn't: `next.config.ts`'s `headers()`
+function sets a baseline on every response including ones `proxy.ts` never
+touches (static files, cached responses), and `proxy.ts`'s
+`withSecurityHeaders()` sets the full set - including the CSP, which
+`next.config.ts` cannot set because the CSP needs a fresh nonce generated
+per-request, and only the proxy runs per-request early enough for that.
+
+| Header | Value | Set in |
+| --- | --- | --- |
+| `X-Content-Type-Options` | `nosniff` | Both |
+| `X-Frame-Options` | `DENY` | Both |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Both |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(self), payment=(self)` | Both |
+| `X-XSS-Protection` | `0` | `proxy.ts` only |
+| `X-DNS-Prefetch-Control` | `on` | `proxy.ts` only |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | `proxy.ts` only, production only |
+| `Content-Security-Policy` | nonce-based, see below | `proxy.ts` only |
+
+Two small, deliberate differences from the vision doc's table, both stricter
+than what it specifies, not weaker:
+
+- **`Permissions-Policy` includes `payment=(self)`** in addition to the doc's
+  `camera=()`/`microphone=()`/`geolocation=(self)` - added ahead of the
+  booking/payment flow using Stripe Elements, which needs the Payment Request
+  API available to `self`.
+- **`Strict-Transport-Security` includes `preload`** in addition to the doc's
+  `max-age=63072000; includeSubDomains` - opts into browser HSTS preload
+  lists once the domain is submitted, not just header-driven HSTS.
+
+`X-XSS-Protection: 0` was the one header the vision doc calls for that this
+codebase didn't set until now - added directly to `proxy.ts` alongside this
+documentation, since a real gap surfaced while writing this section is worth
+fixing in the same breath, not just noting.
+
+### Content Security Policy
+
+The real CSP, built fresh per-request in `proxy.ts`'s `buildCsp(nonce)` (not
+copied from the vision doc - read directly from the function):
+
+```text
+default-src 'self';
+script-src 'self' 'nonce-{NONCE}' 'strict-dynamic' https://js.stripe.com
+  https://maps.googleapis.com https://maps.gstatic.com https://api.mapbox.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com
+  https://api.mapbox.com https://maps.googleapis.com;
+img-src 'self' data: blob: https://*.cloudflare.com https://*.supabase.co
+  https://*.mapbox.com https://*.stripe.com https://maps.googleapis.com
+  https://maps.gstatic.com https://*.googleusercontent.com https://*.ggpht.com;
+font-src 'self' https://fonts.gstatic.com;
+connect-src 'self' {API_ORIGIN} https://api.stripe.com https://js.stripe.com
+  https://api.mapbox.com https://events.mapbox.com https://*.supabase.co
+  wss://*.supabase.co https://maps.googleapis.com;
+frame-src https://js.stripe.com https://hooks.stripe.com;
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+frame-ancestors 'none';
+upgrade-insecure-requests;  # production only
+```
+
+In development only, `script-src` also includes `'unsafe-eval'` - Turbopack's
+dev-mode HMR needs it, and `buildCsp()` only adds it when
+`process.env.NODE_ENV === "development"`; it's absent from every production
+response.
+
+Notably broader than the vision doc's CSP, and for a specific reason: it
+allowlists **both** Google Maps domains (`maps.googleapis.com`,
+`maps.gstatic.com` — the map this app actually renders) **and** Mapbox
+domains (`api.mapbox.com`, `events.mapbox.com`, `*.mapbox.com` — what the
+vision doc specifies). The Mapbox entries are a low-cost hedge left in from
+before the Google Maps switch, not evidence Mapbox is in use anywhere in this
+codebase (see "Technology Baseline"). They cost nothing to leave allowlisted
+and cost a diff to remove for no functional gain; whoever eventually
+confirms Mapbox will never be used can clean them up along with the CSP's
+`img-src`/`connect-src`/`script-src`/`style-src` Mapbox entries and
+`next.config.ts`'s `*.mapbox.com` image remote pattern in one pass.
+
+⚠️ The nonce (`{NONCE}` above) is generated fresh per-request with
+`crypto.getRandomValues()` at the edge - not `crypto.randomUUID()` as the
+vision doc suggests, but the same property holds: a new, unguessable value
+on every single response, never reused. `'unsafe-inline'` never appears in
+`script-src`. `'strict-dynamic'` is present, which the vision doc's CSP
+doesn't include - it lets the nonce'd root script propagate trust to the
+scripts it dynamically loads (Next's own chunking depends on this) without
+widening the static allowlist further.

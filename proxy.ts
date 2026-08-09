@@ -116,6 +116,12 @@ function withSecurityHeaders(response: NextResponse, nonce: string) {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  // Explicitly disabled, not omitted: the legacy XSS auditor this header
+  // controls is removed from modern browsers and the CSP above is what
+  // actually defends against XSS. Leaving the header unset lets some
+  // security scanners flag it as an oversight; setting it to 0 states the
+  // decision.
+  response.headers.set("X-XSS-Protection", "0");
   response.headers.set(
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(self), payment=(self)",

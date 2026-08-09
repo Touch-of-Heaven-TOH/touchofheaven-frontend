@@ -281,6 +281,45 @@ export const studioContent: Record<string, RouteContent> = {
       "Client PII is never preloaded into public pages.",
     ],
   },
+  appointmentDetail: {
+    eyebrow: "Braider Studio",
+    title: "Appointment detail.",
+    description:
+      "Full appointment context for one client: consultation notes, service and variation selections, deposit status, and checkout actions.",
+    primaryAction: "Back to appointments",
+    endpoint: "/api/v1/bookings/[appointmentId]",
+    statusItems: [
+      "Consultation media stays no-store and scoped to the assigned braider only.",
+      "Checkout and status transitions call the same booking-domain endpoints the customer's own appointment view uses.",
+      "A braider can never open an appointment id that isn't assigned to them.",
+    ],
+  },
+  clients: {
+    eyebrow: "Braider Studio",
+    title: "Clients.",
+    description:
+      "A braider's own client list, built from completed and upcoming appointment history - not a general customer directory.",
+    primaryAction: "Review appointments",
+    endpoint: "/api/v1/studio/clients (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "A client only appears here after booking with this braider at least once.",
+      "No cross-braider client data is ever visible.",
+      "Notes and preferences are private to the braider who wrote them.",
+    ],
+  },
+  clientDetail: {
+    eyebrow: "Braider Studio",
+    title: "Client record.",
+    description:
+      "One client's appointment history with this braider, consultation notes, and style preferences.",
+    primaryAction: "Back to clients",
+    endpoint: "/api/v1/studio/clients/[clientId] (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Scoped to appointments this braider actually performed.",
+      "Private notes never sync to the client's own account view.",
+      "Contact details are only shown for clients with an active or recent appointment.",
+    ],
+  },
   services: {
     eyebrow: "Braider Studio",
     title: "Service catalog.",
@@ -294,6 +333,32 @@ export const studioContent: Record<string, RouteContent> = {
       "No arbitrary model editing interface.",
     ],
   },
+  serviceNew: {
+    eyebrow: "Braider Studio",
+    title: "Create a service.",
+    description:
+      "New services start in draft and are only publicly bookable once explicitly published, after pricing, duration, and variations are set.",
+    primaryAction: "Save draft",
+    endpoint: "POST /api/v1/services",
+    statusItems: [
+      "Base price and duration are required before a variation can be added.",
+      "Category selection determines where this service appears in discovery.",
+      "Publishing is a separate, explicit action from saving.",
+    ],
+  },
+  serviceEdit: {
+    eyebrow: "Braider Studio",
+    title: "Edit service.",
+    description:
+      "Changes to price, duration, or variations apply going forward only - they never retroactively change an already-booked appointment's price.",
+    primaryAction: "Save changes",
+    endpoint: "PATCH /api/v1/services/[serviceId], PATCH /api/v1/services/[serviceId]/status",
+    statusItems: [
+      "A published service can be paused without deleting it.",
+      "Existing appointments keep the price and terms they were booked under.",
+      "Status changes are audited.",
+    ],
+  },
   portfolio: {
     eyebrow: "Braider Studio",
     title: "Portfolio.",
@@ -305,6 +370,19 @@ export const studioContent: Record<string, RouteContent> = {
       "Images require descriptive alt text.",
       "Consent withdrawal removes public exposure.",
       "Private consultation media is separate from portfolio media.",
+    ],
+  },
+  messages: {
+    eyebrow: "Braider Studio",
+    title: "Messages.",
+    description:
+      "Client conversations tied to a specific appointment or inquiry, kept separate from private consultation media.",
+    primaryAction: "Open conversation",
+    endpoint: "/api/v1/studio/messages (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Messaging is scoped per client - a braider never sees another braider's conversations.",
+      "No payment or account-credential information should ever be requested through chat.",
+      "Consultation-specific detail belongs on the appointment page, not in chat.",
     ],
   },
   earnings: {
@@ -331,6 +409,84 @@ export const studioContent: Record<string, RouteContent> = {
       "Private studio addresses stay encrypted backend-side.",
       "Public locations may be approximate.",
       "Notification changes use typed preference endpoints.",
+    ],
+  },
+  settingsProfile: {
+    eyebrow: "Braider Studio settings",
+    title: "Public profile.",
+    description:
+      "Professional name, bio, specialties, and the primary photo shown across discovery, the map, and the booking flow.",
+    primaryAction: "Save profile",
+    endpoint: "/api/v1/braiders/profile",
+    statusItems: [
+      "Changes here affect every public surface this braider appears on.",
+      "Specialties come from the braider's own published services, not free text.",
+      "Bio is truncated on discovery cards - see lib/discovery/format.ts's equivalent on the map feature.",
+    ],
+  },
+  settingsLocation: {
+    eyebrow: "Braider Studio settings",
+    title: "Location and service area.",
+    description:
+      "Salon location, private studio address, or mobile service radius - the same location model the discovery map reads from.",
+    primaryAction: "Save location",
+    endpoint: "/api/v1/braiders/locations",
+    statusItems: [
+      "A private studio's exact address is never sent to the browser - only a fuzzed map position.",
+      "Mobile service areas are defined by a radius, ZIP list, or city list.",
+      "Location type changes may require re-verification.",
+    ],
+  },
+  settingsAvailability: {
+    eyebrow: "Braider Studio settings",
+    title: "Availability and working hours.",
+    description:
+      "Recurring weekly hours, one-off blocked periods, and buffer time between appointments.",
+    primaryAction: "Save availability",
+    endpoint: "/api/v1/availability/rules, /api/v1/availability/blocked-periods",
+    statusItems: [
+      "Conflict detection against existing appointments is backend-authoritative.",
+      "Time zone is read from the braider's own profile, never guessed from the browser.",
+      "Changes here are what the map feature's next-available-slot calculation reads.",
+    ],
+  },
+  settingsPayouts: {
+    eyebrow: "Braider Studio settings",
+    title: "Payout settings.",
+    description:
+      "Bank account or payout method connection for earnings withdrawal.",
+    primaryAction: "Connect payout method",
+    endpoint: "/api/v1/professional/payouts (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "No raw bank details are ever stored by this app directly.",
+      "Payout method changes should require recent authentication.",
+      "Pending payouts remain visible during a method change.",
+    ],
+  },
+  settingsPolicies: {
+    eyebrow: "Braider Studio settings",
+    title: "Policies.",
+    description:
+      "Cancellation window, deposit percentage, and no-show terms applied to this braider's services.",
+    primaryAction: "Save policies",
+    endpoint: "/api/v1/services (per-service cancellationPolicy/depositPercentage - no dedicated policy-settings endpoint yet, see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Policy changes apply to new bookings, not retroactively to confirmed appointments.",
+      "Deposit percentage has a platform-defined minimum and maximum.",
+      "Customers see the effective policy before paying a deposit.",
+    ],
+  },
+  settingsNotifications: {
+    eyebrow: "Braider Studio settings",
+    title: "Notification preferences.",
+    description:
+      "Per-channel alerts for new bookings, cancellations, and messages.",
+    primaryAction: "Save preferences",
+    endpoint: "/api/v1/notifications/preferences (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "New-booking and cancellation alerts cannot be fully disabled.",
+      "SMS requires a verified phone number.",
+      "Preferences apply to the next notification sent, not retroactively.",
     ],
   },
 };

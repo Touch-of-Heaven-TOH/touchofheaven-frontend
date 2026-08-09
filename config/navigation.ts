@@ -42,10 +42,17 @@ export const studioNavigation: NavigationItem[] = [
   { label: "Today", href: "/studio" },
   { label: "Calendar", href: "/studio/calendar" },
   { label: "Appointments", href: "/studio/appointments" },
+  { label: "Clients", href: "/studio/clients" },
   { label: "Services", href: "/studio/services" },
   { label: "Portfolio", href: "/studio/portfolio" },
+  { label: "Messages", href: "/studio/messages" },
   { label: "Earnings", href: "/studio/earnings" },
-  { label: "Settings", href: "/studio/settings" },
+  { label: "Profile", href: "/studio/settings/profile" },
+  { label: "Location", href: "/studio/settings/location" },
+  { label: "Availability", href: "/studio/settings/availability" },
+  { label: "Payouts", href: "/studio/settings/payouts" },
+  { label: "Policies", href: "/studio/settings/policies" },
+  { label: "Notifications", href: "/studio/settings/notifications" },
 ];
 
 export const adminNavigation: NavigationItem[] = [

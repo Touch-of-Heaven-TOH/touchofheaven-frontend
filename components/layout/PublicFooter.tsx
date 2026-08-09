@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Instagram,
   Mail,
   MapPin,
   ShieldCheck,
@@ -138,7 +137,7 @@ export function PublicFooter() {
             </span>
             <span>Encrypted data</span>
             <Link className="inline-flex items-center gap-1" href="/contact">
-              <Instagram aria-hidden="true" size={14} />
+              <Mail aria-hidden="true" size={14} />
               Follow us
             </Link>
           </div>

@@ -12,6 +12,8 @@ const publicPrefixes = [
   "/beauty",
   "/marketplace",
   "/map",
+  "/ai-studio",
+  "/style-quiz",
   "/contact",
   "/legal",
   "/sign-in",

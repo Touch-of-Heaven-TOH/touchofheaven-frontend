@@ -505,6 +505,32 @@ export const adminContent: Record<string, RouteContent> = {
       "Every action writes an auditable domain event.",
     ],
   },
+  users: {
+    eyebrow: "Admin",
+    title: "Users.",
+    description:
+      "Every platform account - customers, braiders, and admins - searchable by name, email, and role, with account status at a glance.",
+    primaryAction: "Search users",
+    endpoint: "/api/v1/admin/users (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "No generic edit-any-field interface - role and status changes stay domain actions.",
+      "Private data (addresses, payment details) is redacted by default.",
+      "Every lookup is itself an auditable admin action.",
+    ],
+  },
+  userDetail: {
+    eyebrow: "Admin",
+    title: "User detail.",
+    description:
+      "One account's role history, appointment or order activity, and support/dispute history in one scoped view.",
+    primaryAction: "Back to users",
+    endpoint: "/api/v1/admin/users/[userId] (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Role changes are a distinct, audited action - never a free-text field.",
+      "Suspension and reinstatement follow the same domain actions as the braiders view.",
+      "Financial detail is summarized, not raw - the payments view is the source of truth.",
+    ],
+  },
   applications: {
     eyebrow: "Admin",
     title: "Professional applications.",
@@ -518,6 +544,19 @@ export const adminContent: Record<string, RouteContent> = {
       "Role escalation never comes from hidden form fields.",
     ],
   },
+  applicationDetail: {
+    eyebrow: "Admin",
+    title: "Application detail.",
+    description:
+      "One professional application's submitted details, documents, and review decision, with a full timeline of status changes.",
+    primaryAction: "Back to applications",
+    endpoint: "/api/v1/admin/applications/[applicationId] (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Approve/reject/request-info are the only decision actions - no free-form status field.",
+      "A rejected applicant always receives a customer-safe reason.",
+      "Approval is what actually grants the BRAIDER role - never assumed from submission alone.",
+    ],
+  },
   braiders: {
     eyebrow: "Admin",
     title: "Braider management.",
@@ -529,6 +568,19 @@ export const adminContent: Record<string, RouteContent> = {
       "No generic edit-database-record interface.",
       "Suspension and reinstatement remain domain actions.",
       "Private addresses stay redacted unless explicitly authorized.",
+    ],
+  },
+  braiderDetail: {
+    eyebrow: "Admin",
+    title: "Braider detail.",
+    description:
+      "One braider's verification status, published services, portfolio, reviews, and compliance history.",
+    primaryAction: "Back to braiders",
+    endpoint: "/api/v1/admin/braiders/[braiderId] (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "The exact private-studio address is never shown here either - see the discovery map's own fuzzing rule.",
+      "Suspension immediately removes the braider from public discovery.",
+      "Every status change writes an AuditLog entry.",
     ],
   },
   appointments: {
@@ -557,6 +609,19 @@ export const adminContent: Record<string, RouteContent> = {
       "Provider errors remain user-safe.",
     ],
   },
+  payouts: {
+    eyebrow: "Admin",
+    title: "Payouts.",
+    description:
+      "Professional payout runs, pending balances, and payout method status - separate from the payments/refunds ledger view.",
+    primaryAction: "Review payouts",
+    endpoint: "/api/v1/admin/payouts (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Payout runs are batched and auditable, never a single manual transfer screen.",
+      "A braider's payout method changes are visible here but managed by the braider themselves in Studio.",
+      "Reconciles against the same ledger the payments view reads from.",
+    ],
+  },
   support: {
     eyebrow: "Admin",
     title: "Support cases.",
@@ -568,6 +633,45 @@ export const adminContent: Record<string, RouteContent> = {
       "Case access is role-scoped.",
       "Evidence uploads stay private.",
       "Audit trail records admin handling.",
+    ],
+  },
+  disputes: {
+    eyebrow: "Admin",
+    title: "Disputes.",
+    description:
+      "Formal disputes escalated beyond routine support - refund disagreements, service-quality claims, and policy violations awaiting a decision.",
+    primaryAction: "Open dispute queue",
+    endpoint: "/api/v1/admin/disputes (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "A dispute is distinct from a support case - it always has a decision outcome and an appeal window.",
+      "Evidence from both parties stays private to the case and reviewing admins.",
+      "Decisions are audited and cannot be silently reversed.",
+    ],
+  },
+  disputeDetail: {
+    eyebrow: "Admin",
+    title: "Dispute case.",
+    description:
+      "Full case detail: the linked appointment or order, both parties' evidence, prior support history, and the decision interface.",
+    primaryAction: "Back to disputes",
+    endpoint: "/api/v1/admin/disputes/[caseId] (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "A decision requires a stated reason - never a bare status change.",
+      "Both parties are notified of the outcome through the same channel they filed through.",
+      "The appeal window, once set, is enforced by the backend, not the admin's memory.",
+    ],
+  },
+  moderation: {
+    eyebrow: "Admin",
+    title: "Content moderation.",
+    description:
+      "Portfolio media and review text flagged by automated checks or user reports, queued for a human decision before removal or clearance.",
+    primaryAction: "Open moderation queue",
+    endpoint: "/api/v1/admin/moderation (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Flagged content stays hidden from public view while pending review, not just after removal.",
+      "Clearing an item is as auditable as removing one.",
+      "Repeat violations are visible in context, not just as an isolated flag.",
     ],
   },
   policies: {
@@ -607,6 +711,19 @@ export const adminContent: Record<string, RouteContent> = {
       "Health displays do not reveal credentials.",
       "Production source maps stay private.",
       "Dependency scans feed release gates.",
+    ],
+  },
+  settings: {
+    eyebrow: "Admin",
+    title: "Platform settings.",
+    description:
+      "Commission rates, payout delay windows, and booking rules - platform-wide configuration, distinct from System health's operational status.",
+    primaryAction: "Save with effective date",
+    endpoint: "/api/v1/admin/platform-config (not yet implemented - see BACKEND_ADDITIONS.md)",
+    statusItems: [
+      "Changes take an explicit effective date - never instant, unannounced platform-wide shifts.",
+      "Prior configuration values remain visible in the audit log after a change.",
+      "In-flight appointments and orders keep the terms they were created under.",
     ],
   },
 };

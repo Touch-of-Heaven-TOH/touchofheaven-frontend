@@ -1,47 +1,23 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
 import { adminContent } from "@/config/page-content";
 
-type AdminPageProps = {
-  params: Promise<{ section?: string[] }>;
+// Every segment this used to branch on now has its own page.tsx (see
+// app/(admin)/admin/*/page.tsx), which Next.js always resolves ahead of
+// this catch-all. This only ever renders for the exact root "/admin"
+// (the Owner Overview - it has no literal sibling page.tsx, unlike
+// /studio's Today view, since the overview has no special structural
+// requirement the generic RouteStatusPage pattern doesn't already
+// satisfy) or a genuinely unrecognized path, which falls back to the
+// overview rather than a hard 404.
+const content = adminContent.overview;
+
+export const metadata: Metadata = {
+  title: content.title,
+  description: content.description,
+  robots: { index: false, follow: false },
 };
 
-function contentKey(segments: string[] | undefined): keyof typeof adminContent {
-  if (!segments?.length) return "overview";
-
-  const key = segments[0];
-  if (
-    key === "applications" ||
-    key === "braiders" ||
-    key === "appointments" ||
-    key === "payments" ||
-    key === "support" ||
-    key === "policies" ||
-    key === "audit" ||
-    key === "system"
-  ) {
-    return key;
-  }
-
-  return "overview";
-}
-
-export async function generateMetadata({
-  params,
-}: AdminPageProps): Promise<Metadata> {
-  const content = adminContent[contentKey((await params).section)];
-  return {
-    title: content.title,
-    description: content.description,
-    robots: { index: false, follow: false },
-  };
-}
-
-export default async function AdminPage({ params }: AdminPageProps) {
-  const content = adminContent[contentKey((await params).section)];
-
-  if (!content) notFound();
-
+export default function AdminOverviewPage() {
   return <RouteStatusPage content={content} href="/admin/applications" />;
 }

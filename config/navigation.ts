@@ -57,14 +57,19 @@ export const studioNavigation: NavigationItem[] = [
 
 export const adminNavigation: NavigationItem[] = [
   { label: "Overview", href: "/admin" },
+  { label: "Users", href: "/admin/users" },
   { label: "Applications", href: "/admin/applications" },
   { label: "Braiders", href: "/admin/braiders" },
   { label: "Appointments", href: "/admin/appointments" },
   { label: "Payments", href: "/admin/payments" },
+  { label: "Payouts", href: "/admin/payouts" },
   { label: "Support", href: "/admin/support" },
+  { label: "Disputes", href: "/admin/disputes" },
+  { label: "Moderation", href: "/admin/moderation" },
   { label: "Policies", href: "/admin/policies" },
   { label: "Audit", href: "/admin/audit" },
   { label: "System", href: "/admin/system" },
+  { label: "Settings", href: "/admin/settings" },
 ];
 
 export function roleAwareNavigation(roles: TohRole[]): NavigationItem[] {

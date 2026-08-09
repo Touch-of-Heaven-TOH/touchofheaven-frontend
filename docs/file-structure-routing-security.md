@@ -464,3 +464,43 @@ would have learned something about this platform's structure that was never
 meant to be public, even though the page itself would still correctly reject
 an unauthenticated crawler. Defense in depth applies to discoverability, not
 just access.
+
+## Environment Variables
+
+The vision doc lists 17 environment variables. This repository's
+`.env.example` - the committed, real-values-never template every developer
+copies to `.env.local` - lists 7, cross-checked against a grep for every
+`process.env.*` reference in the codebase to confirm nothing used in code is
+missing from the template and nothing in the template is unused:
+
+| Variable | Server/Client | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_APP_URL` | Client | This frontend's own public origin. |
+| `NEXT_PUBLIC_API_URL` | Client | Backend-of-TOH's public origin - every browser request target. |
+| `BACKEND_INTERNAL_API_URL` | Server only | Optional private backend origin for server-rendered requests, if it ever needs to differ from the public API URL. |
+| `DISABLE_HOME_BACKEND` | Server only | Local dev switch - renders the homepage's unavailable-state UI without calling the live backend. Not a production security-relevant variable. |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client | Stripe publishable key. Present in the template ahead of the booking payment flow being wired up - currently unused in code. |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Client | Google Maps JS API key, domain-restricted in the Google Cloud Console. |
+| `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` | Client | Required for `AdvancedMarkerElement` (the map's custom photo pins) - the map renders its "coming soon" fallback without it even if the API key is valid. |
+
+🔴 **Same rule as the vision doc, unchanged:** every `NEXT_PUBLIC_*` variable
+ships in the browser bundle and is visible to anyone with DevTools open.
+Nothing that grants elevated access belongs in one. This repository has no
+secrets in `NEXT_PUBLIC_*` variables today - the two Google Maps values are
+a domain-restricted browser key and a non-sensitive style/marker
+configuration ID, and the Stripe key is a publishable key, which is public
+by Stripe's own design.
+
+The ten variables the vision doc lists that don't appear here -
+`NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_POSTHOG_KEY`,
+`NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`,
+`REVALIDATE_SECRET`, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`,
+`APPLE_CLIENT_ID`/`APPLE_CLIENT_SECRET` - all belong to integrations that
+aren't built: this app doesn't use NextAuth (see "The Security Gate" for the
+real session model), doesn't use Supabase realtime yet (its domains are
+allowlisted in the CSP defensively, ahead of need), has no analytics or
+error-tracking installed, has no ISR revalidation webhook, and has no OAuth
+providers wired up (`/sign-in` is email/password only today). Add each
+variable when the feature that needs it is actually being built, with its
+own `.env.example` entry and description at the same time - not before.

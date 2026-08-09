@@ -24,6 +24,7 @@ export default defineConfig({
     ? undefined
     : {
         command: 'npm run dev',
+        env: { ...process.env, DISABLE_HOME_BACKEND: 'true' },
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         // Generous: a cold Next.js dev server's first compile can run well

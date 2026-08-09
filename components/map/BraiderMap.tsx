@@ -109,6 +109,16 @@ export default function BraiderMap({
 
   const configured = isMapsConfigured();
 
+  // The mount-once effect below wires the "idle" listener a single time,
+  // but onMapMove is free to change identity on every parent render (it
+  // won't always be wrapped in useCallback). Reading it through a ref -
+  // updated on every render, not just at mount - keeps that listener
+  // calling the latest callback instead of closing over a stale one.
+  const onMapMoveRef = useRef(onMapMove);
+  useEffect(() => {
+    onMapMoveRef.current = onMapMove;
+  }, [onMapMove]);
+
   // Mount the map exactly once.
   useEffect(() => {
     if (!configured) {
@@ -168,7 +178,7 @@ export default function BraiderMap({
             if (!center || zoom === undefined) return;
 
             const currentCenter: Coordinates = { lat: center.lat(), lng: center.lng() };
-            onMapMove?.({ center: currentCenter, zoom });
+            onMapMoveRef.current?.({ center: currentCenter, zoom });
 
             const distanceFromSearchCenter = haversineMeters(
               searchCenterRef.current,
@@ -192,9 +202,6 @@ export default function BraiderMap({
       cancelled = true;
       if (panDebounceRef.current) clearTimeout(panDebounceRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount once;
-    // onMapMove is read through a stable ref-free closure intentionally,
-    // matching the "wire the map up once" contract of the Maps JS API.
   }, [configured]);
 
   // Rebuild braider markers and the clusterer when the result set changes.

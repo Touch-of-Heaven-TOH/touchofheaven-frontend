@@ -17,6 +17,7 @@ export type NearbyBraider = {
   longitude: number;
   radiusMiles: number | null;
   photo: { url: string; altText: string } | null;
+  photos: { url: string; altText: string }[];
   specialties: string[];
   rating: { average: number | null; count: number };
   nextAvailableSlotAt: string | null;

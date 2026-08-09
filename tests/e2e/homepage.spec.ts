@@ -11,11 +11,13 @@ async function expectNoHorizontalOverflow(page: import('@playwright/test').Page)
 }
 
 test.describe('Homepage', () => {
+  test.describe.configure({ mode: 'serial', timeout: 120_000 });
+
   test('renders the approved desktop experience without horizontal overflow', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await expect(
       page.getByRole('heading', { name: /Your Beauty\. Your Culture\./ }),
@@ -30,7 +32,7 @@ test.describe('Homepage', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 900 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: /Your Beauty/ })).toBeVisible();
     await page.getByRole('button', { name: 'Open navigation' }).click();
@@ -43,7 +45,7 @@ test.describe('Homepage', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])

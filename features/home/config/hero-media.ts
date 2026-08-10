@@ -51,6 +51,14 @@ export const homeMediaAssets = {
     aspectRatio: 0.82,
     focalPoint: "center 28%",
   },
+  bookingMarketplace: {
+    src: `${imageBase}/booking-marketplace-lifestyle.png`,
+    alt: "Two smiling African women in a salon using a phone beside Touch of Heaven shopping products.",
+    width: 1536,
+    height: 1024,
+    aspectRatio: 1.5,
+    focalPoint: "64% center",
+  },
 } satisfies Record<string, HomeMediaAsset>;
 
 export const homepageVideoSource =

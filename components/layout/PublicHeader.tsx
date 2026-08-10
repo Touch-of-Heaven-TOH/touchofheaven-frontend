@@ -115,7 +115,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
 
         <form
           action="/beauty"
-          className="hidden min-w-[220px] flex-1 items-center rounded-md border border-[var(--color-border)] bg-[var(--color-page)] px-3 xl:flex"
+          className="hidden min-w-[220px] flex-1 items-center rounded-md border border-[var(--color-border)] bg-[var(--color-page)] px-3 2xl:flex"
           role="search"
         >
           <label className="sr-only" htmlFor="public-search">
@@ -140,7 +140,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         <div className="flex items-center gap-1 md:gap-2">
           <Link
             aria-label="Search hairstyles and products"
-            className="grid size-10 place-items-center rounded-md text-[var(--color-brand)] xl:hidden"
+            className="grid size-10 place-items-center rounded-md text-[var(--color-brand)] 2xl:hidden"
             href="/beauty"
           >
             <Search aria-hidden="true" size={21} />

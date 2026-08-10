@@ -10,7 +10,6 @@ import {
   HelpCircle,
   MapPin,
   Menu,
-  Search,
   ShoppingBag,
   Sparkles,
   UserCircle,
@@ -113,38 +112,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           </Link>
         </nav>
 
-        <form
-          action="/beauty"
-          className="hidden min-w-[220px] flex-1 items-center rounded-md border border-[var(--color-border)] bg-[var(--color-page)] px-3 2xl:flex"
-          role="search"
-        >
-          <label className="sr-only" htmlFor="public-search">
-            Search hairstyles, products, and braiders
-          </label>
-          <input
-            className="min-h-10 flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--color-text-muted)]"
-            id="public-search"
-            name="q"
-            placeholder="Search hairstyles, products, braiders..."
-            type="search"
-          />
-          <button
-            aria-label="Search"
-            className="grid size-9 place-items-center text-[var(--color-brand)]"
-            type="submit"
-          >
-            <Search aria-hidden="true" size={18} />
-          </button>
-        </form>
-
         <div className="flex items-center gap-1 md:gap-2">
-          <Link
-            aria-label="Search hairstyles and products"
-            className="grid size-10 place-items-center rounded-md text-[var(--color-brand)] 2xl:hidden"
-            href="/beauty"
-          >
-            <Search aria-hidden="true" size={21} />
-          </Link>
           <Link
             aria-label="Favorites"
             className="hidden size-10 place-items-center rounded-md text-[var(--color-brand)] md:grid"

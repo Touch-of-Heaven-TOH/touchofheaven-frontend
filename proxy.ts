@@ -102,7 +102,7 @@ function buildCsp(nonce: string) {
       "wss://*.supabase.co",
       "https://maps.googleapis.com",
     ].join(" "),
-    "frame-src https://js.stripe.com https://hooks.stripe.com",
+    "frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -12,6 +12,9 @@ export const siteConfig = {
 } as const;
 
 export const brandAssets = {
+  logoMark: "/images/brand/touch-of-heaven-mark.png",
+  logoLockup: "/images/brand/touch-of-heaven-logo-lockup.png",
+  favicon: "/icon.png",
   heroImage: "/images/home/images/braiding-appointment-hero.png",
   ogImage: "/opengraph-image",
 } as const;

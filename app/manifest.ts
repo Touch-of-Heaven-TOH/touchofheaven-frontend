@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site";
+import { brandAssets, siteConfig } from "@/config/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -13,9 +13,15 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#5c2747",
     icons: [
       {
-        src: "/icon",
+        src: brandAssets.favicon,
         sizes: "512x512",
         type: "image/png",
+      },
+      {
+        src: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
       },
     ],
   };

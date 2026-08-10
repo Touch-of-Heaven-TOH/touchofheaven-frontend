@@ -38,7 +38,7 @@ export function HeroVideoSlide({
   return (
     <video
       aria-hidden="true"
-      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+      className={`absolute inset-0 h-full w-full object-cover brightness-[1.05] contrast-[1.08] saturate-[1.08] transition-opacity duration-700 ${
         isActive && !isReducedMotion ? "opacity-100" : "opacity-0"
       }`}
       loop={item.loop}

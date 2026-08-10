@@ -12,9 +12,9 @@ type HeroMediaCarouselProps = {
 };
 
 const overlayClassByStrength: Record<HeroMediaItem["overlayStrength"], string> = {
-  light: "from-[var(--color-page)] via-[var(--color-page)]/80 to-[var(--color-page)]/20",
-  medium: "from-[var(--color-page)] via-[var(--color-page)]/90 to-[var(--color-page)]/28",
-  strong: "from-[var(--color-page)] via-[var(--color-page)]/95 to-[var(--color-page)]/42",
+  light: "from-[var(--color-page)] via-[var(--color-page)]/68 to-[var(--color-page)]/8",
+  medium: "from-[var(--color-page)] via-[var(--color-page)]/78 to-[var(--color-page)]/16",
+  strong: "from-[var(--color-page)] via-[var(--color-page)]/86 to-[var(--color-page)]/26",
 };
 
 export function HeroMediaCarousel({ items }: HeroMediaCarouselProps) {

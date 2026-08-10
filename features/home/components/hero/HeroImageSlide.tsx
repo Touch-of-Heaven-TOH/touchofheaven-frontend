@@ -10,7 +10,7 @@ export function HeroImageSlide({ item, isActive }: HeroImageSlideProps) {
   return (
     <Image
       alt={item.alternativeText}
-      className={`object-cover transition-opacity duration-700 ${
+      className={`object-cover contrast-[1.04] saturate-[1.08] transition-opacity duration-700 ${
         isActive ? "opacity-100" : "opacity-0"
       }`}
       fill

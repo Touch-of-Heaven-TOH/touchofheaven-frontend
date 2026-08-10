@@ -11,6 +11,7 @@ This inventory covers the approved public homepage media found recursively under
 | `/images/home/images/hero4.png` | PNG | 1122x1402 | 0.80 | 2.11 MB | Mobile portrait | Studio booking, braider trust, app promo | No |
 | `/images/home/images/project-logo-fivcon.png` | PNG | 1024x1536 | 0.67 | 2.09 MB | Poster portrait | Brand poster and footer/app art | No |
 | `/images/home/images/style-hero.jpg` | JPG | 720x877 | 0.82 | 85 KB | Mobile portrait | Style card, AI after preview, community tile | No |
+| `/images/home/images/booking-marketplace-lifestyle.png` | PNG | 1536x1024 | 1.50 | 2.01 MB | Desktop/tablet landscape | Booking/products info card, mobile app preview | No |
 | `/images/home/videos/From Klickpin.com- Beginner-friendly family dinner ideas for your next inspiration board with thoughtful touches that make everything feel complet.mp4` | MP4 | Unknown locally | Unknown | 2.68 MB | Requires visual QA | Optional hero/process slide only if content matches brand story | Yes |
 
 Notes:

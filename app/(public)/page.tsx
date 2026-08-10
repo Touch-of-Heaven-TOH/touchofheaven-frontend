@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import {
   ActivityStrip,
   AiStylePreviewSection,
+  BookingProductsInfoSection,
   CommunityLooksSection,
   HeroSection,
   MapPreviewSection,
   MarketplacePreviewSection,
+  MobileAppSection,
+  PlatformPhonePreviewsSection,
   StyleQuizBanner,
+  StylistAvailabilitySection,
   TopBraidersSection,
   TrendingStylesSection,
   TrustHighlightsSection,
@@ -26,12 +30,16 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <ActivityStrip activity={homeData.activity} />
+      <BookingProductsInfoSection />
       <AiStylePreviewSection />
       <TrendingStylesSection />
       <MarketplacePreviewSection products={homeData.marketplaceProducts} />
       <CommunityLooksSection />
       <TopBraidersSection braiders={homeData.featuredBraiders} />
       <MapPreviewSection />
+      <StylistAvailabilitySection />
+      <PlatformPhonePreviewsSection />
+      <MobileAppSection />
       <StyleQuizBanner />
       <TrustHighlightsSection />
     </>

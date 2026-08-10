@@ -7,7 +7,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { legalPolicies } from "@/config/legal";
-import { siteConfig } from "@/config/site";
+import { brandAssets, siteConfig } from "@/config/site";
 
 export function PublicFooter() {
   return (
@@ -48,12 +48,16 @@ export function PublicFooter() {
       <div className="page-container grid gap-8 py-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr_1.1fr]">
         <section className="max-w-sm">
           <div className="flex items-center gap-3 font-semibold">
-            <span className="grid size-10 place-items-center rounded-full border border-[var(--color-gold)] bg-[var(--color-page)] text-lg font-bold text-[var(--color-copper)]">
-              T
-            </span>
+            <Image
+              alt=""
+              className="size-12 shrink-0 rounded-full border border-[var(--color-gold)] bg-[#f6efe4] object-cover"
+              height={48}
+              src={brandAssets.logoMark}
+              width={48}
+            />
             <div>
               <p className="font-serif text-xl">{siteConfig.name}</p>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+              <p className="text-[10px] font-bold uppercase text-white/60">
                 Beauty & Marketplace
               </p>
             </div>
@@ -104,13 +108,13 @@ export function PublicFooter() {
 
         <section className="grid gap-4 rounded-md border border-white/10 bg-white/5 p-4">
           <div className="flex gap-4">
-            <div className="relative h-28 w-20 overflow-hidden rounded-md bg-white/10">
+            <div className="relative h-28 w-24 shrink-0 overflow-hidden rounded-md bg-[#f6efe4]">
               <Image
-                alt=""
-                className="object-cover"
+                alt="Touch of Heaven Beauty and Marketplace logo"
+                className="object-contain p-2"
                 fill
-                sizes="80px"
-                src="/images/home/images/project-logo-fivcon.png"
+                sizes="96px"
+                src={brandAssets.logoLockup}
               />
             </div>
             <div>

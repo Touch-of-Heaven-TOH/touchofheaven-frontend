@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   CalendarDays,
@@ -18,6 +19,7 @@ import {
   roleAwareNavigation,
 } from "@/config/navigation";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
+import { brandAssets, siteConfig } from "@/config/site";
 import type { SafeUser } from "@/types/auth";
 
 export type PublicHeaderProps = {
@@ -63,18 +65,25 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         </button>
 
         <Link
-          className="flex min-w-0 items-center gap-3 font-semibold text-[var(--color-text-primary)]"
+          className="flex shrink-0 items-center gap-2.5 font-semibold text-[var(--color-text-primary)] sm:min-w-[188px] lg:min-w-[202px]"
           href="/"
           aria-label="Touch of Heaven home"
         >
-          <span className="grid size-10 shrink-0 place-items-center rounded-full border border-[var(--color-gold)] bg-[var(--color-page)] text-lg font-bold text-[var(--color-copper)]">
-            T
+          <span className="relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-full border border-[var(--color-gold)] bg-[#f6efe4] shadow-sm">
+            <Image
+              alt=""
+              className="size-full object-cover"
+              height={44}
+              priority
+              src={brandAssets.logoMark}
+              width={44}
+            />
           </span>
           <span className="hidden leading-tight sm:inline">
             <span className="block font-serif text-lg text-[var(--color-brand-strong)]">
-              Touch of Heaven
+              {siteConfig.name}
             </span>
-            <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-text-muted)]">
+            <span className="block text-[10px] font-bold uppercase text-[var(--color-text-muted)]">
               Beauty & Marketplace
             </span>
           </span>

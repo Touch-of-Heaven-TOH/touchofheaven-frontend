@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { X } from "lucide-react";
 import type { NavigationItem } from "@/config/navigation";
+import { brandAssets, siteConfig } from "@/config/site";
 
 export type MobileNavigationProps = {
   accountLinks: NavigationItem[];
@@ -34,14 +36,23 @@ export function MobileNavigation({
       id="mobile-navigation"
     >
       <div className="ml-auto flex h-dvh w-[min(88vw,360px)] flex-col bg-[var(--color-surface)] shadow-[var(--shadow-soft)]">
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
-          <div>
-            <p className="text-xs font-bold uppercase text-[var(--color-brand)]">
-              Menu
-            </p>
-            <p className="text-sm text-[var(--color-text-muted)]">
-              {userLabel ?? "Welcome to Touch of Heaven"}
-            </p>
+        <div className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-5 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <Image
+              alt=""
+              className="size-11 shrink-0 rounded-full border border-[var(--color-gold)] bg-[#f6efe4] object-cover"
+              height={44}
+              src={brandAssets.logoMark}
+              width={44}
+            />
+            <div className="min-w-0">
+              <p className="truncate font-serif text-lg font-semibold text-[var(--color-brand-strong)]">
+                {siteConfig.name}
+              </p>
+              <p className="truncate text-sm text-[var(--color-text-muted)]">
+                {userLabel ?? "Welcome to Touch of Heaven"}
+              </p>
+            </div>
           </div>
           <button
             aria-label="Close navigation"

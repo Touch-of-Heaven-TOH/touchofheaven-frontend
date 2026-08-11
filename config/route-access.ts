@@ -91,6 +91,7 @@ export const protectedRoutePrefixes = [
   "/bookings",
   "/checkout",
   "/messages",
+  "/disputes",
   "/studio",
   "/admin",
   "/support",

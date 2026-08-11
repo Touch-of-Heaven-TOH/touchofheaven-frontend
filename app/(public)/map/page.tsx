@@ -35,6 +35,9 @@ export default function MapPage() {
           </p>
           <p className="max-w-sm text-sm text-purple-700">
             The interactive braider map requires JavaScript to run.{' '}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- deliberately
+                a plain <a>, not <Link>: this only renders inside <noscript>, where
+                Link's client-side navigation can't run anyway. */}
             <a href="/braiders" className="underline">
               Browse braiders without it
             </a>{' '}

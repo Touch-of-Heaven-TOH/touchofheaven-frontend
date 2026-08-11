@@ -181,6 +181,7 @@ export default function MapPageClient() {
           braider={selectedBraider}
           onClose={() => setSelectedBraiderId(null)}
           onBookNow={handleBookNow}
+          onViewFullProfile={(braider) => router.push(`/braiders/${braider.braiderId}`)}
         />
       </div>
 

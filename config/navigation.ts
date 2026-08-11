@@ -18,6 +18,7 @@ export const publicNavigation: NavigationItem[] = [
 export const accountNavigation: NavigationItem[] = [
   { label: "Overview", href: "/account" },
   { label: "Appointments", href: "/account/appointments" },
+  { label: "Messages", href: "/messages" },
   { label: "Support", href: "/support" },
   { label: "Apply", href: "/professional-application" },
   { label: "Profile", href: "/account/settings/profile" },

@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
+import { MessagesView } from "@/features/messaging/components/MessagesView";
+import { requireUser } from "@/lib/auth/session";
 
-const content = studioContent.messages;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Messages",
+  description: "Message clients who have booked or reached out to you.",
   robots: { index: false, follow: false },
 };
 
-export default function StudioMessagesPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+export default async function StudioMessagesPage() {
+  const user = await requireUser();
+  return <MessagesView currentUserId={user.id} />;
 }

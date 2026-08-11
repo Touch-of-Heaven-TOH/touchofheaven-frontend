@@ -51,25 +51,26 @@ export const routeAccessRules: RouteAccessRule[] = [
   {
     family: "(account)",
     examples:
-      "/account, /bookings, /support, /professional-application, /account/settings/security",
+      "/account, /bookings, /messages, /support, /professional-application, /account/settings/security",
     visibility: "protected",
     roles: ["CUSTOMER", "BRAIDER", "ADMIN"],
     recentMfa: "backend-enforced",
     deniedRedirect: "/sign-in",
     cachePolicy: "private no-store",
     indexing: "noindex",
-    backendEndpoint: "/api/v1/customer/*, /api/v1/auth/account/*",
+    backendEndpoint:
+      "/api/v1/customer/*, /api/v1/auth/account/*, /api/v1/messaging/*, /api/v1/resolution/*",
   },
   {
     family: "(braider)",
-    examples: "/studio, /studio/calendar, /studio/services",
+    examples: "/studio, /studio/calendar, /studio/services, /studio/messages",
     visibility: "protected",
     roles: ["BRAIDER"],
     recentMfa: "backend-enforced",
     deniedRedirect: "/account",
     cachePolicy: "private no-store",
     indexing: "noindex",
-    backendEndpoint: "/api/v1/braiders/*, /api/v1/availability/*",
+    backendEndpoint: "/api/v1/braiders/*, /api/v1/availability/*, /api/v1/messaging/*",
   },
   {
     family: "(admin)",
@@ -89,6 +90,7 @@ export const protectedRoutePrefixes = [
   "/book",
   "/bookings",
   "/checkout",
+  "/messages",
   "/studio",
   "/admin",
   "/support",

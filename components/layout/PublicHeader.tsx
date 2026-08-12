@@ -15,6 +15,7 @@ export type PublicHeaderProps = {
 export function PublicHeader({ user }: PublicHeaderProps) {
   const [open, setOpen] = useState(false);
   const accountLinks = user ? roleAwareNavigation(user.roles) : [];
+  const roleLinks = accountLinks.filter((item) => item.href !== "/account");
 
   return (
     <header className="sticky top-0 z-[var(--z-header)] border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur">
@@ -39,19 +40,15 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          {user ? (
-            accountLinks.map((item) => (
+          {user
+            ? roleLinks.map((item) => (
               <Link className="btn-secondary" key={item.href} href={item.href}>
                 {item.label}
               </Link>
             ))
-          ) : (
-            <Link className="btn-secondary" href="/sign-in">
-              Sign in
-            </Link>
-          )}
-          <Link className="btn-primary" href="/book">
-            Book now
+            : null}
+          <Link className="btn-primary" href={user ? "/account" : "/sign-in"}>
+            {user ? "Account" : "Sign In"}
           </Link>
         </div>
 
@@ -75,7 +72,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             className="page-container grid gap-2 py-4"
             aria-label="Mobile primary"
           >
-            {[...publicNavigation, ...accountLinks].map((item) => (
+            {[...publicNavigation, ...roleLinks].map((item) => (
               <Link
                 className="rounded-md px-2 py-3 text-base font-semibold text-[var(--color-text-primary)]"
                 key={item.href}
@@ -96,10 +93,10 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             )}
             <Link
               className="btn-primary"
-              href="/book"
+              href={user ? "/account" : "/sign-in"}
               onClick={() => setOpen(false)}
             >
-              Book now
+              {user ? "Account" : "Sign In"}
             </Link>
           </nav>
         </div>

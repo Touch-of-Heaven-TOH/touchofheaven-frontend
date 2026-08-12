@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { SecuritySessions } from "@/features/account/components/SecuritySessions";
 import { accountContent } from "@/config/page-content";
 
 const content = accountContent.security;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function AccountSettingsSecurityPage() {
-  return <RouteStatusPage content={content} href="/account" />;
+  return <SecuritySessions />;
 }

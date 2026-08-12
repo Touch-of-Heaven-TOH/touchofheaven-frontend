@@ -49,4 +49,3 @@ export type AdminTableColumn<TItem> = {
   render: (item: TItem) => React.ReactNode;
   align?: "left" | "right" | "center";
 };
-

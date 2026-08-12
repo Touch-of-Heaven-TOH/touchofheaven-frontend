@@ -74,3 +74,28 @@ export function AppointmentStatusBadge({ status }: { status: string }) {
     />
   );
 }
+
+const disputeStatusTone: Record<string, StatusTone> = {
+  OPEN: "warning",
+  UNDER_REVIEW: "info",
+  AWAITING_RESPONSE: "info",
+  RESOLVED: "success",
+  DISMISSED: "neutral",
+};
+
+const disputeStatusLabel: Record<string, string> = {
+  OPEN: "Open",
+  UNDER_REVIEW: "Under review",
+  AWAITING_RESPONSE: "Awaiting response",
+  RESOLVED: "Resolved",
+  DISMISSED: "Dismissed",
+};
+
+export function DisputeStatusBadge({ status }: { status: string }) {
+  return (
+    <StatusBadge
+      tone={disputeStatusTone[status] ?? "neutral"}
+      label={disputeStatusLabel[status] ?? status}
+    />
+  );
+}

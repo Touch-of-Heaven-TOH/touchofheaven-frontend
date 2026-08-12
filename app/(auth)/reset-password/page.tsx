@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 export default function ResetPasswordPage() {
   return (
     <AuthActionForm
-      title="Choose a new password"
-      description="Paste the reset token from your email if it was not already included in the link."
+      title="Set New Password"
+      description="Enter your reset token and choose a new password."
       endpoint="/api/v1/auth/reset-password"
-      submitLabel="Update password"
+      submitLabel="Update Password"
       mode="reset-password"
       fields={[
         { name: "token", label: "Reset token", type: "text" },

@@ -108,11 +108,8 @@ export function AuthActionForm({
   }
 
   return (
-    <section className="surface-panel w-full max-w-md p-6">
-      <p className="text-sm font-semibold uppercase text-[var(--color-brand)]">
-        Account security
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold text-[var(--color-text-primary)]">
+    <section className="surface-panel w-full max-w-md bg-white/92 p-6 shadow-[var(--shadow-soft)] backdrop-blur md:p-8">
+      <h1 className="font-serif text-4xl font-semibold leading-tight text-[var(--color-text-primary)]">
         {title}
       </h1>
       <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
@@ -128,7 +125,7 @@ export function AuthActionForm({
             {field.label}
             <input
               autoComplete={field.autoComplete}
-              className="min-h-12 rounded-md border border-[var(--color-border)] px-3 text-base"
+              className="min-h-12 rounded-md border border-[var(--color-border)] bg-white px-3 text-base outline-none transition focus:border-[var(--color-brand)]"
               name={field.name}
               placeholder={field.placeholder}
               required={field.required ?? true}
@@ -173,7 +170,7 @@ export function AuthActionForm({
       </form>
 
       {footer ? (
-        <div className="mt-5 text-sm text-[var(--color-text-muted)]">
+        <div className="mt-5 border-t border-[var(--color-border)] pt-5 text-sm text-[var(--color-text-muted)]">
           {footer}
         </div>
       ) : (

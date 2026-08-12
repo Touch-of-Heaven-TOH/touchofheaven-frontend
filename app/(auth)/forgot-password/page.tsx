@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 export default function ForgotPasswordPage() {
   return (
     <AuthActionForm
-      title="Reset your password"
-      description="If the account is eligible, the backend sends a reset link without revealing whether an email exists."
+      title="Reset Password"
+      description="Enter your email and we’ll send password reset instructions when the account is eligible."
       endpoint="/api/v1/auth/forgot-password"
-      submitLabel="Send reset link"
+      submitLabel="Send Reset Link"
       mode="forgot-password"
       fields={[
         {

@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 export default function SignUpPage() {
   return (
     <AuthActionForm
-      title="Create account"
-      description="Start as a customer account. Professional approval and elevated roles stay backend-controlled."
+      title="Create Account"
+      description="Join Touch of Heaven to book styles, save favorites, and shop with one account."
       endpoint="/api/v1/auth/signup"
-      submitLabel="Create account"
+      submitLabel="Create Account"
       mode="sign-up"
       terms
       fields={[
@@ -40,7 +40,7 @@ export default function SignUpPage() {
       ]}
       footer={
         <Link className="font-semibold text-[var(--color-brand)]" href="/sign-in">
-          Already have an account?
+          Already have an account? Sign In
         </Link>
       }
     />

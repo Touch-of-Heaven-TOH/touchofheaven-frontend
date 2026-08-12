@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { StudioPayouts } from "@/features/studio/components/StudioPayouts";
 import { studioContent } from "@/config/page-content";
 
 const content = studioContent.settingsPayouts;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function StudioSettingsPayoutsPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+  return <StudioPayouts />;
 }

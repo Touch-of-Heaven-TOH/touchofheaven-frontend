@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { StudioAppointments } from "@/features/studio/components/StudioAppointments";
 import { studioContent } from "@/config/page-content";
 
 const content = studioContent.appointments;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function StudioAppointmentsPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+  return <StudioAppointments />;
 }

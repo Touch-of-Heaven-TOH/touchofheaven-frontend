@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -30,7 +29,6 @@ import {
 } from "lucide-react";
 import { adminNavigationItems } from "@/features/admin/data/admin-console-data";
 import type { AdminNavigationItem, AdminSectionKey } from "@/features/admin/types/admin.types";
-import { brandAssets } from "@/config/site";
 import type { SafeUser } from "@/types/auth";
 
 const iconMap = {
@@ -106,13 +104,9 @@ function Sidebar({
   return (
     <aside className="flex h-full flex-col bg-[radial-gradient(circle_at_80%_10%,rgba(157,73,135,0.34),transparent_26%),linear-gradient(180deg,#2b0d2a,#230a24_46%,#351035)] px-4 py-5 text-white">
       <Link className="flex items-center gap-3 border-b border-white/10 pb-5" href="/admin">
-        <Image
-          alt=""
-          className="size-12 rounded-full border border-[var(--color-gold)] bg-[#f6efe4] object-cover"
-          height={48}
-          src={brandAssets.logoMark}
-          width={48}
-        />
+        <span className="grid size-12 place-items-center rounded-full border border-[var(--color-gold)] bg-[var(--color-brand)] text-sm font-bold text-[var(--color-gold-light)]">
+          TOH
+        </span>
         <span>
           <span className="block font-serif text-xl font-semibold text-[var(--color-gold-light)]">
             Touch of Heaven

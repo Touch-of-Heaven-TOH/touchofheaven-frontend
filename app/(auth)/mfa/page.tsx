@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 export default function MfaPage() {
   return (
     <AuthActionForm
-      title="Enter your code"
-      description="Use your authenticator code or an approved backup code to finish signing in."
+      title="Enter Verification Code"
+      description="Use your authenticator or backup code to finish signing in."
       endpoint="/api/v1/auth/mfa/challenge"
-      submitLabel="Verify code"
+      submitLabel="Verify Code"
       mode="mfa"
       fields={[
         {

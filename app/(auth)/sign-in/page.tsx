@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 export default function SignInPage() {
   return (
     <AuthActionForm
-      title="Sign in"
-      description="Use your verified email and password. MFA-enabled accounts continue to the challenge screen."
+      title="Sign In"
+      description="Welcome back. Use your email and password to continue."
       endpoint="/api/v1/auth/login"
-      submitLabel="Sign in"
+      submitLabel="Sign In"
       mode="sign-in"
       fields={[
         {
@@ -32,13 +32,13 @@ export default function SignInPage() {
       footer={
         <div className="flex flex-wrap gap-3">
           <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
-            Create account
+            Create Account
           </Link>
           <Link
             className="font-semibold text-[var(--color-brand)]"
             href="/forgot-password"
           >
-            Forgot password
+            Forgot Password?
           </Link>
         </div>
       }

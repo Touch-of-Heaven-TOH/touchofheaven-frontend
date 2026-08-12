@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 export default function VerifyEmailPage() {
   return (
     <AuthActionForm
-      title="Verify email"
-      description="Submit the verification token from your email to activate your account."
+      title="Verify Email"
+      description="Enter the verification token from your email to activate your account."
       endpoint="/api/v1/auth/verify-email"
-      submitLabel="Verify email"
+      submitLabel="Verify Email"
       mode="verify-email"
       fields={[{ name: "token", label: "Verification token", type: "text" }]}
     />

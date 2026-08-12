@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { NotificationPreferences } from "@/features/account/components/NotificationPreferences";
 import { accountContent } from "@/config/page-content";
 
 const content = accountContent.notifications;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function AccountSettingsNotificationsPage() {
-  return <RouteStatusPage content={content} href="/account" />;
+  return <NotificationPreferences />;
 }

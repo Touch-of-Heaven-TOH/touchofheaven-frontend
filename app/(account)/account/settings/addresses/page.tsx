@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { AddressesManager } from "@/features/account/components/AddressesManager";
 import { accountContent } from "@/config/page-content";
 
 const content = accountContent.addresses;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function AccountSettingsAddressesPage() {
-  return <RouteStatusPage content={content} href="/account" />;
+  return <AddressesManager />;
 }

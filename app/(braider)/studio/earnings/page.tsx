@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
+import { StudioEarnings } from "@/features/studio/components/StudioEarnings";
 import { studioContent } from "@/config/page-content";
 
 const content = studioContent.earnings;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function StudioEarningsPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+  return <StudioEarnings />;
 }

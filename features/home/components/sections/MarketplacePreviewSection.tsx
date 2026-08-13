@@ -54,10 +54,14 @@ export function MarketplacePreviewSection({
             <div className="grid gap-4 md:grid-cols-4">
               {products.items.slice(0, 4).map((product) => (
                 <article
-                  className="rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3"
+                  className="rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3 shadow-[var(--shadow-subtle)]"
                   key={product.id}
                 >
-                  <Link href={product.href}>
+                  <Link
+                    aria-label={`View ${product.name} in the marketplace`}
+                    className="block h-full"
+                    href={product.href}
+                  >
                     <div className="relative aspect-square overflow-hidden rounded-md bg-white">
                       {product.image ? (
                         <Image
@@ -67,7 +71,11 @@ export function MarketplacePreviewSection({
                           sizes="(max-width: 768px) 42vw, 240px"
                           src={product.image.src}
                         />
-                      ) : null}
+                      ) : (
+                        <span className="grid h-full place-items-center p-4 text-center text-sm font-bold text-[var(--color-brand)]">
+                          Product image coming soon
+                        </span>
+                      )}
                     </div>
                     <h4 className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
                       {product.name}

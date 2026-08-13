@@ -6,9 +6,9 @@ export function HeroSection() {
   return (
     <section className="relative isolate overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-page)]">
       <HeroMediaCarousel items={heroMediaItems} />
-      <div className="page-container relative grid min-h-[500px] items-center md:min-h-[540px] md:grid-cols-[0.9fr_1.1fr] lg:min-h-[570px]">
+      <div className="page-container relative grid min-h-[455px] items-center md:min-h-[500px] md:grid-cols-[0.92fr_1.08fr] lg:min-h-[535px]">
         <HeroContent />
-        <div aria-hidden="true" className="min-h-[240px] md:min-h-[480px]" />
+        <div aria-hidden="true" className="min-h-[210px] md:min-h-[440px]" />
       </div>
     </section>
   );

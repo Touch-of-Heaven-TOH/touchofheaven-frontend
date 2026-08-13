@@ -15,7 +15,7 @@ export function HeroImageSlide({ item, isActive }: HeroImageSlideProps) {
       }`}
       fill
       priority={item.priority}
-      sizes="(max-width: 768px) 100vw, 70vw"
+      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 68vw, 920px"
       src={item.mobileSource ?? item.source}
       style={{ objectPosition: item.focalPoint }}
     />

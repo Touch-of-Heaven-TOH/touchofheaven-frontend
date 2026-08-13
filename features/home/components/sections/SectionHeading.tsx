@@ -11,10 +11,10 @@ export function SectionHeading({ intro, align = "start" }: SectionHeadingProps) 
   return (
     <div
       className={`flex flex-col gap-4 md:flex-row md:items-end md:justify-between ${
-        align === "center" ? "text-center md:text-left" : ""
+        align === "center" ? "mx-auto max-w-3xl text-center md:text-left" : ""
       }`}
     >
-      <div>
+      <div className={align === "center" ? "mx-auto md:mx-0" : ""}>
         {intro.eyebrow ? (
           <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
             {intro.eyebrow}
@@ -31,7 +31,8 @@ export function SectionHeading({ intro, align = "start" }: SectionHeadingProps) 
       </div>
       {intro.action ? (
         <Link
-          className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)] hover:text-[var(--color-brand-strong)]"
+          aria-label={intro.action.description ?? intro.action.label}
+          className="inline-flex w-fit items-center gap-2 text-sm font-bold text-[var(--color-brand)] hover:text-[var(--color-brand-strong)]"
           href={intro.action.href}
         >
           {intro.action.label}

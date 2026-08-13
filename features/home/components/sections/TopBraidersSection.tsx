@@ -40,7 +40,11 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
                 className="w-[78vw] max-w-[290px] shrink-0 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3 md:w-auto md:max-w-none"
                 key={braider.id}
               >
-                <Link href={braider.href}>
+                <Link
+                  aria-label={`View ${braider.name} braider profile`}
+                  className="block h-full"
+                  href={braider.href}
+                >
                   <div className="relative aspect-[4/3] overflow-hidden rounded-md bg-[var(--color-brand-soft)]">
                     {braider.image ? (
                       <Image
@@ -52,8 +56,10 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
                         style={{ objectPosition: braider.image.focalPoint }}
                       />
                     ) : (
-                      <span className="grid h-full place-items-center text-3xl font-bold text-[var(--color-brand)]">
-                        {braider.name.charAt(0)}
+                      <span className="grid h-full place-items-center p-4 text-center">
+                        <span className="grid size-16 place-items-center rounded-full bg-white text-3xl font-bold text-[var(--color-brand)]">
+                          {braider.name.charAt(0)}
+                        </span>
                       </span>
                     )}
                   </div>

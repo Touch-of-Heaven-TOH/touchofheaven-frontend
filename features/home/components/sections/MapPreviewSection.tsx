@@ -4,7 +4,7 @@ import { ExternalLink, LocateFixed, MapPinned } from "lucide-react";
 export function MapPreviewSection() {
   return (
     <section className="bg-[var(--color-page)] py-8 md:py-12">
-      <div className="page-container grid overflow-hidden rounded-md border border-[var(--color-border)] bg-white shadow-[var(--shadow-soft)] lg:grid-cols-[360px_1fr]">
+      <div className="page-container grid overflow-hidden rounded-md border border-[var(--color-border)] bg-white shadow-[var(--shadow-soft)] lg:grid-cols-[340px_1fr] xl:grid-cols-[380px_1fr]">
         <div className="grid content-center p-5 md:p-7">
           <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
             Near You
@@ -28,7 +28,7 @@ export function MapPreviewSection() {
           </div>
         </div>
 
-        <div className="relative min-h-[340px] overflow-hidden bg-[var(--color-sage-soft)] md:min-h-[430px]">
+        <div className="relative min-h-[360px] overflow-hidden bg-[var(--color-sage-soft)] md:min-h-[430px] lg:min-h-[500px]">
           <iframe
             className="absolute inset-0 h-full w-full"
             loading="lazy"
@@ -36,6 +36,21 @@ export function MapPreviewSection() {
             src="https://www.google.com/maps?q=Kathleen%2C%20Georgia%2C%20USA&z=11&output=embed"
             title="Interactive map centered on Kathleen, Georgia"
           />
+          <div className="absolute inset-0 -z-10 grid place-items-center p-6 text-center">
+            <div>
+              <MapPinned
+                aria-hidden="true"
+                className="mx-auto text-[var(--color-brand)]"
+                size={36}
+              />
+              <p className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
+                Map preview loading
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[var(--color-text-muted)]">
+                Open discovery if the embedded map is blocked by your browser.
+              </p>
+            </div>
+          </div>
           <div className="pointer-events-none absolute inset-x-4 bottom-4 rounded-md border border-[var(--color-border)] bg-white/94 p-4 shadow-[var(--shadow-subtle)] backdrop-blur md:left-4 md:right-auto md:w-72">
             <p className="text-sm font-bold text-[var(--color-brand-strong)]">
               Full discovery has filters

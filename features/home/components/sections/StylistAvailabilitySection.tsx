@@ -13,6 +13,12 @@ const days = [
 
 const times = ["9:30 AM", "11:00 AM", "1:30 PM", "3:00 PM"] as const;
 
+const legend = [
+  { label: "Open", className: "bg-[var(--color-brand)]" },
+  { label: "Busy", className: "bg-[var(--color-copper)]" },
+  { label: "Closed", className: "bg-[var(--color-text-muted)]" },
+] as const;
+
 export function StylistAvailabilitySection() {
   return (
     <section className="bg-white py-10 md:py-14">
@@ -52,10 +58,25 @@ export function StylistAvailabilitySection() {
               </span>
             </div>
 
-            <div className="mt-4 grid grid-cols-7 gap-2">
+            <div className="mt-4 flex flex-wrap gap-3">
+              {legend.map((item) => (
+                <span
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)]"
+                  key={item.label}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`size-2.5 rounded-full ${item.className}`}
+                  />
+                  {item.label}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-7 gap-1.5 sm:gap-2">
               {days.map((day) => (
                 <div
-                  className={`rounded-md border p-3 text-center ${
+                  className={`min-h-16 rounded-md border p-2 text-center sm:p-3 ${
                     day.state === "open"
                       ? "border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-brand)]"
                       : day.state === "busy"
@@ -65,7 +86,9 @@ export function StylistAvailabilitySection() {
                   key={day.label}
                 >
                   <p className="text-xs font-bold">{day.label}</p>
-                  <p className="mt-1 text-[10px] uppercase">{day.state}</p>
+                  <p className="mt-1 text-[10px] uppercase leading-tight">
+                    {day.state}
+                  </p>
                 </div>
               ))}
             </div>

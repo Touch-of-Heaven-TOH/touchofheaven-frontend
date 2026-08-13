@@ -1,7 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CalendarCheck, ShoppingBag } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarCheck,
+  CheckCircle2,
+  ShoppingBag,
+} from "lucide-react";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
+
+const serviceSignals = [
+  "Verified braider profile",
+  "Consultation notes",
+  "Secure deposit handoff",
+] as const;
+
+const productSignals = [
+  "Published product cards",
+  "Aftercare essentials",
+  "Order tracking path",
+] as const;
 
 export function BookingProductsInfoSection() {
   return (
@@ -33,6 +50,21 @@ export function BookingProductsInfoSection() {
                   Find a style direction, choose a professional, and continue
                   into the secure booking flow.
                 </p>
+                <ul className="mt-3 grid gap-2">
+                  {serviceSignals.map((signal) => (
+                    <li
+                      className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)]"
+                      key={signal}
+                    >
+                      <CheckCircle2
+                        aria-hidden="true"
+                        className="text-[var(--color-success)]"
+                        size={15}
+                      />
+                      {signal}
+                    </li>
+                  ))}
+                </ul>
                 <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]" href="/book">
                   Start booking
                   <ArrowRight aria-hidden="true" size={16} />
@@ -50,6 +82,21 @@ export function BookingProductsInfoSection() {
                   Browse approved category previews while the live catalog feed
                   is connected.
                 </p>
+                <ul className="mt-3 grid gap-2">
+                  {productSignals.map((signal) => (
+                    <li
+                      className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)]"
+                      key={signal}
+                    >
+                      <CheckCircle2
+                        aria-hidden="true"
+                        className="text-[var(--color-success)]"
+                        size={15}
+                      />
+                      {signal}
+                    </li>
+                  ))}
+                </ul>
                 <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]" href="/marketplace">
                   Shop products
                   <ArrowRight aria-hidden="true" size={16} />

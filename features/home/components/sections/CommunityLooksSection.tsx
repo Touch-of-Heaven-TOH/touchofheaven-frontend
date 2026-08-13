@@ -13,7 +13,9 @@ export function CommunityLooksSection() {
           {communityLooks.map((look, index) => (
             <article
               className={`group relative overflow-hidden rounded-md border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)] ${
-                index === 0 ? "min-h-[440px] md:row-span-2" : "min-h-[260px]"
+                index === 0
+                  ? "min-h-[360px] md:min-h-[440px] md:row-span-2"
+                  : "min-h-[245px] md:min-h-[260px]"
               }`}
               key={look.title}
             >
@@ -25,9 +27,9 @@ export function CommunityLooksSection() {
                 src={look.image.src}
                 style={{ objectPosition: look.image.focalPoint }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-strong)]/88 via-[var(--color-brand-strong)]/18 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-strong)]/90 via-[var(--color-brand-strong)]/26 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <p className="text-xs font-bold uppercase text-[var(--color-gold-light)]">
+                <p className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-bold uppercase text-[var(--color-gold-light)] backdrop-blur">
                   Community look
                 </p>
                 <h3 className="mt-2 font-serif text-2xl font-semibold">
@@ -37,6 +39,7 @@ export function CommunityLooksSection() {
                   {look.description}
                 </p>
                 <Link
+                  aria-label={`View ${look.title} style direction`}
                   className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white"
                   href={look.href}
                 >

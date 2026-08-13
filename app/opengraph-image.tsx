@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
+import { getBrandMarkDataUrl } from "@/lib/seo/brand-image";
 
 export const alt = "Touch of Heaven braiding appointments";
 export const size = {
@@ -8,7 +9,9 @@ export const size = {
 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const brandMark = await getBrandMarkDataUrl();
+
   return new ImageResponse(
     (
       <div
@@ -37,18 +40,23 @@ export default function OpenGraphImage() {
         <div
           style={{
             alignItems: "center",
-            background: "#5c2747",
+            background: "#ffffff",
+            border: "2px solid #e8dacb",
             borderRadius: "999px",
-            color: "#f7d47c",
             display: "flex",
-            fontSize: 64,
-            fontWeight: 800,
             height: 220,
             justifyContent: "center",
+            overflow: "hidden",
             width: 220,
           }}
         >
-          TOH
+          <img
+            alt=""
+            height={190}
+            src={brandMark}
+            style={{ objectFit: "contain" }}
+            width={190}
+          />
         </div>
       </div>
     ),

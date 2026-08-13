@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getBrandMarkDataUrl } from "@/lib/seo/brand-image";
 
 export const size = {
   width: 512,
@@ -6,24 +7,28 @@ export const size = {
 };
 export const contentType = "image/png";
 
-export default function Icon() {
+export default async function Icon() {
+  const brandMark = await getBrandMarkDataUrl();
+
   return new ImageResponse(
     (
       <div
         style={{
           alignItems: "center",
-          background: "#5c2747",
-          color: "#f7d47c",
+          background: "#fffaf5",
           display: "flex",
-          fontSize: 132,
-          fontWeight: 800,
           height: "100%",
           justifyContent: "center",
-          letterSpacing: 0,
           width: "100%",
         }}
       >
-        TOH
+        <img
+          alt=""
+          height={420}
+          src={brandMark}
+          style={{ objectFit: "contain" }}
+          width={420}
+        />
       </div>
     ),
     size,

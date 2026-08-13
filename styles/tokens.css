@@ -8,6 +8,10 @@
   --color-brand-soft: #efe3ea;
   --color-accent: #0f766e;
   --color-accent-soft: #dff5f2;
+  --color-sage: #6f8064;
+  --color-sage-soft: #eef3e9;
+  --color-copper: #8f4a22;
+  --color-copper-soft: #f7e5d6;
   --color-gold: #c9963c;
   --color-gold-light: #f4dfa9;
   --color-text-primary: #251a22;
@@ -22,6 +26,7 @@
   --color-warning-soft: #fff3cd;
   --color-skeleton: #eadde4;
   --shadow-soft: 0 20px 60px rgba(43, 23, 36, 0.12);
+  --shadow-media: 0 24px 80px rgba(43, 23, 36, 0.18);
   --shadow-subtle: 0 1px 2px rgba(43, 23, 36, 0.08);
   --radius-control: 8px;
   --radius-panel: 8px;

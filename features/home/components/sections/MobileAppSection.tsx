@@ -7,7 +7,11 @@ function QrPlaceholder() {
   const cells = Array.from({ length: 49 }, (_, index) => index);
 
   return (
-    <div className="grid size-28 grid-cols-7 gap-1 rounded-md border border-[var(--color-border)] bg-white p-2">
+    <div
+      aria-label="QR code placeholder for the Touch of Heaven app"
+      className="grid size-24 grid-cols-7 gap-1 rounded-md border border-[var(--color-border)] bg-white p-2 sm:size-28"
+      role="img"
+    >
       {cells.map((cell) => (
         <span
           className={`rounded-[2px] ${
@@ -24,7 +28,11 @@ function QrPlaceholder() {
 
 function GooglePlayBadge() {
   return (
-    <span className="inline-flex min-h-12 items-center gap-3 rounded-md bg-[#161217] px-4 py-2 text-white">
+    <span
+      aria-label="Get it on Google Play"
+      className="inline-flex min-h-12 items-center gap-3 rounded-md bg-[#161217] px-4 py-2 text-white"
+      role="img"
+    >
       <Play aria-hidden="true" className="fill-[var(--color-gold)] text-[var(--color-gold)]" size={22} />
       <span className="text-left leading-tight">
         <span className="block text-[10px] uppercase text-white/70">Get it on</span>
@@ -38,7 +46,7 @@ export function MobileAppSection() {
   return (
     <section className="bg-white py-10 md:py-14">
       <div className="page-container overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-brand-strong)] text-white shadow-[var(--shadow-media)]">
-        <div className="grid gap-6 p-5 md:grid-cols-[1fr_320px] md:items-center md:p-8 lg:grid-cols-[1fr_360px]">
+        <div className="grid gap-6 p-5 md:grid-cols-[1fr_300px] md:items-center md:p-8 lg:grid-cols-[1fr_360px]">
           <div>
             <p className="inline-flex items-center gap-2 text-sm font-bold uppercase text-[var(--color-gold-light)]">
               <Smartphone aria-hidden="true" size={17} />
@@ -52,7 +60,7 @@ export function MobileAppSection() {
               appointment reminders close without crowding the desktop homepage.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <GooglePlayBadge />
               <div className="rounded-md bg-white p-3 text-[var(--color-brand-strong)]">
                 <QrPlaceholder />
@@ -68,7 +76,7 @@ export function MobileAppSection() {
             </Link>
           </div>
 
-          <div className="relative mx-auto h-[420px] w-[235px]">
+          <div className="relative mx-auto h-[380px] w-[214px] sm:h-[420px] sm:w-[235px]">
             <div className="absolute inset-0 rotate-[-4deg] rounded-[2rem] border-[9px] border-[#141016] bg-[#141016] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
               <div className="relative h-full overflow-hidden rounded-[1.35rem] bg-[var(--color-page)] text-[var(--color-brand-strong)]">
                 <div className="relative h-40">

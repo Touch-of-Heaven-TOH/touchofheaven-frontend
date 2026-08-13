@@ -18,11 +18,14 @@ function PhoneFrame({
   label: string;
 }) {
   return (
-    <figure className="mx-auto w-full max-w-[300px]">
-      <div className="rounded-[2.15rem] border-[10px] border-[#171219] bg-[#171219] p-2 shadow-[0_24px_80px_rgba(43,23,36,0.28)]">
+    <figure
+      aria-label={label}
+      className="mx-auto w-full max-w-[280px] sm:max-w-[300px]"
+    >
+      <div className="rounded-[2.15rem] border-[9px] border-[#171219] bg-[#171219] p-2 shadow-[0_24px_80px_rgba(43,23,36,0.28)] sm:border-[10px]">
         <div className="relative overflow-hidden rounded-[1.45rem] bg-[var(--color-page)]">
           <div className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-[#171219]" />
-          <div className="min-h-[560px] pt-9">{children}</div>
+          <div className="min-h-[520px] pt-9 sm:min-h-[560px]">{children}</div>
         </div>
       </div>
       <figcaption className="mt-3 text-center text-sm font-bold text-[var(--color-brand-strong)]">
@@ -152,7 +155,7 @@ export function PlatformPhonePreviewsSection() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-start">
+        <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start lg:gap-8">
           <PhoneFrame label="Hairstyling booking UI">
             <BookingPhoneScreen />
           </PhoneFrame>

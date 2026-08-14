@@ -186,9 +186,9 @@ export function RegistrationWizard() {
 
   if (status === "success") {
     return (
-      <section className="surface-panel w-full max-w-md p-6 text-center">
+      <section className="surface-panel w-full max-w-md bg-white/92 p-6 text-center shadow-[var(--shadow-soft)] backdrop-blur md:p-8">
         <p className="text-sm font-semibold uppercase text-[var(--color-brand)]">
-          Account security
+          Email verification
         </p>
         <h1 className="mt-3 text-2xl font-semibold text-[var(--color-text-primary)]">
           Check your email
@@ -204,13 +204,13 @@ export function RegistrationWizard() {
   }
 
   return (
-    <section className="surface-panel w-full max-w-md p-6">
-      <p className="text-sm font-semibold uppercase text-[var(--color-brand)]">
-        Account security
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold text-[var(--color-text-primary)]">
-        Create account
+    <section className="surface-panel w-full max-w-md bg-white/92 p-6 shadow-[var(--shadow-soft)] backdrop-blur md:p-8">
+      <h1 className="font-serif text-4xl font-semibold leading-tight text-[var(--color-text-primary)]">
+        Create Account
       </h1>
+      <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+        Set up your Touch of Heaven profile for bookings, products, and secure account access.
+      </p>
 
       <StepIndicator step={step} />
 
@@ -262,7 +262,7 @@ export function RegistrationWizard() {
           <p className="text-center text-sm text-[var(--color-text-muted)]">
             Already have an account?{" "}
             <Link className="font-semibold text-[var(--color-brand)]" href="/sign-in">
-              Log in
+              Sign In
             </Link>
           </p>
         </div>

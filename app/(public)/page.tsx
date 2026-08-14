@@ -4,6 +4,7 @@ import {
   AiStylePreviewSection,
   BookingProductsInfoSection,
   CommunityLooksSection,
+  DemoBraiderProfileSection,
   HeroSection,
   MapPreviewSection,
   MarketplacePreviewSection,
@@ -33,6 +34,7 @@ export default async function HomePage() {
       <BookingProductsInfoSection />
       <AiStylePreviewSection />
       <TrendingStylesSection />
+      <DemoBraiderProfileSection />
       <MarketplacePreviewSection products={homeData.marketplaceProducts} />
       <CommunityLooksSection />
       <TopBraidersSection braiders={homeData.featuredBraiders} />

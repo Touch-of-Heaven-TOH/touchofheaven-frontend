@@ -12,10 +12,10 @@ export function SignInMethods() {
   if (usePassword) {
     return (
       <AuthActionForm
-        title="Sign in"
-        description="Use your verified email and password. MFA-enabled accounts continue to the challenge screen."
+        title="Sign In"
+        description="Enter your email and password. If MFA is enabled, we will ask for your code next."
         endpoint="/api/v1/auth/login"
-        submitLabel="Sign in"
+        submitLabel="Sign In"
         mode="sign-in"
         fields={[
           { name: "email", label: "Email", type: "email", autoComplete: "email" },
@@ -37,13 +37,13 @@ export function SignInMethods() {
             </button>
             <div className="flex flex-wrap gap-3">
               <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
-                Create account
+                Create Account
               </Link>
               <Link
                 className="font-semibold text-[var(--color-brand)]"
                 href="/forgot-password"
               >
-                Forgot password
+                Forgot Password?
               </Link>
             </div>
           </div>
@@ -53,14 +53,12 @@ export function SignInMethods() {
   }
 
   return (
-    <section className="surface-panel w-full max-w-md p-6">
-      <p className="text-sm font-semibold uppercase text-[var(--color-brand)]">
-        Account security
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold text-[var(--color-text-primary)]">Sign in</h1>
+    <section className="surface-panel w-full max-w-md bg-white/92 p-6 shadow-[var(--shadow-soft)] backdrop-blur md:p-8">
+      <h1 className="font-serif text-4xl font-semibold leading-tight text-[var(--color-text-primary)]">
+        Sign In
+      </h1>
       <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-        Continue with Google for one-click access, or we&apos;ll email you a one-time
-        code - no password needed.
+        Continue with Google, use an email code, or sign in with your password.
       </p>
 
       <div className="mt-6 grid gap-4">
@@ -79,14 +77,22 @@ export function SignInMethods() {
       <div className="mt-5 grid gap-3 text-sm">
         <button
           type="button"
-          className="btn-ghost justify-start !px-0 text-[var(--color-text-muted)]"
+          className="btn-secondary justify-center"
           onClick={() => setUsePassword(true)}
         >
-          Use password instead
+          Sign In With Password
         </button>
-        <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
-          Create account
-        </Link>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
+            Create Account
+          </Link>
+          <Link
+            className="font-semibold text-[var(--color-brand)]"
+            href="/forgot-password"
+          >
+            Forgot Password?
+          </Link>
+        </div>
       </div>
     </section>
   );

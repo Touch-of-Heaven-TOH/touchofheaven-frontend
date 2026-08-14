@@ -17,9 +17,17 @@ export default function AuthLayout({
       <Image
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 w-[min(72vw,620px)] -translate-x-1/2 -translate-y-1/2 select-none blur-sm opacity-[0.07]"
-        height={777}
+        className="pointer-events-none absolute left-1/2 top-[48%] -z-10 w-[min(76vw,520px)] -translate-x-1/2 -translate-y-1/2 select-none blur-[1.5px] opacity-[0.12]"
+        height={512}
         priority
+        src={brandAssets.logoMark}
+        width={512}
+      />
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-8 right-6 -z-10 hidden w-[min(32vw,360px)] select-none blur-sm opacity-[0.055] md:block"
+        height={777}
         src={brandAssets.logoLockup}
         width={900}
       />

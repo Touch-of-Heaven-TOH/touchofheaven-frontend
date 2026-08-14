@@ -1,17 +1,21 @@
 import Link from "next/link";
+import Image from "next/image";
 import { legalPolicies } from "@/config/legal";
-import { siteConfig } from "@/config/site";
+import { brandAssets, siteConfig } from "@/config/site";
 
 export function PublicFooter() {
   return (
     <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface-ink)] text-[var(--color-text-inverse)]">
       <div className="page-container grid gap-8 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
         <section>
-          <div className="flex items-center gap-3 font-semibold">
-            <span className="grid size-9 place-items-center rounded-md bg-[var(--color-gold)] text-sm text-[var(--color-surface-ink)]">
-              TOH
-            </span>
-            {siteConfig.name}
+          <div className="relative h-16 w-56 max-w-full">
+            <Image
+              alt={siteConfig.name}
+              className="object-contain object-left"
+              fill
+              sizes="224px"
+              src={brandAssets.logoLockup}
+            />
           </div>
           <p className="mt-4 max-w-md text-sm leading-6 text-white/75">
             Secure discovery and booking for African hair braiding, built for

@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   publicNavigation,
   roleAwareNavigation,
 } from "@/config/navigation";
+import { brandAssets } from "@/config/site";
 import type { SafeUser } from "@/types/auth";
 
 export type PublicHeaderProps = {
@@ -25,13 +27,19 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           href="/"
           aria-label="Touch of Heaven home"
         >
-          <span className="grid size-9 place-items-center rounded-md bg-[var(--color-brand)] text-sm font-bold text-[var(--color-gold-light)]">
-            TOH
+          <span className="relative size-10 shrink-0 overflow-hidden rounded-md bg-[var(--color-brand-soft)]">
+            <Image
+              alt=""
+              className="object-contain p-1"
+              fill
+              sizes="40px"
+              src={brandAssets.logoMark}
+            />
           </span>
           <span className="hidden sm:inline">Touch of Heaven</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {publicNavigation.map((item) => (
             <Link className="btn-ghost" key={item.href} href={item.href}>
               {item.label}
@@ -39,7 +47,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           {user
             ? roleLinks.map((item) => (
               <Link className="btn-secondary" key={item.href} href={item.href}>
@@ -53,7 +61,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         </div>
 
         <button
-          className="btn-secondary md:hidden"
+          className="inline-flex items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-brand-strong)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] lg:hidden"
           type="button"
           aria-expanded={open}
           aria-controls="mobile-navigation"
@@ -66,7 +74,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
       {open ? (
         <div
           id="mobile-navigation"
-          className="border-t border-[var(--color-border)] bg-[var(--color-surface)] md:hidden"
+          className="border-t border-[var(--color-border)] bg-[var(--color-surface)] lg:hidden"
         >
           <nav
             className="page-container grid gap-2 py-4"

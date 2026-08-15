@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
 import {
   ActivityStrip,
-  AiStylePreviewSection,
   BookingProductsInfoSection,
-  CommunityLooksSection,
-  DemoBraiderProfileSection,
   HeroSection,
-  MapPreviewSection,
   MarketplacePreviewSection,
-  MobileAppSection,
-  PlatformPhonePreviewsSection,
-  StyleQuizBanner,
-  StylistAvailabilitySection,
   TopBraidersSection,
-  TrendingStylesSection,
-  TrustHighlightsSection,
 } from "@/features/home";
+import { CountrySourceSection } from "@/features/home/components/sections/CountrySourceSection";
 import { getHomePageData } from "@/features/home/api/home.queries";
 
 export const metadata: Metadata = {
@@ -30,20 +21,11 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <ActivityStrip activity={homeData.activity} />
       <BookingProductsInfoSection />
-      <AiStylePreviewSection />
-      <PlatformPhonePreviewsSection />
-      <TrendingStylesSection />
-      <DemoBraiderProfileSection />
-      <MarketplacePreviewSection products={homeData.marketplaceProducts} />
-      <CommunityLooksSection />
+      <ActivityStrip activity={homeData.activity} />
       <TopBraidersSection braiders={homeData.featuredBraiders} />
-      <MapPreviewSection />
-      <StylistAvailabilitySection />
-      <MobileAppSection />
-      <StyleQuizBanner />
-      <TrustHighlightsSection />
+      <CountrySourceSection />
+      <MarketplacePreviewSection products={homeData.marketplaceProducts} />
     </>
   );
 }

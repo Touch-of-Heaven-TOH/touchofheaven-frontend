@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ShoppingBag,
 } from "lucide-react";
+import { brandAssets } from "@/config/site";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
 
 const serviceSignals = [
@@ -114,6 +115,20 @@ export function BookingProductsInfoSection() {
               src={homeMediaAssets.bookingMarketplace.src}
               style={{ objectPosition: homeMediaAssets.bookingMarketplace.focalPoint }}
             />
+            <div
+              aria-hidden="true"
+              className="absolute bottom-[15%] right-[14%] grid size-20 place-items-center rounded-full bg-white/88 p-2 shadow-[0_12px_34px_rgba(45,27,78,0.24)] backdrop-blur-sm md:size-28"
+            >
+              <span className="relative block size-full">
+                <Image
+                  alt=""
+                  className="object-contain"
+                  fill
+                  sizes="112px"
+                  src={brandAssets.logoMark}
+                />
+              </span>
+            </div>
           </div>
         </div>
       </div>

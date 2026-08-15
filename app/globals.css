@@ -102,6 +102,19 @@ body {
   }
 }
 
+.activity-ticker-track {
+  animation: activity-ticker 34s linear infinite;
+}
+
+@keyframes activity-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

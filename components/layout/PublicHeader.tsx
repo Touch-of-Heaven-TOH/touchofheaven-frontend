@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Bell, Menu, X } from "lucide-react";
 import { useState } from "react";
 import {
   publicNavigation,
@@ -21,9 +22,20 @@ export function PublicHeader({ user }: PublicHeaderProps) {
 
   return (
     <header className="sticky top-0 z-[var(--z-header)] border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur">
-      <div className="page-container flex min-h-16 items-center justify-between gap-4">
+      <div className="page-container grid min-h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:flex lg:justify-between">
+        <button
+          className="inline-flex size-10 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-brand-strong)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] lg:hidden"
+          type="button"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
+          onClick={() => setOpen((value) => !value)}
+        >
+          {open ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
+        </button>
+
         <Link
-          className="flex items-center gap-3 font-semibold text-[var(--color-text-primary)]"
+          className="mx-auto flex items-center gap-3 font-semibold text-[var(--color-text-primary)] lg:mx-0"
           href="/"
           aria-label="Touch of Heaven home"
         >
@@ -60,15 +72,13 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           </Link>
         </div>
 
-        <button
-          className="inline-flex items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-brand-strong)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] lg:hidden"
-          type="button"
-          aria-expanded={open}
-          aria-controls="mobile-navigation"
-          onClick={() => setOpen((value) => !value)}
+        <Link
+          aria-label={user ? "Open account" : "Sign in"}
+          className="inline-flex size-10 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-brand-strong)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] lg:hidden"
+          href={user ? "/account" : "/sign-in"}
         >
-          {open ? "Close" : "Menu"}
-        </button>
+          <Bell aria-hidden="true" size={19} />
+        </Link>
       </div>
 
       {open ? (

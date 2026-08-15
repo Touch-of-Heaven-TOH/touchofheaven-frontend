@@ -21,6 +21,7 @@ const publicPrefixes = [
   "/verify-email",
   "/auth-error",
   "/mfa",
+  "/preview",
 ] as const;
 
 const sessionCookieNames = ["toh_session", "__Host-toh_session"] as const;
@@ -48,7 +49,11 @@ function createNonce(): string {
   return btoa(binary);
 }
 
-function buildCsp(nonce: string) {
+type SecurityHeaderOptions = {
+  allowSameOriginFraming?: boolean;
+};
+
+function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
   const isDev = process.env.NODE_ENV === "development";
   const apiOrigin = process.env.NEXT_PUBLIC_API_URL
     ? new URL(process.env.NEXT_PUBLIC_API_URL).origin
@@ -100,21 +105,34 @@ function buildCsp(nonce: string) {
       "wss://*.supabase.co",
       "https://maps.googleapis.com",
     ].join(" "),
-    "frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com",
+    [
+      "frame-src",
+      "'self'",
+      "https://js.stripe.com",
+      "https://hooks.stripe.com",
+      "https://www.google.com",
+    ].join(" "),
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
+    options.allowSameOriginFraming ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
   ];
 
   if (!isDev) directives.push("upgrade-insecure-requests");
   return directives.join("; ");
 }
 
-function withSecurityHeaders(response: NextResponse, nonce: string) {
-  response.headers.set("Content-Security-Policy", buildCsp(nonce));
+function withSecurityHeaders(
+  response: NextResponse,
+  nonce: string,
+  options: SecurityHeaderOptions = {},
+) {
+  response.headers.set("Content-Security-Policy", buildCsp(nonce, options));
   response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set(
+    "X-Frame-Options",
+    options.allowSameOriginFraming ? "SAMEORIGIN" : "DENY",
+  );
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   // Explicitly disabled, not omitted: the legacy XSS auditor this header
   // controls is removed from modern browsers and the CSP above is what
@@ -150,12 +168,15 @@ export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const hasSession = hasAnyCookie(request, sessionCookieNames);
   const hasPendingMfa = hasAnyCookie(request, mfaPendingCookieNames);
+  const securityHeaderOptions: SecurityHeaderOptions = {
+    allowSameOriginFraming: startsWithRoute(pathname, ["/preview"]),
+  };
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("x-toh-pathname", pathname);
   requestHeaders.set("x-toh-search", search);
-  requestHeaders.set("Content-Security-Policy", buildCsp(nonce));
+  requestHeaders.set("Content-Security-Policy", buildCsp(nonce, securityHeaderOptions));
 
   if (startsWithRoute(pathname, guestOnlyRoutePrefixes) && hasSession) {
     return redirectTo(request, "/account", nonce);
@@ -175,14 +196,14 @@ export function proxy(request: NextRequest) {
     !startsWithRoute(pathname, protectedRoutePrefixes)
   ) {
     const response = NextResponse.next({ request: { headers: requestHeaders } });
-    return withSecurityHeaders(response, nonce);
+    return withSecurityHeaders(response, nonce, securityHeaderOptions);
   }
 
   const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
 
-  return withSecurityHeaders(response, nonce);
+  return withSecurityHeaders(response, nonce, securityHeaderOptions);
 }
 
 export const config = {

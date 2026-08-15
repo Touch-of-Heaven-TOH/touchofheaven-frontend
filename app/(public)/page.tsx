@@ -33,6 +33,7 @@ export default async function HomePage() {
       <ActivityStrip activity={homeData.activity} />
       <BookingProductsInfoSection />
       <AiStylePreviewSection />
+      <PlatformPhonePreviewsSection />
       <TrendingStylesSection />
       <DemoBraiderProfileSection />
       <MarketplacePreviewSection products={homeData.marketplaceProducts} />
@@ -40,7 +41,6 @@ export default async function HomePage() {
       <TopBraidersSection braiders={homeData.featuredBraiders} />
       <MapPreviewSection />
       <StylistAvailabilitySection />
-      <PlatformPhonePreviewsSection />
       <MobileAppSection />
       <StyleQuizBanner />
       <TrustHighlightsSection />

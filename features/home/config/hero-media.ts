@@ -75,6 +75,14 @@ export const homeMediaAssets = {
     aspectRatio: 1.5,
     focalPoint: "50% center",
   },
+  marketplaceMixedProducts: {
+    src: `${imageBase}/marketplace-mixed-products.png`,
+    alt: "African drinks, spices, braiding hair, shea butter, and beauty products arranged for shopping.",
+    width: 1536,
+    height: 1024,
+    aspectRatio: 1.5,
+    focalPoint: "50% center",
+  },
 } satisfies Record<string, HomeMediaAsset>;
 
 export const heroMediaItems = [

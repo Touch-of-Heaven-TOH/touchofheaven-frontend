@@ -32,8 +32,9 @@ const demoProductShelf = [
     compareAt: "$24.99",
     saveLabel: "Save $6",
     badge: "Popular",
-    image: homeMediaAssets.marketplaceStillLife,
-    imagePosition: "42% center",
+    ratingText: "4.9 (128)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "63% center",
   },
   {
     name: "Raw Shea Butter Cream",
@@ -43,19 +44,21 @@ const demoProductShelf = [
     compareAt: "$16.99",
     saveLabel: "Save $4",
     badge: "New",
-    image: homeMediaAssets.marketplaceStillLife,
-    imagePosition: "52% center",
+    ratingText: "4.8 (96)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "72% center",
   },
   {
-    name: "Ankara Market Tote",
-    category: "African Fashion",
-    href: "/marketplace?product=ankara-market-tote",
-    priceLabel: "$49.99",
-    compareAt: "$59.99",
-    saveLabel: "Save $10",
-    badge: "Limited",
-    image: homeMediaAssets.marketplaceStillLife,
-    imagePosition: "82% center",
+    name: "Cameroon Pepper Blend",
+    category: "Spices & Foods",
+    href: "/marketplace?product=cameroon-pepper-blend",
+    priceLabel: "$8.99",
+    compareAt: "$11.99",
+    saveLabel: "Save $3",
+    badge: "Spicy",
+    ratingText: "4.7 (74)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "38% 72%",
   },
   {
     name: "Braiding Prep Bundle",
@@ -65,31 +68,57 @@ const demoProductShelf = [
     compareAt: "$42.99",
     saveLabel: "Save $8",
     badge: "Bundle",
+    ratingText: "4.9 (112)",
     image: homeMediaAssets.bookingMarketplace,
     imagePosition: "62% center",
   },
-] as const;
-
-const originMarkets = [
   {
-    country: "Jamaica",
-    code: "JM",
-    focus: "Beverages, spices, and pantry favorites",
+    name: "Hibiscus Ginger Drink",
+    category: "African Drinks",
+    href: "/marketplace?product=hibiscus-ginger-drink",
+    priceLabel: "$5.99",
+    compareAt: "$7.99",
+    saveLabel: "Save $2",
+    badge: "Cold",
+    ratingText: "4.8 (61)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "7% center",
   },
   {
-    country: "Nigeria",
-    code: "NG",
-    focus: "Hair care, fashion, and market essentials",
+    name: "Pre-Stretched Braiding Hair",
+    category: "Braiding Hair",
+    href: "/marketplace?product=pre-stretched-braiding-hair",
+    priceLabel: "$24.99",
+    compareAt: "$29.99",
+    saveLabel: "Save $5",
+    badge: "Best Seller",
+    ratingText: "4.9 (218)",
+    image: homeMediaAssets.braidingDetail,
+    imagePosition: "center center",
   },
   {
-    country: "Ivory Coast",
-    code: "CI",
-    focus: "Shea, cocoa, textiles, and beauty staples",
+    name: "Ankara Market Tote",
+    category: "African Fashion",
+    href: "/marketplace?product=ankara-market-tote",
+    priceLabel: "$49.99",
+    compareAt: "$59.99",
+    saveLabel: "Save $10",
+    badge: "Limited",
+    ratingText: "4.8 (87)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "82% center",
   },
   {
-    country: "Kenya",
-    code: "KE",
-    focus: "Wellness, artisan goods, and gifting",
+    name: "Palm Nut Soup Spice Kit",
+    category: "Groceries",
+    href: "/marketplace?product=palm-nut-spice-kit",
+    priceLabel: "$14.99",
+    compareAt: "$18.99",
+    saveLabel: "Save $4",
+    badge: "Pantry",
+    ratingText: "4.7 (54)",
+    image: homeMediaAssets.marketplaceMixedProducts,
+    imagePosition: "30% 70%",
   },
 ] as const;
 
@@ -139,7 +168,7 @@ export function MarketplacePreviewSection({
 }: MarketplacePreviewSectionProps) {
   const featuredProducts =
     products.status === "ready"
-      ? products.items.slice(0, 4).map((product) => ({
+      ? products.items.slice(0, 8).map((product) => ({
           name: product.name,
           category: product.category,
           href: product.href,
@@ -147,6 +176,9 @@ export function MarketplacePreviewSection({
           compareAt: "",
           saveLabel: "Published",
           badge: "Live",
+          ratingText: product.ratingAverage
+            ? `${product.ratingAverage.toFixed(1)} (${product.ratingCount})`
+            : "New",
           image: product.image,
           imagePosition: product.image?.focalPoint ?? "center center",
         }))
@@ -186,12 +218,12 @@ export function MarketplacePreviewSection({
           </div>
           <div className="relative min-h-[260px] overflow-hidden bg-white md:min-h-[340px]">
             <Image
-              alt={homeMediaAssets.marketplaceStillLife.alt}
+              alt={homeMediaAssets.marketplaceMixedProducts.alt}
               className="object-cover"
               fill
               sizes="(max-width: 1024px) 100vw, 620px"
-              src={homeMediaAssets.marketplaceStillLife.src}
-              style={{ objectPosition: homeMediaAssets.marketplaceStillLife.focalPoint }}
+              src={homeMediaAssets.marketplaceMixedProducts.src}
+              style={{ objectPosition: homeMediaAssets.marketplaceMixedProducts.focalPoint }}
             />
           </div>
         </div>
@@ -221,37 +253,6 @@ export function MarketplacePreviewSection({
           {marketplaceCategories.map((category) => (
             <MediaCard card={category} key={category.title} ratio="square" />
           ))}
-        </div>
-
-        <div className="mt-8 rounded-md bg-[var(--color-sage-soft)] px-4 py-6">
-          <div className="mb-5 flex flex-col gap-1 text-center">
-            <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
-              Source regions
-            </p>
-            <h3 className="font-serif text-2xl font-semibold text-[var(--color-brand-strong)]">
-              Built for a broad African marketplace.
-            </h3>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {originMarkets.map((origin) => (
-              <article
-                className="rounded-md border border-white/80 bg-white p-4 text-center shadow-[var(--shadow-subtle)]"
-                key={origin.country}
-              >
-                <span className="mx-auto grid size-24 place-items-center rounded-full border border-[var(--color-gold)] bg-[var(--color-page)] text-[var(--color-brand)] shadow-[var(--shadow-subtle)]">
-                  <span className="font-serif text-2xl font-semibold">
-                    {origin.code}
-                  </span>
-                </span>
-                <h4 className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
-                  {origin.country}
-                </h4>
-                <p className="mx-auto mt-2 max-w-44 text-xs leading-5 text-[var(--color-text-muted)]">
-                  {origin.focus}
-                </p>
-              </article>
-            ))}
-          </div>
         </div>
 
         <div className="mt-8">
@@ -312,6 +313,9 @@ export function MarketplacePreviewSection({
                   <p className="text-xs text-[var(--color-text-muted)]">
                     {product.category}
                   </p>
+                  <p className="mt-2 text-xs font-bold text-[var(--color-brand-strong)]">
+                    ★ {product.ratingText}
+                  </p>
                   <p className="mt-3 flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-bold text-[var(--color-brand-strong)]">
                       {product.priceLabel}
@@ -322,7 +326,7 @@ export function MarketplacePreviewSection({
                       </span>
                     ) : null}
                   </p>
-                  <span className="btn-primary mt-4 w-full">Buy now</span>
+                  <span className="btn-primary mt-4 w-full">Add to Cart</span>
                 </Link>
               </article>
             ))}

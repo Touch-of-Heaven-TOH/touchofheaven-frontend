@@ -101,13 +101,13 @@ export const marketplaceCategories = [
     title: "Hair & Beauty",
     description: "Oils, creams, bonnets, and aftercare essentials.",
     href: "/marketplace?category=hair-beauty",
-    image: homeMediaAssets.marketplaceStillLife,
+    image: homeMediaAssets.marketplaceMixedProducts,
   },
   {
     title: "African Fashion",
     description: "Print bags, wraps, accessories, and occasion pieces.",
     href: "/marketplace?category=fashion",
-    image: homeMediaAssets.marketplaceStillLife,
+    image: homeMediaAssets.marketplaceMixedProducts,
   },
   {
     title: "Health & Wellness",
@@ -119,7 +119,7 @@ export const marketplaceCategories = [
     title: "Spices & Foods",
     description: "Pantry favorites for home, gifting, and gatherings.",
     href: "/marketplace?category=spices-foods",
-    image: homeMediaAssets.marketplaceStillLife,
+    image: homeMediaAssets.marketplaceMixedProducts,
   },
 ] satisfies HomeImageCard[];
 

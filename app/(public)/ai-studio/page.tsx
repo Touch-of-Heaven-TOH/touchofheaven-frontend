@@ -22,9 +22,8 @@ export default function AiStudioPage() {
           Preview your next look with confidence.
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--color-text-muted)]">
-          This public preview page introduces the AI-assisted style workflow.
-          Photo upload, consent, and generated previews must use approved
-          backend media endpoints before production activation.
+          Explore hairstyle directions before booking, compare braided looks,
+          and move into a service appointment when you find the right match.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link className="btn-primary" href="/book">
@@ -38,7 +37,7 @@ export default function AiStudioPage() {
         </div>
         <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-success)]">
           <ShieldCheck aria-hidden="true" size={17} />
-          Private photo handling remains backend-authorized.
+          Private photo handling and consent remain part of the secure workflow.
         </p>
       </div>
       <div className="relative aspect-[4/5] overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-brand-soft)] shadow-[var(--shadow-soft)]">

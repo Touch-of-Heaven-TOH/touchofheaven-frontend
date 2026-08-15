@@ -8,10 +8,10 @@ export type NavigationItem = {
 };
 
 export const publicNavigation: NavigationItem[] = [
+  { label: "Beauty", href: "/beauty" },
+  { label: "Marketplace", href: "/marketplace" },
   { label: "Braiders", href: "/braiders" },
-  { label: "Map", href: "/map" },
-  { label: "Services", href: "/beauty" },
-  { label: "How it works", href: "/how-it-works" },
+  { label: "AI Studio", href: "/ai-studio" },
   { label: "About", href: "/about" },
 ];
 

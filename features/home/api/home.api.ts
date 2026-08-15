@@ -41,7 +41,7 @@ export function createUnavailableHomePageData(): HomePageData {
     source: "pending-contract",
     activity: unavailableSection<PublicHomeActivity>(
       PUBLIC_HOME_ENDPOINT,
-      "Live activity will appear after the public homepage feed is enabled.",
+      "New booking and marketplace activity is being refreshed.",
     ),
     featuredBraiders: unavailableSection<PublicHomeBraider>(
       PUBLIC_HOME_ENDPOINT,
@@ -49,7 +49,7 @@ export function createUnavailableHomePageData(): HomePageData {
     ),
     marketplaceProducts: unavailableSection<PublicHomeProduct>(
       PUBLIC_HOME_ENDPOINT,
-      "Marketplace products will display after the public catalog feed is approved.",
+      "Featured marketplace products are being refreshed.",
     ),
   };
 }

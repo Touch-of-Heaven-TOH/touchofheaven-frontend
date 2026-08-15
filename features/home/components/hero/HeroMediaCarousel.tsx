@@ -12,11 +12,11 @@ type HeroMediaCarouselProps = {
 
 const overlayClassByStrength: Record<HeroMediaItem["overlayStrength"], string> = {
   light:
-    "from-[var(--color-page)] via-[var(--color-page)]/82 to-[var(--color-page)]/28 md:via-[var(--color-page)]/76 md:to-[var(--color-page)]/18",
+    "from-[var(--color-page)]/94 via-[var(--color-page)]/68 to-[var(--color-page)]/16 md:via-[var(--color-page)]/58 md:to-[var(--color-page)]/8",
   medium:
-    "from-[var(--color-page)] via-[var(--color-page)]/90 to-[var(--color-page)]/42 md:via-[var(--color-page)]/86 md:to-[var(--color-page)]/28",
+    "from-[var(--color-page)]/94 via-[var(--color-page)]/72 to-[var(--color-page)]/24 md:via-[var(--color-page)]/64 md:to-[var(--color-page)]/12",
   strong:
-    "from-[var(--color-page)] via-[var(--color-page)]/95 to-[var(--color-page)]/52 md:via-[var(--color-page)]/92 md:to-[var(--color-page)]/38",
+    "from-[var(--color-page)]/96 via-[var(--color-page)]/78 to-[var(--color-page)]/32 md:via-[var(--color-page)]/72 md:to-[var(--color-page)]/18",
 };
 
 export function HeroMediaCarousel({ items }: HeroMediaCarouselProps) {

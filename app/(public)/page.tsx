@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import {
   ActivityStrip,
+  AiStylePreviewSection,
   BookingProductsInfoSection,
   HeroSection,
   MarketplacePreviewSection,
+  MobileAppSection,
   TopBraidersSection,
 } from "@/features/home";
 import { CountrySourceSection } from "@/features/home/components/sections/CountrySourceSection";
@@ -26,6 +28,8 @@ export default async function HomePage() {
       <TopBraidersSection braiders={homeData.featuredBraiders} />
       <CountrySourceSection />
       <MarketplacePreviewSection products={homeData.marketplaceProducts} />
+      <AiStylePreviewSection />
+      <MobileAppSection />
     </>
   );
 }

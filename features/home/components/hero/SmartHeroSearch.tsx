@@ -8,51 +8,72 @@ import {
   Clock3,
   LocateFixed,
   MapPin,
+  PackageSearch,
   Scissors,
   Search,
+  Store,
   UserRound,
   X,
 } from "lucide-react";
 
 type SearchSegment = "what" | "where" | "when";
 
-const styleSuggestions = [
-  "Knotless Braids",
-  "Boho Braids",
-  "Goddess Braids",
-  "Cornrows",
-  "Loc Maintenance",
-  "Box Braids",
-] as const;
+type SearchOption = {
+  label: string;
+  hint: string;
+  icon: ReactNode;
+  route?: "braiders" | "marketplace";
+};
 
-const braiderSuggestions = [
-  "Touched by Tee",
-  "Hair by Milly",
-  "Royalty Hair Co.",
-  "Braids by Nia",
-] as const;
+const whatOptions: SearchOption[] = [
+  {
+    label: "Knotless Braids",
+    hint: "Popular protective style",
+    icon: <Scissors aria-hidden="true" size={17} />,
+  },
+  {
+    label: "Boho Braids",
+    hint: "Soft curls and movement",
+    icon: <Scissors aria-hidden="true" size={17} />,
+  },
+  {
+    label: "Cornrows",
+    hint: "Clean parts and low maintenance",
+    icon: <Scissors aria-hidden="true" size={17} />,
+  },
+  {
+    label: "Touched by Tee",
+    hint: "Verified braider profile",
+    icon: <UserRound aria-hidden="true" size={17} />,
+  },
+  {
+    label: "Chebe Hair Growth Oil",
+    hint: "Marketplace product",
+    icon: <PackageSearch aria-hidden="true" size={17} />,
+    route: "marketplace",
+  },
+  {
+    label: "Raw Shea Butter",
+    hint: "Aftercare essential",
+    icon: <Store aria-hidden="true" size={17} />,
+    route: "marketplace",
+  },
+];
 
-const serviceSuggestions = [
-  "Protective styles",
-  "Natural hair prep",
-  "Kids braids",
-  "Aftercare bundle",
-] as const;
-
-const locationSuggestions = [
-  "Kathleen, GA",
-  "Macon, GA",
-  "Warner Robins, GA",
-  "Atlanta, GA",
-] as const;
+const locationOptions = [
+  { label: "Atlanta, GA", hint: "Popular city" },
+  { label: "Kathleen, GA", hint: "Near Touch of Heaven" },
+  { label: "Warner Robins, GA", hint: "Available braiders nearby" },
+  { label: "Macon, GA", hint: "Same-week openings" },
+];
 
 const dateOptions = [
-  "Any date",
-  "Today",
-  "This week",
-  "This weekend",
-  "Next week",
-] as const;
+  { label: "Any date", hint: "Show all availability" },
+  { label: "Today", hint: "Open appointments today" },
+  { label: "Tomorrow", hint: "Next-day openings" },
+  { label: "This weekend", hint: "Friday through Sunday" },
+  { label: "Next week", hint: "Plan ahead" },
+];
 
 function sanitizeSearchValue(value: string) {
   return value.replace(/[<>]/g, "").trim();
@@ -71,25 +92,78 @@ function readRecentSearches() {
   }
 }
 
-function SuggestionButton({
+function SearchField({
+  active,
+  icon,
+  label,
+  placeholder,
+  value,
+  onChange,
+  onFocus,
+}: {
+  active: boolean;
+  icon: ReactNode;
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  onFocus: () => void;
+}) {
+  return (
+    <label
+      className={`flex min-h-14 items-center gap-3 rounded-full px-4 transition md:rounded-none md:border-r md:border-[var(--color-border)] ${
+        active ? "bg-[var(--color-brand-soft)]" : "bg-white"
+      }`}
+    >
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--color-page)] text-[var(--color-brand)]">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[11px] font-bold uppercase leading-none text-[var(--color-brand-strong)]">
+          {label}
+        </span>
+        <input
+          aria-label={`${label} search`}
+          className="mt-1 min-h-6 w-full bg-transparent text-sm font-semibold text-[var(--color-brand-strong)] outline-none placeholder:text-[var(--color-text-muted)]"
+          placeholder={placeholder}
+          type={label === "When" ? "text" : "search"}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onFocus={onFocus}
+        />
+      </span>
+    </label>
+  );
+}
+
+function OptionButton({
   children,
+  hint,
   icon,
   onClick,
 }: {
   children: string;
+  hint: string;
   icon: ReactNode;
   onClick: () => void;
 }) {
   return (
     <button
-      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-semibold text-[var(--color-brand-strong)] transition hover:bg-[var(--color-brand-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
+      className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left transition hover:bg-[var(--color-brand-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
       type="button"
       onClick={onClick}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--color-page)] text-[var(--color-brand)]">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--color-page)] text-[var(--color-brand)]">
         {icon}
       </span>
-      {children}
+      <span>
+        <span className="block text-sm font-bold text-[var(--color-brand-strong)]">
+          {children}
+        </span>
+        <span className="mt-0.5 block text-xs text-[var(--color-text-muted)]">
+          {hint}
+        </span>
+      </span>
     </button>
   );
 }
@@ -98,14 +172,15 @@ export function SmartHeroSearch() {
   const router = useRouter();
   const [activeSegment, setActiveSegment] = useState<SearchSegment | null>(null);
   const [what, setWhat] = useState("");
-  const [where, setWhere] = useState("");
+  const [where, setWhere] = useState("Atlanta, GA");
   const [when, setWhen] = useState("");
+  const [searchRoute, setSearchRoute] = useState<"braiders" | "marketplace">("braiders");
   const [recentSearches, setRecentSearches] = useState<string[]>(readRecentSearches);
 
   const activeLabel = useMemo(() => {
-    if (activeSegment === "what") return "Choose a service, style, or braider";
-    if (activeSegment === "where") return "Choose your city or area";
-    if (activeSegment === "when") return "Choose appointment timing";
+    if (activeSegment === "what") return "What are you looking for?";
+    if (activeSegment === "where") return "Where should we search?";
+    if (activeSegment === "when") return "When do you want to book?";
     return "";
   }, [activeSegment]);
 
@@ -130,13 +205,13 @@ export function SmartHeroSearch() {
     const cleanWhen = sanitizeSearchValue(when);
 
     if (cleanWhat) {
-      params.set("q", cleanWhat);
+      params.set(searchRoute === "marketplace" ? "q" : "style", cleanWhat);
       rememberSearch(cleanWhat);
     }
     if (cleanWhere) params.set("location", cleanWhere);
     if (cleanWhen) params.set("date", cleanWhen);
 
-    router.push(`/braiders${params.toString() ? `?${params.toString()}` : ""}`);
+    router.push(`/${searchRoute}${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   const useCurrentLocation = () => {
@@ -147,82 +222,73 @@ export function SmartHeroSearch() {
 
     navigator.geolocation.getCurrentPosition(
       () => setWhere("Current location"),
-      () => setWhere("Kathleen, GA"),
+      () => setWhere("Atlanta, GA"),
       { enableHighAccuracy: false, maximumAge: 60000, timeout: 8000 },
     );
   };
 
   return (
-    <div className="relative mt-6 max-w-3xl">
+    <div className="relative mt-6 w-full max-w-4xl">
       <form
-        className="grid gap-2 rounded-md border border-[var(--color-border)] bg-white/95 p-2 shadow-[var(--shadow-soft)] backdrop-blur md:grid-cols-[1fr_1fr_0.8fr_auto] md:items-center md:gap-0"
+        className="grid gap-2 rounded-[1.5rem] border border-[var(--color-border)] bg-white/96 p-2 shadow-[0_20px_70px_rgba(45,27,78,0.18)] backdrop-blur md:grid-cols-[1.25fr_1fr_0.9fr_auto] md:items-center md:gap-0 md:rounded-full"
         role="search"
         onSubmit={submitSearch}
       >
-        <label className="grid gap-1 rounded-md px-3 py-2 transition focus-within:bg-[var(--color-page)] md:border-r md:border-[var(--color-border)]">
-          <span className="text-[11px] font-bold uppercase text-[var(--color-brand)]">
-            What
-          </span>
-          <input
-            aria-label="Search for a braider, style, or service"
-            className="min-h-9 bg-transparent text-sm font-semibold outline-none placeholder:text-[var(--color-text-muted)]"
-            placeholder="Braider, style, or service..."
-            type="search"
-            value={what}
-            onChange={(event) => setWhat(event.target.value)}
-            onFocus={() => setActiveSegment("what")}
-          />
-        </label>
-
-        <label className="grid gap-1 rounded-md px-3 py-2 transition focus-within:bg-[var(--color-page)] md:border-r md:border-[var(--color-border)]">
-          <span className="text-[11px] font-bold uppercase text-[var(--color-brand)]">
-            Where
-          </span>
-          <input
-            aria-label="Search by city or location"
-            className="min-h-9 bg-transparent text-sm font-semibold outline-none placeholder:text-[var(--color-text-muted)]"
-            placeholder="Kathleen, GA or your city..."
-            type="search"
-            value={where}
-            onChange={(event) => setWhere(event.target.value)}
-            onFocus={() => setActiveSegment("where")}
-          />
-        </label>
-
-        <label className="grid gap-1 rounded-md px-3 py-2 transition focus-within:bg-[var(--color-page)]">
-          <span className="text-[11px] font-bold uppercase text-[var(--color-brand)]">
-            When
-          </span>
-          <input
-            aria-label="Search by appointment date"
-            className="min-h-9 bg-transparent text-sm font-semibold outline-none placeholder:text-[var(--color-text-muted)]"
-            placeholder="Any date..."
-            type="search"
-            value={when}
-            onChange={(event) => setWhen(event.target.value)}
-            onFocus={() => setActiveSegment("when")}
-          />
-        </label>
+        <SearchField
+          active={activeSegment === "what"}
+          icon={<Search aria-hidden="true" size={17} />}
+          label="What"
+          placeholder="Hair style, service, product..."
+          value={what}
+          onChange={(value) => {
+            setWhat(value);
+            setSearchRoute("braiders");
+          }}
+          onFocus={() => setActiveSegment("what")}
+        />
+        <SearchField
+          active={activeSegment === "where"}
+          icon={<MapPin aria-hidden="true" size={17} />}
+          label="Where"
+          placeholder="Atlanta, GA"
+          value={where}
+          onChange={setWhere}
+          onFocus={() => setActiveSegment("where")}
+        />
+        <SearchField
+          active={activeSegment === "when"}
+          icon={<CalendarDays aria-hidden="true" size={17} />}
+          label="When"
+          placeholder="Select date"
+          value={when}
+          onChange={setWhen}
+          onFocus={() => setActiveSegment("when")}
+        />
 
         <button
           aria-label="Search Touch of Heaven"
-          className="grid min-h-12 place-items-center rounded-md bg-[var(--color-brand)] px-5 text-white transition hover:bg-[var(--color-brand-strong)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
+          className="grid min-h-14 place-items-center rounded-full bg-[var(--color-brand)] px-6 text-white transition hover:bg-[var(--color-brand-strong)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)] md:size-14 md:px-0"
           type="submit"
         >
-          <Search aria-hidden="true" size={20} />
+          <Search aria-hidden="true" size={21} />
         </button>
       </form>
 
       {activeSegment ? (
         <div
           aria-label={activeLabel}
-          className="fixed inset-x-3 bottom-3 z-[var(--z-modal)] max-h-[82dvh] overflow-y-auto rounded-md border border-[var(--color-border)] bg-white p-4 shadow-[0_28px_80px_rgba(45,27,78,0.28)] md:absolute md:inset-x-0 md:bottom-auto md:top-[calc(100%+0.75rem)] md:max-h-none"
+          className="fixed inset-x-3 bottom-3 z-[var(--z-modal)] max-h-[82dvh] overflow-y-auto rounded-md border border-[var(--color-border)] bg-white p-4 shadow-[0_28px_80px_rgba(45,27,78,0.28)] md:absolute md:inset-x-0 md:bottom-auto md:top-[calc(100%+0.75rem)] md:max-h-none md:p-5"
           role="dialog"
         >
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="font-serif text-xl font-semibold text-[var(--color-brand-strong)]">
-              {activeLabel}
-            </h2>
+            <div>
+              <p className="text-xs font-bold uppercase text-[var(--color-copper)]">
+                Search Touch of Heaven
+              </p>
+              <h2 className="font-serif text-xl font-semibold text-[var(--color-brand-strong)]">
+                {activeLabel}
+              </h2>
+            </div>
             <button
               aria-label="Close search options"
               className="grid size-9 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-brand)]"
@@ -234,110 +300,82 @@ export function SmartHeroSearch() {
           </div>
 
           {activeSegment === "what" ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase text-[var(--color-brand)]">
-                  Trending styles
-                </p>
-                {styleSuggestions.map((item) => (
-                  <SuggestionButton
-                    icon={<Scissors aria-hidden="true" size={15} />}
-                    key={item}
-                    onClick={() => {
-                      setWhat(item);
-                      setActiveSegment("where");
-                    }}
-                  >
-                    {item}
-                  </SuggestionButton>
-                ))}
-              </div>
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase text-[var(--color-brand)]">
-                  Braiders
-                </p>
-                {braiderSuggestions.map((item) => (
-                  <SuggestionButton
-                    icon={<UserRound aria-hidden="true" size={15} />}
-                    key={item}
-                    onClick={() => {
-                      setWhat(item);
-                      setActiveSegment("where");
-                    }}
-                  >
-                    {item}
-                  </SuggestionButton>
-                ))}
-              </div>
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase text-[var(--color-brand)]">
-                  Services
-                </p>
-                {recentSearches.length > 0 ? (
-                  <div className="mb-3">
+            <div className="grid gap-3 md:grid-cols-2">
+              {whatOptions.map((item) => (
+                <OptionButton
+                  hint={item.hint}
+                  icon={item.icon}
+                  key={item.label}
+                  onClick={() => {
+                    setWhat(item.label);
+                    setSearchRoute(item.route ?? "braiders");
+                    setActiveSegment(item.route === "marketplace" ? null : "where");
+                  }}
+                >
+                  {item.label}
+                </OptionButton>
+              ))}
+              {recentSearches.length > 0 ? (
+                <div className="rounded-md bg-[var(--color-page)] p-3 md:col-span-2">
+                  <p className="mb-2 text-xs font-bold uppercase text-[var(--color-brand)]">
+                    Recent searches
+                  </p>
+                  <div className="flex flex-wrap gap-2">
                     {recentSearches.map((item) => (
-                      <SuggestionButton
-                        icon={<Clock3 aria-hidden="true" size={15} />}
+                      <button
+                        className="rounded-full border border-[var(--color-border)] bg-white px-3 py-1.5 text-xs font-bold text-[var(--color-brand-strong)]"
                         key={item}
+                        type="button"
                         onClick={() => setWhat(item)}
                       >
                         {item}
-                      </SuggestionButton>
+                      </button>
                     ))}
                   </div>
-                ) : null}
-                {serviceSuggestions.map((item) => (
-                  <SuggestionButton
-                    icon={<Search aria-hidden="true" size={15} />}
-                    key={item}
-                    onClick={() => {
-                      setWhat(item);
-                      setActiveSegment("where");
-                    }}
-                  >
-                    {item}
-                  </SuggestionButton>
-                ))}
-              </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
           {activeSegment === "where" ? (
-            <div className="grid gap-2">
-              <SuggestionButton
-                icon={<LocateFixed aria-hidden="true" size={15} />}
+            <div className="grid gap-3 md:grid-cols-2">
+              <OptionButton
+                hint="Use the browser location prompt"
+                icon={<LocateFixed aria-hidden="true" size={17} />}
                 onClick={useCurrentLocation}
               >
                 Use my current location
-              </SuggestionButton>
-              {locationSuggestions.map((item) => (
-                <SuggestionButton
-                  icon={<MapPin aria-hidden="true" size={15} />}
-                  key={item}
+              </OptionButton>
+              {locationOptions.map((item) => (
+                <OptionButton
+                  hint={item.hint}
+                  icon={<MapPin aria-hidden="true" size={17} />}
+                  key={item.label}
                   onClick={() => {
-                    setWhere(item);
+                    setWhere(item.label);
                     setActiveSegment("when");
                   }}
                 >
-                  {item}
-                </SuggestionButton>
+                  {item.label}
+                </OptionButton>
               ))}
             </div>
           ) : null}
 
           {activeSegment === "when" ? (
-            <div className="grid gap-2 md:grid-cols-5">
+            <div className="grid gap-3 md:grid-cols-5">
               {dateOptions.map((item) => (
-                <SuggestionButton
-                  icon={<CalendarDays aria-hidden="true" size={15} />}
-                  key={item}
+                <OptionButton
+                  hint={item.hint}
+                  icon={<Clock3 aria-hidden="true" size={17} />}
+                  key={item.label}
                   onClick={() => {
-                    setWhen(item);
+                    setWhen(item.label);
                     setActiveSegment(null);
                   }}
                 >
-                  {item}
-                </SuggestionButton>
+                  {item.label}
+                </OptionButton>
               ))}
             </div>
           ) : null}

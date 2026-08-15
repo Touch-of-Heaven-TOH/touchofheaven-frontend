@@ -51,6 +51,10 @@ body {
   animation-delay: calc(var(--phrase-index) * 3s);
 }
 
+.hero-wave-phrase:first-child {
+  opacity: 1;
+}
+
 .hero-wave-phrase:nth-child(3) {
   color: var(--color-copper);
 }
@@ -69,16 +73,16 @@ body {
 
 @keyframes hero-wave-phrase {
   0%,
-  6% {
+  4% {
     opacity: 0;
     transform: translateY(18px);
   }
-  12%,
-  34% {
+  5%,
+  38% {
     opacity: 1;
     transform: translateY(0);
   }
-  40%,
+  39%,
   100% {
     opacity: 0;
     transform: translateY(-14px);

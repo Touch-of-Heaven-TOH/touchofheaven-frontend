@@ -51,6 +51,14 @@ export const homeMediaAssets = {
     aspectRatio: 0.82,
     focalPoint: "center 28%",
   },
+  communitySalon: {
+    src: `${imageBase}/community-salon-clients.png`,
+    alt: "Three smiling clients and a stylist in a warm salon with freshly finished braids.",
+    width: 1536,
+    height: 1024,
+    aspectRatio: 1.5,
+    focalPoint: "60% center",
+  },
   bookingMarketplace: {
     src: `${imageBase}/booking-marketplace-lifestyle.png`,
     alt: "Two smiling African women in a salon using a phone beside Touch of Heaven shopping products.",
@@ -58,6 +66,14 @@ export const homeMediaAssets = {
     height: 1024,
     aspectRatio: 1.5,
     focalPoint: "64% center",
+  },
+  marketplaceStillLife: {
+    src: `${imageBase}/marketplace-product-still-life.png`,
+    alt: "Premium African hair care, fashion, and pantry products arranged for online shopping.",
+    width: 1536,
+    height: 1024,
+    aspectRatio: 1.5,
+    focalPoint: "50% center",
   },
 } satisfies Record<string, HomeMediaAsset>;
 

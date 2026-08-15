@@ -92,7 +92,7 @@ export const marketplaceIntro = {
   eyebrow: "Marketplace",
   title: "Shop authentic African products",
   description:
-    "Preview the product categories planned for the marketplace while the live catalog endpoint comes online.",
+    "Browse hair care, fashion, pantry favorites, and aftercare products curated for style days and everyday care.",
   action: { label: "Open marketplace", href: "/marketplace" },
 } satisfies HomeSectionIntro;
 
@@ -101,25 +101,25 @@ export const marketplaceCategories = [
     title: "Hair & Beauty",
     description: "Oils, creams, bonnets, and aftercare essentials.",
     href: "/marketplace?category=hair-beauty",
-    image: homeMediaAssets.braidingDetail,
+    image: homeMediaAssets.marketplaceStillLife,
   },
   {
     title: "African Fashion",
     description: "Print bags, wraps, accessories, and occasion pieces.",
     href: "/marketplace?category=fashion",
-    image: homeMediaAssets.brandPoster,
+    image: homeMediaAssets.marketplaceStillLife,
   },
   {
     title: "Health & Wellness",
     description: "Self-care products curated for the community.",
     href: "/marketplace?category=wellness",
-    image: homeMediaAssets.naturalHairCare,
+    image: homeMediaAssets.bookingMarketplace,
   },
   {
     title: "Spices & Foods",
     description: "Pantry favorites for home, gifting, and gatherings.",
     href: "/marketplace?category=spices-foods",
-    image: homeMediaAssets.studioBooking,
+    image: homeMediaAssets.marketplaceStillLife,
   },
 ] satisfies HomeImageCard[];
 
@@ -127,16 +127,16 @@ export const communityIntro = {
   eyebrow: "From our community",
   title: "Real styles. Real people. Real confidence.",
   description:
-    "Public portfolio media will come from approved braider profiles and customer consent workflows.",
+    "See appointment moments, finished protective styles, and product care details from the Touch of Heaven community.",
   action: { label: "Explore styles", href: "/beauty" },
 } satisfies HomeSectionIntro;
 
 export const communityLooks = [
   {
-    title: "Braiding in progress",
-    description: "Detail-focused parting and steady hands.",
-    href: "/beauty?gallery=process",
-    image: homeMediaAssets.braidingDetail,
+    title: "Booked and braided",
+    description: "A polished appointment moment with the client already checking the next step.",
+    href: "/beauty?gallery=booked-and-braided",
+    image: homeMediaAssets.communitySalon,
   },
   {
     title: "Studio appointment",
@@ -151,10 +151,10 @@ export const communityLooks = [
     image: homeMediaAssets.stylePortrait,
   },
   {
-    title: "Natural hair care",
-    description: "Care routines for every texture and appointment type.",
-    href: "/beauty?gallery=hair-care",
-    image: homeMediaAssets.naturalHairCare,
+    title: "Braiding in progress",
+    description: "Detail-focused parting and steady hands.",
+    href: "/beauty?gallery=process",
+    image: homeMediaAssets.braidingDetail,
   },
 ] satisfies HomeImageCard[];
 

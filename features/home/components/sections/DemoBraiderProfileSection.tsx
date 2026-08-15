@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   CalendarDays,
   CheckCircle2,
+  ChevronRight,
   Clock3,
   ImageIcon,
   MapPin,
@@ -17,6 +18,7 @@ const demoServices = [
     name: "Knotless Braids",
     detail: "Waist length, clean parts, consultation included",
     duration: "4h 30m",
+    deposit: "$40 deposit",
     price: "$220",
     href: "/book?braider=royalty-hair-co&service=knotless-braids",
   },
@@ -24,6 +26,7 @@ const demoServices = [
     name: "Boho Knotless",
     detail: "Human-hair curls, lightweight finish",
     duration: "5h",
+    deposit: "$55 deposit",
     price: "$260",
     href: "/book?braider=royalty-hair-co&service=boho-knotless",
   },
@@ -31,6 +34,7 @@ const demoServices = [
     name: "Cornrows",
     detail: "Protective stitch parting with natural-hair prep",
     duration: "2h 15m",
+    deposit: "$25 deposit",
     price: "$120",
     href: "/book?braider=royalty-hair-co&service=cornrows",
   },
@@ -49,10 +53,13 @@ const demoAmenities = [
   "Aftercare shop",
 ] as const;
 
+const availabilitySlots = ["Today 3:30 PM", "Fri 10:00 AM", "Sat 1:15 PM"] as const;
+
 const gallery = [
-  homeMediaAssets.primaryHero,
+  homeMediaAssets.communitySalon,
   homeMediaAssets.stylePortrait,
   homeMediaAssets.braidingDetail,
+  homeMediaAssets.bookingMarketplace,
 ] as const;
 
 export function DemoBraiderProfileSection() {
@@ -63,18 +70,18 @@ export function DemoBraiderProfileSection() {
           <article className="overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] shadow-[var(--shadow-soft)]">
             <div className="relative min-h-[260px] overflow-hidden">
               <Image
-                alt={homeMediaAssets.primaryHero.alt}
+                alt={homeMediaAssets.communitySalon.alt}
                 className="object-cover"
                 fill
                 sizes="(max-width: 1024px) 100vw, 560px"
-                src={homeMediaAssets.primaryHero.src}
-                style={{ objectPosition: "74% center" }}
+                src={homeMediaAssets.communitySalon.src}
+                style={{ objectPosition: homeMediaAssets.communitySalon.focalPoint }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-strong)]/88 via-[var(--color-brand-strong)]/14 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <p className="inline-flex items-center gap-2 rounded-full bg-white/14 px-3 py-1 text-xs font-bold uppercase backdrop-blur">
                   <ShieldCheck aria-hidden="true" size={14} />
-                  Demo public braider profile
+                  Featured public braider profile
                 </p>
                 <h2 className="mt-3 font-serif text-3xl font-semibold">
                   Royalty Hair Co.
@@ -93,6 +100,14 @@ export function DemoBraiderProfileSection() {
                     4.9 from 128 reviews
                   </span>
                 </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link className="btn-primary" href="/book?braider=royalty-hair-co">
+                    Book profile
+                  </Link>
+                  <Link className="btn-secondary border-white/60 bg-white/12 text-white hover:bg-white/18" href="/braiders/royalty-hair-co">
+                    View profile
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -121,7 +136,7 @@ export function DemoBraiderProfileSection() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
-                    Services menu
+                    Services and availability
                   </p>
                   <h3 className="mt-1 font-serif text-3xl font-semibold text-[var(--color-brand-strong)]">
                     Book like a real profile page.
@@ -132,10 +147,22 @@ export function DemoBraiderProfileSection() {
                 </Link>
               </div>
 
+              <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                {availabilitySlots.map((slot) => (
+                  <Link
+                    className="rounded-md border border-[var(--color-border)] bg-[var(--color-page)] px-3 py-3 text-sm font-bold text-[var(--color-brand)] transition hover:border-[var(--color-brand)] hover:bg-white"
+                    href="/book?braider=royalty-hair-co"
+                    key={slot}
+                  >
+                    {slot}
+                  </Link>
+                ))}
+              </div>
+
               <div className="mt-5 grid gap-3">
                 {demoServices.map((service) => (
                   <article
-                    className="grid gap-4 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-4 sm:grid-cols-[1fr_auto] sm:items-center"
+                    className="grid gap-4 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-4 transition hover:border-[var(--color-brand)] hover:bg-white sm:grid-cols-[1fr_auto] sm:items-center"
                     key={service.name}
                   >
                     <div>
@@ -152,7 +179,7 @@ export function DemoBraiderProfileSection() {
                         </span>
                         <span className="inline-flex items-center gap-1">
                           <CalendarDays aria-hidden="true" size={14} />
-                          Deposit supported
+                          {service.deposit}
                         </span>
                       </p>
                     </div>
@@ -166,6 +193,31 @@ export function DemoBraiderProfileSection() {
                     </div>
                   </article>
                 ))}
+              </div>
+
+              <div className="mt-4 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-4">
+                <div className="flex items-start gap-3">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--color-brand)] text-sm font-bold text-white">
+                    JB
+                  </span>
+                  <div>
+                    <p className="flex flex-wrap items-center gap-2 text-sm font-bold text-[var(--color-brand-strong)]">
+                      Jasmine Brown
+                      <span className="inline-flex items-center gap-1 text-xs text-[var(--color-copper)]">
+                        <Star
+                          aria-hidden="true"
+                          className="fill-[var(--color-gold)] text-[var(--color-gold)]"
+                          size={14}
+                        />
+                        5.0
+                      </span>
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-[var(--color-text-muted)]">
+                      Clean parts, calm appointment, and clear aftercare
+                      instructions. The booking reminders made the visit easy.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -197,7 +249,7 @@ export function DemoBraiderProfileSection() {
                   <ImageIcon aria-hidden="true" size={16} />
                   Portfolio proof
                 </p>
-                <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="mt-4 grid grid-cols-4 gap-2">
                   {gallery.map((asset) => (
                     <div
                       className="relative aspect-square overflow-hidden rounded-md bg-[var(--color-brand-soft)]"
@@ -220,6 +272,7 @@ export function DemoBraiderProfileSection() {
                 >
                   <MessageCircle aria-hidden="true" size={16} />
                   Message before booking
+                  <ChevronRight aria-hidden="true" size={15} />
                 </Link>
               </div>
             </div>

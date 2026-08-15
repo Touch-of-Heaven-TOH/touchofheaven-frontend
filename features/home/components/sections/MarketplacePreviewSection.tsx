@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   BadgePercent,
-  Globe2,
   Headphones,
   PackageCheck,
   ShoppingBag,
@@ -13,7 +12,6 @@ import {
   marketplaceIntro,
 } from "@/features/home/config/home-content";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
-import { DynamicStatusPanel } from "@/features/home/components/sections/DynamicStatusPanel";
 import { MediaCard } from "@/features/home/components/sections/MediaCard";
 import { SectionHeading } from "@/features/home/components/sections/SectionHeading";
 import type {
@@ -34,7 +32,8 @@ const demoProductShelf = [
     compareAt: "$24.99",
     saveLabel: "Save $6",
     badge: "Popular",
-    image: homeMediaAssets.naturalHairCare,
+    image: homeMediaAssets.marketplaceStillLife,
+    imagePosition: "42% center",
   },
   {
     name: "Raw Shea Butter Cream",
@@ -44,7 +43,8 @@ const demoProductShelf = [
     compareAt: "$16.99",
     saveLabel: "Save $4",
     badge: "New",
-    image: homeMediaAssets.bookingMarketplace,
+    image: homeMediaAssets.marketplaceStillLife,
+    imagePosition: "52% center",
   },
   {
     name: "Ankara Market Tote",
@@ -54,7 +54,8 @@ const demoProductShelf = [
     compareAt: "$59.99",
     saveLabel: "Save $10",
     badge: "Limited",
-    image: homeMediaAssets.brandPoster,
+    image: homeMediaAssets.marketplaceStillLife,
+    imagePosition: "82% center",
   },
   {
     name: "Braiding Prep Bundle",
@@ -64,11 +65,33 @@ const demoProductShelf = [
     compareAt: "$42.99",
     saveLabel: "Save $8",
     badge: "Bundle",
-    image: homeMediaAssets.braidingDetail,
+    image: homeMediaAssets.bookingMarketplace,
+    imagePosition: "62% center",
   },
 ] as const;
 
-const originMarkets = ["Jamaica", "Nigeria", "Ivory Coast", "Kenya"] as const;
+const originMarkets = [
+  {
+    country: "Jamaica",
+    code: "JM",
+    focus: "Beverages, spices, and pantry favorites",
+  },
+  {
+    country: "Nigeria",
+    code: "NG",
+    focus: "Hair care, fashion, and market essentials",
+  },
+  {
+    country: "Ivory Coast",
+    code: "CI",
+    focus: "Shea, cocoa, textiles, and beauty staples",
+  },
+  {
+    country: "Kenya",
+    code: "KE",
+    focus: "Wellness, artisan goods, and gifting",
+  },
+] as const;
 
 const marketPromises = [
   {
@@ -78,17 +101,17 @@ const marketPromises = [
   },
   {
     title: "Delivery",
-    description: "Local delivery rules stay separated from appointment booking.",
+    description: "Local delivery options appear for eligible nearby sellers.",
     icon: PackageCheck,
   },
   {
     title: "Pickup",
-    description: "Pickup options can appear when a seller enables a location.",
+    description: "Pickup details are clear when a seller offers a local stop.",
     icon: ShoppingBag,
   },
   {
     title: "Support",
-    description: "Help flows route product questions away from stylist chat.",
+    description: "Marketplace questions stay organized outside stylist chat.",
     icon: Headphones,
   },
 ] as const;
@@ -125,6 +148,7 @@ export function MarketplacePreviewSection({
           saveLabel: "Published",
           badge: "Live",
           image: product.image,
+          imagePosition: product.image?.focalPoint ?? "center center",
         }))
       : demoProductShelf;
 
@@ -133,10 +157,49 @@ export function MarketplacePreviewSection({
       <div className="page-container">
         <SectionHeading intro={marketplaceIntro} />
 
+        <div className="mt-6 grid overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] shadow-[var(--shadow-soft)] lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="flex flex-col justify-center p-5 md:p-7">
+            <p className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase text-[var(--color-copper)]">
+              <ShoppingBag aria-hidden="true" size={15} />
+              Marketplace preview
+            </p>
+            <h3 className="mt-4 font-serif text-3xl font-semibold text-[var(--color-brand-strong)] md:text-4xl">
+              Curated essentials for every style day.
+            </h3>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--color-text-muted)]">
+              Shop beauty, fashion, pantry, and aftercare finds in one place,
+              with clear pricing, savings, and direct actions for repeat
+              shopping.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {["Hair care", "African fashion", "Pantry goods", "Aftercare kits"].map(
+                (tag) => (
+                  <span
+                    className="rounded-full border border-[var(--color-border)] bg-white px-3 py-1 text-xs font-bold text-[var(--color-brand)]"
+                    key={tag}
+                  >
+                    {tag}
+                  </span>
+                ),
+              )}
+            </div>
+          </div>
+          <div className="relative min-h-[260px] overflow-hidden bg-white md:min-h-[340px]">
+            <Image
+              alt={homeMediaAssets.marketplaceStillLife.alt}
+              className="object-cover"
+              fill
+              sizes="(max-width: 1024px) 100vw, 620px"
+              src={homeMediaAssets.marketplaceStillLife.src}
+              style={{ objectPosition: homeMediaAssets.marketplaceStillLife.focalPoint }}
+            />
+          </div>
+        </div>
+
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           {promoCards.map((card) => (
             <Link
-              className="rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-5 text-center shadow-[var(--shadow-subtle)] transition hover:border-[var(--color-brand)]"
+              className="rounded-md border border-[var(--color-border)] bg-white p-5 text-center shadow-[var(--shadow-subtle)] transition hover:-translate-y-0.5 hover:border-[var(--color-brand)] hover:shadow-[var(--shadow-soft)]"
               href={card.href}
               key={card.label}
             >
@@ -161,16 +224,32 @@ export function MarketplacePreviewSection({
         </div>
 
         <div className="mt-8 rounded-md bg-[var(--color-sage-soft)] px-4 py-6">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {originMarkets.map((origin, index) => (
-              <div className="text-center" key={origin}>
-                <span className="mx-auto grid size-28 place-items-center rounded-full bg-white text-[var(--color-brand)] shadow-[var(--shadow-subtle)]">
-                  <Globe2 aria-hidden="true" size={34 + index * 2} />
+          <div className="mb-5 flex flex-col gap-1 text-center">
+            <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
+              Source regions
+            </p>
+            <h3 className="font-serif text-2xl font-semibold text-[var(--color-brand-strong)]">
+              Built for a broad African marketplace.
+            </h3>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {originMarkets.map((origin) => (
+              <article
+                className="rounded-md border border-white/80 bg-white p-4 text-center shadow-[var(--shadow-subtle)]"
+                key={origin.country}
+              >
+                <span className="mx-auto grid size-24 place-items-center rounded-full border border-[var(--color-gold)] bg-[var(--color-page)] text-[var(--color-brand)] shadow-[var(--shadow-subtle)]">
+                  <span className="font-serif text-2xl font-semibold">
+                    {origin.code}
+                  </span>
                 </span>
-                <p className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
-                  {origin}
+                <h4 className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
+                  {origin.country}
+                </h4>
+                <p className="mx-auto mt-2 max-w-44 text-xs leading-5 text-[var(--color-text-muted)]">
+                  {origin.focus}
                 </p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
@@ -179,10 +258,10 @@ export function MarketplacePreviewSection({
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
-                Featured Products
+                Featured products
               </p>
               <h3 className="font-serif text-2xl font-semibold text-[var(--color-brand-strong)]">
-                Demo product shelf
+                Product shelf
               </h3>
             </div>
             <Link
@@ -196,71 +275,59 @@ export function MarketplacePreviewSection({
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product) => (
-                <article
-                  className="relative overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3 shadow-[var(--shadow-subtle)]"
-                  key={product.name}
+              <article
+                className="relative overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3 shadow-[var(--shadow-subtle)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]"
+                key={product.name}
+              >
+                <span className="absolute right-3 top-3 z-10 rounded-sm bg-[var(--color-brand)] px-3 py-1 text-xs font-bold uppercase text-white">
+                  {product.saveLabel}
+                </span>
+                <span className="absolute left-0 top-0 z-10 rounded-br-md bg-[var(--color-copper)] px-4 py-2 text-xs font-bold uppercase text-white">
+                  {product.badge}
+                </span>
+                <Link
+                  aria-label={`View ${product.name} in the marketplace`}
+                  className="block h-full"
+                  href={product.href}
                 >
-                  <span className="absolute right-3 top-3 z-10 rounded-sm bg-[var(--color-brand)] px-3 py-1 text-xs font-bold uppercase text-white">
-                    {product.saveLabel}
-                  </span>
-                  <span className="absolute left-0 top-0 z-10 rounded-br-md bg-[var(--color-copper)] px-4 py-2 text-xs font-bold uppercase text-white">
-                    {product.badge}
-                  </span>
-                  <Link
-                    aria-label={`View ${product.name} in the marketplace`}
-                    className="block h-full"
-                    href={product.href}
-                  >
-                    <div className="relative aspect-square overflow-hidden rounded-md bg-white">
-                      {product.image ? (
-                        <Image
-                          alt={product.image.alt}
-                          className="object-cover transition duration-300 hover:scale-[1.03]"
-                          fill
-                          sizes="(max-width: 768px) 88vw, (max-width: 1024px) 44vw, 260px"
-                          src={product.image.src}
-                          style={{ objectPosition: product.image.focalPoint }}
-                        />
-                      ) : (
-                        <span className="grid h-full place-items-center p-4 text-center text-sm font-bold text-[var(--color-brand)]">
-                          Product image coming soon
-                        </span>
-                      )}
-                    </div>
-                    <h4 className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
-                      {product.name}
-                    </h4>
-                    <p className="text-xs text-[var(--color-text-muted)]">
-                      {product.category}
-                    </p>
-                    <p className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-                      <span className="font-bold text-[var(--color-brand-strong)]">
-                        {product.priceLabel}
+                  <div className="relative aspect-square overflow-hidden rounded-md bg-white">
+                    {product.image ? (
+                      <Image
+                        alt={product.image.alt}
+                        className="object-cover transition duration-300 hover:scale-[1.03]"
+                        fill
+                        sizes="(max-width: 768px) 88vw, (max-width: 1024px) 44vw, 260px"
+                        src={product.image.src}
+                        style={{ objectPosition: product.imagePosition }}
+                      />
+                    ) : (
+                      <span className="grid h-full place-items-center p-4 text-center text-sm font-bold text-[var(--color-brand)]">
+                        Product image coming soon
                       </span>
-                      {product.compareAt ? (
-                        <span className="text-[var(--color-text-muted)] line-through">
-                          {product.compareAt}
-                        </span>
-                      ) : null}
-                    </p>
-                    <span className="btn-primary mt-4 w-full">
-                      Buy now
+                    )}
+                  </div>
+                  <h4 className="mt-3 text-sm font-bold text-[var(--color-brand-strong)]">
+                    {product.name}
+                  </h4>
+                  <p className="text-xs text-[var(--color-text-muted)]">
+                    {product.category}
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                    <span className="font-bold text-[var(--color-brand-strong)]">
+                      {product.priceLabel}
                     </span>
-                  </Link>
-                </article>
-              ))}
+                    {product.compareAt ? (
+                      <span className="text-[var(--color-text-muted)] line-through">
+                        {product.compareAt}
+                      </span>
+                    ) : null}
+                  </p>
+                  <span className="btn-primary mt-4 w-full">Buy now</span>
+                </Link>
+              </article>
+            ))}
           </div>
 
-          {products.status !== "ready" ? (
-            <div className="mt-4">
-              <DynamicStatusPanel
-                actionHref="/marketplace"
-                actionLabel="Preview marketplace"
-                message={products.message}
-                title="Live product feed is being connected"
-              />
-            </div>
-          ) : null}
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-4">

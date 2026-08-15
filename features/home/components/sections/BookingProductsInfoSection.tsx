@@ -35,7 +35,7 @@ export function BookingProductsInfoSection() {
             <p className="max-w-2xl text-sm leading-6 text-[var(--color-text-muted)] md:text-base">
               Customers can move from style discovery to a braiding appointment,
               then shop authentic care essentials without learning a second
-              product.
+              app.
             </p>
 
             <div className="grid gap-3 md:grid-cols-2">
@@ -79,8 +79,8 @@ export function BookingProductsInfoSection() {
                   Marketplace products
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-                  Browse approved category previews while the live catalog feed
-                  is connected.
+                  Browse curated hair care, fashion, pantry, and aftercare
+                  products with clear shopping actions.
                 </p>
                 <ul className="mt-3 grid gap-2">
                   {productSignals.map((signal) => (

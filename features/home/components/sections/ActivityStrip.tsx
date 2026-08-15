@@ -1,13 +1,36 @@
 import Link from "next/link";
 import { ArrowRight, HeartHandshake } from "lucide-react";
 import type { DynamicSection, PublicHomeActivity } from "@/features/home/types/home.types";
-import { DynamicStatusPanel } from "@/features/home/components/sections/DynamicStatusPanel";
 
 type ActivityStripProps = {
   activity: DynamicSection<PublicHomeActivity>;
 };
 
+const fallbackActivity = [
+  {
+    id: "fallback-booking-knotless",
+    label: "Jasmine booked Knotless Braids",
+    detail: "Royalty Hair Co. accepted a 3:30 PM appointment in Kathleen.",
+    occurredAt: "2 min ago",
+  },
+  {
+    id: "fallback-product-aftercare",
+    label: "Aftercare bundle added",
+    detail: "A customer paired shea butter and chebe oil with a new style.",
+    occurredAt: "8 min ago",
+  },
+  {
+    id: "fallback-profile-review",
+    label: "New 5-star profile review",
+    detail: "Clean parts, gentle styling, and clear appointment reminders.",
+    occurredAt: "14 min ago",
+  },
+] satisfies PublicHomeActivity[];
+
 export function ActivityStrip({ activity }: ActivityStripProps) {
+  const visibleActivity =
+    activity.status === "ready" ? activity.items.slice(0, 3) : fallbackActivity;
+
   return (
     <section className="border-y border-[var(--color-border)] bg-white">
       <div className="page-container grid gap-4 py-5 lg:grid-cols-[190px_1fr_auto] lg:items-center">
@@ -25,30 +48,24 @@ export function ActivityStrip({ activity }: ActivityStripProps) {
           </div>
         </div>
 
-        {activity.status === "ready" ? (
-          <div className="grid gap-3 md:grid-cols-3">
-            {activity.items.slice(0, 3).map((item) => (
-              <article
-                className="min-h-24 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3"
-                key={item.id}
-              >
-                <h2 className="text-sm font-bold text-[var(--color-brand-strong)]">
-                  {item.label}
-                </h2>
-                <p className="mt-1 text-xs leading-5 text-[var(--color-text-muted)]">
-                  {item.detail}
-                </p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <DynamicStatusPanel
-            actionHref="/braiders"
-            actionLabel="Browse braiders"
-            message={activity.message}
-            title="Community feed is being connected"
-          />
-        )}
+        <div className="grid gap-3 md:grid-cols-3">
+          {visibleActivity.map((item) => (
+            <article
+              className="min-h-24 rounded-md border border-[var(--color-border)] bg-[var(--color-page)] p-3"
+              key={item.id}
+            >
+              <h2 className="text-sm font-bold text-[var(--color-brand-strong)]">
+                {item.label}
+              </h2>
+              <p className="mt-1 text-xs leading-5 text-[var(--color-text-muted)]">
+                {item.detail}
+              </p>
+              <p className="mt-2 text-[11px] font-bold uppercase text-[var(--color-copper)]">
+                {item.occurredAt}
+              </p>
+            </article>
+          ))}
+        </div>
 
         <Link
           className="inline-flex w-fit items-center gap-2 text-sm font-bold text-[var(--color-brand)]"

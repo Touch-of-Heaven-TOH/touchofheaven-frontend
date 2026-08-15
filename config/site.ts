@@ -14,6 +14,7 @@ export const siteConfig = {
 export const brandAssets = {
   logoMark: "/images/brand/touch-of-heaven-mark.png",
   logoLockup: "/images/brand/touch-of-heaven-logo-lockup.png",
+  appQrCode: "/images/brand/touch-of-heaven-app-qr.png",
   favicon: "/icon.png",
   heroImage: "/images/home/braiding-appointment-hero.png",
   ogImage: "/opengraph-image",

@@ -32,6 +32,14 @@ catalog, cart, checkout... backend endpoint" - that line is now stale
 and should be corrected once someone builds the marketplace frontend
 against what already exists.
 
+## Public homepage
+
+### GET /api/v1/public/homepage
+Needed by: `/` and `/preview/discovery`
+Request: optional public context such as location/city and feature limits
+Response: `{ activity: [...], featuredBraiders: [...], marketplaceProducts: [...] }`
+Status: pending
+
 ## Account settings
 
 ### GET/PATCH /api/v1/customer/beauty-profile

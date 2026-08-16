@@ -283,3 +283,13 @@ body {
     opacity: 0;
   }
 }
+@keyframes slide-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+@keyframes slide-down {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+.animate-slide-up   { animation: slide-up 18s linear infinite; }
+.animate-slide-down { animation: slide-down 18s linear infinite; }

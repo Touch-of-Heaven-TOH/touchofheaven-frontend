@@ -66,9 +66,6 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
             <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
               Top Braiders Near You
             </p>
-            <h2 className="font-serif text-3xl font-semibold text-[var(--color-brand-strong)] md:text-4xl">
-              Skilled, trusted, reviewed by the community.
-            </h2>
           </div>
           <Link
             className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]"
@@ -102,10 +99,7 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
                     </span>
                   </span>
                 )}
-                <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/92 px-3 py-1 text-xs font-bold text-[var(--color-brand)] shadow-sm">
-                  <BadgeCheck aria-hidden="true" className="text-[var(--color-success)]" size={14} />
-                  Verified
-                </span>
+                
               </div>
               <div className="p-4">
                 <h3 className="text-base font-bold text-[var(--color-brand-strong)]">

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, MapPin, Star } from "lucide-react";
-import { homeMediaAssets } from "@/features/home/config/hero-media";
+import { ArrowLeft, MapPin, Star } from "lucide-react";
 import type {
   DynamicSection,
   PublicHomeBraider,
@@ -18,7 +17,7 @@ const fallbackBraiders = [
     specialty: "Knotless braids, boho braids",
     location: "Kathleen, GA · 1.8 mi",
     href: "/braiders/royalty-hair-co",
-    image: homeMediaAssets.communitySalon,
+    image: undefined,
     ratingAverage: 4.9,
     ratingCount: 128,
   },
@@ -28,7 +27,7 @@ const fallbackBraiders = [
     specialty: "Goddess braids, loc care",
     location: "Warner Robins, GA · 3.2 mi",
     href: "/braiders/touched-by-tee",
-    image: homeMediaAssets.studioBooking,
+    image: undefined,
     ratingAverage: 4.8,
     ratingCount: 96,
   },
@@ -38,7 +37,7 @@ const fallbackBraiders = [
     specialty: "Cornrows, stitch braids",
     location: "Macon, GA · 8.4 mi",
     href: "/braiders/braids-by-nia",
-    image: homeMediaAssets.primaryHero,
+    image: undefined,
     ratingAverage: 4.9,
     ratingCount: 142,
   },
@@ -48,7 +47,7 @@ const fallbackBraiders = [
     specialty: "Box braids, kids styles",
     location: "Atlanta, GA · 22 mi",
     href: "/braiders/hair-by-milly",
-    image: homeMediaAssets.stylePortrait,
+    image: undefined,
     ratingAverage: 4.7,
     ratingCount: 83,
   },
@@ -61,25 +60,20 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
   return (
     <section className="bg-white py-10 md:py-14">
       <div className="page-container">
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
-              Top Braiders Near You
-            </p>
-          </div>
+        <div className="relative">
           <Link
-            className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]"
+            aria-label="Browse all braiders on the platform"
+            className="absolute right-0 top-1/2 z-10 hidden size-10 -translate-y-1/2 translate-x-1/2 place-items-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-brand)] shadow-[var(--shadow-subtle)] transition hover:bg-[var(--color-brand-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)] md:grid"
             href="/braiders"
           >
-            View all braiders
-            <ArrowRight aria-hidden="true" size={17} />
+            <ArrowLeft aria-hidden="true" size={18} />
           </Link>
-        </div>
 
-        <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
+          <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
           {visibleBraiders.map((braider) => (
-            <article
+            <Link
               className="w-[78vw] max-w-[310px] shrink-0 overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] shadow-[var(--shadow-subtle)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)] md:w-auto md:max-w-none"
+              href={braider.href}
               key={braider.id}
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-brand-soft)]">
@@ -122,16 +116,11 @@ export function TopBraidersSection({ braiders }: TopBraidersSectionProps) {
                     {braider.ratingAverage.toFixed(1)} ({braider.ratingCount} reviews)
                   </p>
                 ) : null}
-                <Link
-                  aria-label={`View ${braider.name} braider profile`}
-                  className="btn-primary mt-4 w-full"
-                  href={braider.href}
-                >
-                  View Profile
-                </Link>
+
               </div>
-            </article>
+            </Link>
           ))}
+          </div>
         </div>
       </div>
     </section>

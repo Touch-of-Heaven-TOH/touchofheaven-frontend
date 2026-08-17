@@ -46,10 +46,7 @@ export function AiStylePreviewSection() {
             </div>
 
             <div>
-              <p className="inline-flex items-center gap-2 text-sm font-bold uppercase text-[var(--color-gold-light)]">
-                <Sparkles aria-hidden="true" size={17} />
-                AI Style Preview
-              </p>
+              
               <h2 className="mt-4 max-w-xl font-serif text-3xl font-semibold leading-tight md:text-5xl">
                 Try your look before you book.
               </h2>

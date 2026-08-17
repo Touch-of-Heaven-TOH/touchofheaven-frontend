@@ -12,7 +12,6 @@ import {
   marketplaceIntro,
 } from "@/features/home/config/home-content";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
-import { MediaCard } from "@/features/home/components/sections/MediaCard";
 import { SectionHeading } from "@/features/home/components/sections/SectionHeading";
 import type {
   DynamicSection,
@@ -228,31 +227,8 @@ export function MarketplacePreviewSection({
           </div>
         </div>
 
-        <div className="mt-6 grid gap-3 md:grid-cols-3">
-          {promoCards.map((card) => (
-            <Link
-              className="rounded-md border border-[var(--color-border)] bg-white p-5 text-center shadow-[var(--shadow-subtle)] transition hover:-translate-y-0.5 hover:border-[var(--color-brand)] hover:shadow-[var(--shadow-soft)]"
-              href={card.href}
-              key={card.label}
-            >
-              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase text-[var(--color-copper)]">
-                <BadgePercent aria-hidden="true" size={15} />
-                Community offer
-              </p>
-              <h3 className="mt-3 font-serif text-2xl font-semibold text-[var(--color-brand-strong)]">
-                {card.label}
-              </h3>
-              <span className="mt-5 inline-flex rounded-full border border-[var(--color-brand)] px-5 py-2 text-sm font-bold text-[var(--color-brand)]">
-                {card.action}
-              </span>
-            </Link>
-          ))}
-        </div>
-
         <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {marketplaceCategories.map((category) => (
-            <MediaCard card={category} key={category.title} ratio="square" />
-          ))}
+          
         </div>
 
         <div className="mt-8">

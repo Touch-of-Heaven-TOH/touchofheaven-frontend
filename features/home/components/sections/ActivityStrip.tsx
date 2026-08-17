@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { DynamicSection, PublicHomeActivity } from "@/features/home/types/home.types";
 
 type ActivityStripProps = {
@@ -34,11 +34,6 @@ export function ActivityStrip({ activity }: ActivityStripProps) {
   return (
     <section className="border-y border-[var(--color-border)] bg-white py-4">
       <div className="page-container grid gap-3 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-        <p className="inline-flex items-center gap-2 text-sm font-bold uppercase text-[var(--color-brand-strong)]">
-          <Sparkles aria-hidden="true" className="text-[var(--color-copper)]" size={16} />
-          Live activity
-        </p>
-
         <div className="overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-page)]">
           <div className="activity-ticker-track flex w-max items-center gap-6 px-4 py-3 text-sm font-semibold text-[var(--color-brand-strong)]">
             {[...visibleActivity, ...visibleActivity].map((item, index) => (

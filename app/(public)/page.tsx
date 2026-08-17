@@ -8,7 +8,6 @@ import {
   MobileAppSection,
   TopBraidersSection,
 } from "@/features/home";
-import { CountrySourceSection } from "@/features/home/components/sections/CountrySourceSection";
 import { getHomePageData } from "@/features/home/api/home.queries";
 
 export const metadata: Metadata = {
@@ -26,7 +25,6 @@ export default async function HomePage() {
       <BookingProductsInfoSection />
       <ActivityStrip activity={homeData.activity} />
       <TopBraidersSection braiders={homeData.featuredBraiders} />
-      <CountrySourceSection />
       <MarketplacePreviewSection products={homeData.marketplaceProducts} />
       <AiStylePreviewSection />
       <MobileAppSection />

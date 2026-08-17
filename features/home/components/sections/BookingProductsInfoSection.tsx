@@ -1,134 +1,96 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarCheck,
-  CheckCircle2,
-  ShoppingBag,
-} from "lucide-react";
-import { brandAssets } from "@/config/site";
-import { homeMediaAssets } from "@/features/home/config/hero-media";
+import { useEffect, useState } from "react";
+import { showcaseSlides } from "@/features/home/config/showcase-slide";
 
-const serviceSignals = [
-  "Verified braider profile",
-  "Consultation notes",
-  "Secure deposit handoff",
-] as const;
-
-const productSignals = [
-  "Published product cards",
-  "Aftercare essentials",
-  "Order tracking path",
-] as const;
+const HOLD_MS = 5000;
+const FADE_MS = 1200;
+const SLIDES = showcaseSlides;
 
 export function BookingProductsInfoSection() {
+  const [index, setIndex] = useState(0);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    let fadeTimeout: ReturnType<typeof setTimeout>;
+
+    const cycle = setInterval(() => {
+      setFading(true);
+      fadeTimeout = setTimeout(() => {
+        setIndex((i) => (i + 1) % SLIDES.length);
+        setFading(false);
+      }, FADE_MS);
+    }, HOLD_MS);
+
+    return () => {
+      clearInterval(cycle);
+      clearTimeout(fadeTimeout);
+    };
+  }, []);
+
+  const slide = SLIDES[index];
+
   return (
     <section className="bg-white py-10 md:py-14">
       <div className="page-container">
-        <div className="grid overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] shadow-[var(--shadow-soft)] lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="grid gap-5 p-5 md:p-8 lg:p-10">
-            <p className="text-sm font-bold uppercase text-[var(--color-copper)]">
-              Booking + Products
-            </p>
-            <h2 className="font-serif text-3xl font-semibold leading-tight text-[var(--color-brand-strong)] md:text-5xl">
-              One experience for the appointment and the aftercare.
-            </h2>
-            <p className="max-w-2xl text-sm leading-6 text-[var(--color-text-muted)] md:text-base">
-              Customers can move from style discovery to a braiding appointment,
-              then shop authentic care essentials without learning a second
-              app.
-            </p>
+        <div className="grid items-center gap-8 md:grid-cols-2">
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-xs">
+              {/* left accent panel, tucked behind the image's left edge */}
+              <div
+                aria-hidden="true"
+                className="absolute left-0 top-1/2 z-0 h-[420px] w-14 -translate-y-1/2 rounded-[2rem] bg-[var(--color-brand-soft)] md:h-[500px] md:w-50"
+              />
+              {/* right accent panel, tucked behind the image's right edge */}
+              <div
+                aria-hidden="true"
+                className="absolute right-0 top-1/2 z-0 h-[420px] w-20 -translate-y-1/2 rounded-[2rem] bg-gradient-to-b from-[var(--color-copper)] to-white md:h-[500px] md:w-30"
+              />
 
-            <div className="grid gap-3 md:grid-cols-2">
-              <article className="rounded-md border border-[var(--color-border)] bg-white p-4">
-                <span className="grid size-11 place-items-center rounded-md bg-[var(--color-brand-soft)] text-[var(--color-brand)]">
-                  <CalendarCheck aria-hidden="true" size={22} />
-                </span>
-                <h3 className="mt-4 text-lg font-bold text-[var(--color-brand-strong)]">
-                  Hairstyling services
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-                  Find a style direction, choose a professional, and continue
-                  into the secure booking flow.
-                </p>
-                <ul className="mt-3 grid gap-2">
-                  {serviceSignals.map((signal) => (
-                    <li
-                      className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)]"
-                      key={signal}
-                    >
-                      <CheckCircle2
-                        aria-hidden="true"
-                        className="text-[var(--color-success)]"
-                        size={15}
-                      />
-                      {signal}
-                    </li>
-                  ))}
-                </ul>
-                <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]" href="/book">
-                  Start booking
-                  <ArrowRight aria-hidden="true" size={16} />
-                </Link>
-              </article>
-
-              <article className="rounded-md border border-[var(--color-border)] bg-white p-4">
-                <span className="grid size-11 place-items-center rounded-md bg-[var(--color-copper-soft)] text-[var(--color-copper)]">
-                  <ShoppingBag aria-hidden="true" size={22} />
-                </span>
-                <h3 className="mt-4 text-lg font-bold text-[var(--color-brand-strong)]">
-                  Marketplace products
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-                  Browse curated hair care, fashion, pantry, and aftercare
-                  products with clear shopping actions.
-                </p>
-                <ul className="mt-3 grid gap-2">
-                  {productSignals.map((signal) => (
-                    <li
-                      className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)]"
-                      key={signal}
-                    >
-                      <CheckCircle2
-                        aria-hidden="true"
-                        className="text-[var(--color-success)]"
-                        size={15}
-                      />
-                      {signal}
-                    </li>
-                  ))}
-                </ul>
-                <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]" href="/marketplace">
-                  Shop products
-                  <ArrowRight aria-hidden="true" size={16} />
-                </Link>
-              </article>
+              {/* image sits above both panels */}
+              <div
+                className="relative z-10 w-full transition-opacity"
+                style={{
+                  aspectRatio: "10 / 20",
+                  opacity: fading ? 0 : 1,
+                  transitionDuration: `${FADE_MS}ms`,
+                  maskImage:
+                    "radial-gradient(ellipse closest-side at center, black 40%, transparent 100%)",
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse closest-side at center, black 40%, transparent 100%)",
+                }}
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.alt}
+                  fill
+                  sizes="(min-width: 768px) 400px, 100vw"
+                  className="object-contain"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="relative min-h-[320px] overflow-hidden bg-[var(--color-brand-soft)] md:min-h-[460px]">
-            <Image
-              alt={homeMediaAssets.bookingMarketplace.alt}
-              className="object-cover"
-              fill
-              sizes="(max-width: 1024px) 100vw, 56vw"
-              src={homeMediaAssets.bookingMarketplace.src}
-              style={{ objectPosition: homeMediaAssets.bookingMarketplace.focalPoint }}
-            />
+          <div className="grid gap-4">
             <div
-              aria-hidden="true"
-              className="absolute bottom-[15%] right-[14%] grid size-20 place-items-center rounded-full bg-white/88 p-2 shadow-[0_12px_34px_rgba(45,27,78,0.24)] backdrop-blur-sm md:size-28"
+              className="grid gap-4 transition-opacity"
+              style={{
+                opacity: fading ? 0 : 1,
+                transitionDuration: `${FADE_MS}ms`,
+              }}
             >
-              <span className="relative block size-full">
-                <Image
-                  alt=""
-                  className="object-contain"
-                  fill
-                  sizes="112px"
-                  src={brandAssets.logoMark}
-                />
-              </span>
+              <h2 className="font-serif text-3xl font-semibold leading-tight text-[var(--color-brand-strong)] md:text-4xl">
+                {slide.heading}
+              </h2>
+              <p className="max-w-xl text-sm leading-6 text-[var(--color-text-muted)] md:text-base">
+                {slide.description}
+              </p>
             </div>
+            <Link href="/sign-up" className="btn-primary w-fit">
+              Try for Free
+            </Link>
           </div>
         </div>
       </div>

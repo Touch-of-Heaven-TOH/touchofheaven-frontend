@@ -1,9 +1,7 @@
 "use client";
 
 import type { HeroMediaItem } from "@/features/home/types/home.types";
-import { HeroControls } from "@/features/home/components/hero/HeroControls";
 import { HeroImageSlide } from "@/features/home/components/hero/HeroImageSlide";
-import { HeroProgress } from "@/features/home/components/hero/HeroProgress";
 import { useHeroCarousel } from "@/features/home/components/hero/useHeroCarousel";
 
 type HeroMediaCarouselProps = {
@@ -63,20 +61,6 @@ export function HeroMediaCarousel({ items }: HeroMediaCarouselProps) {
           overlayClassByStrength[carousel.activeItem.overlayStrength]
         }`}
       />
-      <div className="absolute inset-x-0 bottom-4 z-10 hidden md:block">
-        <div className="page-container flex items-end justify-between gap-4">
-          <HeroProgress activeIndex={carousel.activeIndex} total={items.length} />
-          <HeroControls
-            activeIndex={carousel.activeIndex}
-            isPaused={carousel.isPaused || carousel.isReducedMotion}
-            items={items}
-            onNext={carousel.next}
-            onPrevious={carousel.previous}
-            onSelect={carousel.select}
-            onTogglePause={carousel.togglePause}
-          />
-        </div>
-      </div>
     </div>
   );
 }

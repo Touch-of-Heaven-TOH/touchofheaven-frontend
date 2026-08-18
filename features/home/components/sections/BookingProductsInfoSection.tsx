@@ -61,7 +61,7 @@ export function BookingProductsInfoSection() {
                   WebkitMaskImage:
                     "radial-gradient(ellipse closest-side at center, black 40%, transparent 100%)",
                 }}
-              >
+              >  
                 <Image
                   src={slide.image}
                   alt={slide.alt}

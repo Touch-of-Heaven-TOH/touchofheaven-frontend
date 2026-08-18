@@ -4,7 +4,7 @@ import {
   AiStylePreviewSection,
   BookingProductsInfoSection,
   HeroSection,
-  MarketplacePreviewSection,
+  MarketplaceShowcaseSection,
   MobileAppSection,
   TopBraidersSection,
 } from "@/features/home";
@@ -25,7 +25,7 @@ export default async function HomePage() {
       <BookingProductsInfoSection />
       <ActivityStrip activity={homeData.activity} />
       <TopBraidersSection braiders={homeData.featuredBraiders} />
-      <MarketplacePreviewSection products={homeData.marketplaceProducts} />
+      <MarketplaceShowcaseSection />
       <AiStylePreviewSection />
       <MobileAppSection />
     </>

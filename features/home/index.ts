@@ -11,7 +11,7 @@ export { BookingProductsInfoSection } from "@/features/home/components/sections/
 export { CommunityLooksSection } from "@/features/home/components/sections/CommunityLooksSection";
 export { DemoBraiderProfileSection } from "@/features/home/components/sections/DemoBraiderProfileSection";
 export { MapPreviewSection } from "@/features/home/components/sections/MapPreviewSection";
-export { MarketplacePreviewSection } from "@/features/home/components/sections/MarketplacePreviewSection";
+export { MarketplaceShowcaseSection } from "@/features/home/components/sections/MarketplacePreviewSection";
 export { MobileAppSection } from "@/features/home/components/sections/MobileAppSection";
 export { PlatformPhonePreviewsSection } from "@/features/home/components/sections/PlatformPhonePreviewsSection";
 export { StyleQuizBanner } from "@/features/home/components/sections/StyleQuizBanner";

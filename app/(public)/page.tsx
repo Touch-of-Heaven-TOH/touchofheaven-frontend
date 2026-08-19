@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import {
   ActivityStrip,
-  AiStylePreviewSection,
   BookingProductsInfoSection,
+  FeatureShowcaseSection,
   HeroSection,
   MarketplaceShowcaseSection,
   MobileAppSection,
@@ -26,7 +26,7 @@ export default async function HomePage() {
       <ActivityStrip activity={homeData.activity} />
       <TopBraidersSection braiders={homeData.featuredBraiders} />
       <MarketplaceShowcaseSection />
-      <AiStylePreviewSection />
+      <FeatureShowcaseSection />
       <MobileAppSection />
     </>
   );

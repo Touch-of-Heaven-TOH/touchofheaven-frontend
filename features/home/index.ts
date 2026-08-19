@@ -1,12 +1,11 @@
 export { DiscoverySearch } from "@/features/home/components/DiscoverySearch";
-export { FeaturedBraiders } from "@/features/home/components/FeaturedBraiders";
+export { FeatureShowcaseSection } from "@/features/home/components/FeaturedBraiders";
 export { FinalCallToAction } from "@/features/home/components/FinalCallToAction";
 export { HeroSection } from "@/features/home/components/HeroSection";
 export { HowItWorks } from "@/features/home/components/HowItWorks";
 export { ServiceCategories } from "@/features/home/components/ServiceCategories";
 export { TrustAndSafety } from "@/features/home/components/TrustAndSafety";
 export { ActivityStrip } from "@/features/home/components/sections/ActivityStrip";
-export { AiStylePreviewSection } from "@/features/home/components/sections/AiStylePreviewSection";
 export { BookingProductsInfoSection } from "@/features/home/components/sections/BookingProductsInfoSection";
 export { CommunityLooksSection } from "@/features/home/components/sections/CommunityLooksSection";
 export { DemoBraiderProfileSection } from "@/features/home/components/sections/DemoBraiderProfileSection";

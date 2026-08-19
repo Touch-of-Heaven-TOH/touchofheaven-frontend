@@ -40,7 +40,7 @@ export function MarketplaceShowcaseSection() {
   return (
     <section className="bg-white py-10 md:py-14">
       <div className="page-container">
-        <div className="grid items-center gap-10 overflow-hidden rounded-md bg-[var(--color-brand-strong)] p-6 shadow-[var(--shadow-media)] md:grid-cols-2 md:p-10 lg:p-12">
+        <div className="relative grid items-center gap-10  rounded-md bg-[var(--color-brand-strong)] pb-6 pt-4 shadow-[var(--shadow-media)] md:grid-cols-2 md:pb-10 md:pt-6 lg:pb-12 lg:pt-8 px-6 md:px-10 lg:px-12">
           {/* Left: informational text */}
           <div className="grid gap-4">
             <h2 className="font-serif text-3xl font-semibold leading-tight text-white md:text-4xl">
@@ -70,14 +70,14 @@ export function MarketplaceShowcaseSection() {
           </div>
 
           {/* Right: stacked card deck */}
-          <div className="relative flex justify-center">
+          <div className="relative -mt-16 flex justify-center md:-mt-20">
             {/* background accent shapes, behind the deck */}
             <div
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 z-0 h-[480px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] bg-[var(--color-brand-soft)]/30 blur-2xl"
+              className="absolute left-1/2 top-1/2 z-0 h-[280px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] bg-[var(--color-brand-soft)]/30 blur-2xl"
             />
 
-            <div className="relative h-[380px] w-[280px]">
+            <div className="relative h-[480px] w-[380px]">
               {order.map((cardIndex, depth) => {
                 const card = CARDS[cardIndex];
                 const pos = STACK_STYLES[depth] ?? STACK_STYLES[STACK_STYLES.length - 1];

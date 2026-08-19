@@ -80,3 +80,60 @@ export const MarketplaceSlides: MarketplaceSlide[] = [
     
   }
 ]
+
+export type FeatureSlide = {
+  id: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+  image: string;
+  alt: string;
+};
+
+export const featureShowcaseSlides: FeatureSlide[] = [
+  {
+    id: "no-cost-setup",
+    title: "No fees to get started, ever",
+    description:"Other booking platforms charge braiders a monthly fee or take a commission on every service. Here, listing your services and taking bookings costs nothing — you keep what you earn.",
+    ctaLabel: "Create your profile",
+    ctaHref: "/sign-up",
+    // IMAGE NEEDED: illustration works better than a screenshot here — a simple
+    // "$0" badge or a wallet/checkmark graphic. There's no UI screen that visually
+    // represents "absence of a fee," so don't force one.
+    image: "/images/home/images/platform.png",
+    alt: "No fees to join as a braider",
+  },
+  {
+    id: "ai-style-preview",
+    title: "See your braid before you book",
+    description: "Upload a photo and preview AI-suggested braid styles matched to your face shape and the occasion.",
+    ctaLabel: "Try AI Style Preview",
+    ctaHref: "/ai-studio",
+    // IMAGE NEEDED: a single "after" result photo works fine here (before/after split
+    // was the old AiStylePreviewSection's job — don't rebuild that complexity unless you want it back).
+    image: "/images/home/images/Aistyle.png",
+    alt: "AI-suggested braid style preview",
+  },
+  {
+    id: "calendar",
+    title: "Calendar & Appointments",
+    description:"Streamline bookings while keeping full control of your calendar. Clients get automatic reminders — fully customizable.",
+    ctaLabel: "Learn more about Calendar",
+    ctaHref: "/features/calendar",
+    // IMAGE NEEDED: phone-mockup screenshot of your actual calendar/appointments screen (like the Booksy reference).
+    image: "/images/home/images/schudle.png",
+    alt: "Calendar and appointments screen",
+  },
+  {
+    id: "marketplace",
+    title: "Shop while you book",
+    description:
+      "Buy verified hair products and groceries from trusted sellers — all inside the same app you use to book your braider.",
+    ctaLabel: "Explore marketplace",
+    ctaHref: "/marketplace",
+    // IMAGE NEEDED: product grid screenshot, or a styled flat-lay photo of hair products + grocery items together.
+    image: "/images/home/images/prodgrocrey.png",
+    alt: "Marketplace product listings",
+  }
+];

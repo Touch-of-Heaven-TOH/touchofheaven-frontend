@@ -41,12 +41,12 @@ export function BookingProductsInfoSection() {
               {/* left accent panel, tucked behind the image's left edge */}
               <div
                 aria-hidden="true"
-                className="absolute left-0 top-1/2 z-0 h-[420px] w-14 -translate-y-1/2 rounded-[2rem] bg-[var(--color-brand-soft)] md:h-[500px] md:w-50"
+                className="absolute left-1 top-1/2 z-0 h-[320px] w-14 -translate-y-1/2 rounded-[2rem] bg-[var(--color-brand-soft)] md:h-[500px] md:w-50"
               />
               {/* right accent panel, tucked behind the image's right edge */}
               <div
                 aria-hidden="true"
-                className="absolute right-0 top-1/2 z-0 h-[420px] w-20 -translate-y-1/2 rounded-[2rem] bg-gradient-to-b from-[var(--color-copper)] to-white md:h-[500px] md:w-30"
+                className="absolute right-[-20] top-1/2 z-0 h-[420px] w-30 -translate-y-1/2 rounded-[2rem] bg-gradient-to-b from-[var(--color-copper)] to-white md:h-[500px] md:w-30"
               />
 
               {/* image sits above both panels */}
@@ -66,7 +66,7 @@ export function BookingProductsInfoSection() {
                   src={slide.image}
                   alt={slide.alt}
                   fill
-                  sizes="(min-width: 768px) 400px, 100vw"
+                  sizes="(min-width: 1068px) 890px, 220vw"
                   className="object-contain"
                 />
               </div>

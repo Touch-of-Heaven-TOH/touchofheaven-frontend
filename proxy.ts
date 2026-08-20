@@ -9,6 +9,7 @@ const publicPrefixes = [
   "/about",
   "/how-it-works",
   "/braiders",
+  "/ai-studio",
   "/beauty",
   "/marketplace",
   "/map",

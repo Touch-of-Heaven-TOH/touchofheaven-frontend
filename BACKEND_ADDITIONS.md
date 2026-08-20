@@ -40,6 +40,50 @@ Request: optional public context such as location/city and feature limits
 Response: `{ activity: [...], featuredBraiders: [...], marketplaceProducts: [...] }`
 Status: pending
 
+## AI Studio
+
+### GET /api/v1/studio/styles
+Needed by: `/ai-studio`
+Request: optional `category`, `q`, pagination and active-only filters
+Response: `{ styles: [{ id, slug, name, category, density, length, parting, thumbnailUrl, images, availableColors, availableSizes, availableLengths }] }`
+Status: pending frontend integration. The frontend currently falls back to locally imported Brane reference assets when this endpoint is unavailable.
+
+### GET /api/v1/studio/credits
+Needed by: `/ai-studio`
+Request: authenticated customer session
+Response: `{ balance, lifetimeEarned, lifetimeConsumed }`
+Status: pending
+
+### POST /api/v1/studio/upload-url
+Needed by: `/ai-studio`
+Request: `{ filename, contentType: "image/jpeg" }`
+Response: `{ uploadUrl, objectKey }` for a short-lived private upload target
+Status: pending
+
+### POST /api/v1/studio/generate
+Needed by: `/ai-studio`
+Request: `{ objectKey, styleId, selectedColor, selectedSize, selectedLength }`
+Response: `{ sessionId }`
+Status: pending provider-independent generation endpoint
+
+### GET /api/v1/studio/sessions, GET /api/v1/studio/sessions/[sessionId]
+Needed by: `/ai-studio`
+Request: authenticated customer session; session detail must enforce ownership
+Response: list/detail of owned AI Studio sessions
+Status: pending
+
+### POST /api/v1/studio/sessions/[sessionId]/share, GET /api/v1/studio/share/[shareToken]
+Needed by: `/ai-studio`, `/ai-studio/share/[shareToken]`
+Request: authenticated share creation; public read by opaque share token
+Response: share URL or public preview payload
+Status: pending
+
+### /account/credits
+Needed by: `/ai-studio`
+Request: customer credit purchase and history UI
+Response: credit purchase flow or placeholder until billing is approved
+Status: pending
+
 ## Account settings
 
 ### GET/PATCH /api/v1/customer/beauty-profile

@@ -47,7 +47,7 @@ export function MarketplaceShowcaseSection() {
               All in one place.
             </h2>
             <p className="max-w-xl text-sm leading-6 text-white/75 md:text-base">
-              Whether you're a customer restocking hair products or a business
+              Whether you&apos;re a customer restocking hair products or a business
               
             </p>
             <ul className="mt-2 grid gap-2">

@@ -57,7 +57,8 @@ const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
 const colorGroups = ["Black", "Brown", "Blonde", "Blends"] as const;
 
 function categoryLabel(style: AiStudioStyle) {
-  return [style.density, style.length, style.parting].filter(Boolean).join(" · ");
+  const detail = [style.density, style.length, style.parting].filter(Boolean).join(" · ");
+  return detail || style.category;
 }
 
 function sanitizeFilename(name: string) {
@@ -558,8 +559,9 @@ export function AiStudioExperience({
     initialCatalogError,
   );
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] =
-    useState<(typeof aiStudioCategories)[number]>("All");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [activeAudience, setActiveAudience] =
+    useState<"ALL" | "WOMEN" | "MEN">("ALL");
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(
     initialStyleId ?? null,
   );
@@ -606,16 +608,20 @@ export function AiStudioExperience({
   }, [selectedColor, selectedStyleId]);
 
   useEffect(() => {
-    if (initialStyles.length > 0) return;
+    // The server-rendered initial page only ever covers audience "ALL" -
+    // once the visitor picks Women/Men, this always refetches even on the
+    // very first render for that audience.
+    if (initialStyles.length > 0 && activeAudience === "ALL") return;
 
     let live = true;
-    fetchAiStudioStyles()
+    fetchAiStudioStyles(activeAudience === "ALL" ? {} : { audience: activeAudience })
       .then((items) => {
         if (!live) return;
         const next = items.length > 0 ? items : fallbackAiStudioStyles;
         setStyles(next);
         setCatalogSource(items.length > 0 ? "backend" : "fallback");
         setCatalogError(null);
+        setActiveCategory("All");
       })
       .catch(() => {
         if (!live) return;
@@ -632,7 +638,7 @@ export function AiStudioExperience({
     return () => {
       live = false;
     };
-  }, [initialStyles.length]);
+  }, [initialStyles.length, activeAudience]);
 
   useEffect(() => {
     if (!authenticated) return;
@@ -689,6 +695,16 @@ export function AiStudioExperience({
       return categoryMatch && queryMatch;
     });
   }, [activeCategory, query, styles]);
+
+  // The fallback catalog only ever has its own fixed 5 categories; real
+  // backend data can include any of the full TryOnCategory taxonomy
+  // (including men's/barber categories), so its chips are derived from
+  // whatever categories are actually present rather than hardcoded.
+  const categoryOptions = useMemo(() => {
+    if (catalogSource === "fallback") return aiStudioCategories;
+    const present = Array.from(new Set(styles.map((style) => style.category)));
+    return ["All", ...present];
+  }, [catalogSource, styles]);
 
   function selectStyle(style: AiStudioStyle) {
     setSelectedStyleId(style.id);
@@ -936,8 +952,29 @@ export function AiStudioExperience({
               </button>
             </div>
 
+            <div className="mt-4 flex gap-2">
+              {(["ALL", "WOMEN", "MEN"] as const).map((audience) => (
+                <button
+                  className={`rounded-md border px-4 py-2 text-sm font-bold transition ${
+                    activeAudience === audience
+                      ? "border-[var(--color-brand-strong)] bg-[var(--color-brand-strong)] text-white"
+                      : "border-[var(--color-border)] bg-white text-[var(--color-text-primary)] hover:border-[var(--color-brand)]"
+                  }`}
+                  key={audience}
+                  type="button"
+                  onClick={() => {
+                    if (audience === activeAudience) return;
+                    setLoadingStyles(true);
+                    setActiveAudience(audience);
+                  }}
+                >
+                  {audience === "ALL" ? "All" : audience === "WOMEN" ? "Women" : "Men"}
+                </button>
+              ))}
+            </div>
+
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-              {aiStudioCategories.map((category) => (
+              {categoryOptions.map((category) => (
                 <button
                   className={`shrink-0 rounded-md border px-4 py-3 text-sm font-bold transition ${
                     activeCategory === category

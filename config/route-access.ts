@@ -27,7 +27,11 @@ export const routeAccessRules: RouteAccessRule[] = [
   },
   {
     family: "(auth)",
-    examples: "/sign-in, /sign-up, /forgot-password, /reset-password, /mfa",
+    examples:
+      "/sign-in, /sign-up, /forgot-password, /reset-password, /mfa. " +
+      "/braider/sign-in and /braider/register are also public but NOT " +
+      "guest-only (an already-signed-in customer must still be able to " +
+      "reach /braider/register to apply)",
     visibility: "guest-only",
     roles: "any signed-in user",
     recentMfa: "not required",

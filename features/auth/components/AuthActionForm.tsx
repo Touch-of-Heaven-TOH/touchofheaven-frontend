@@ -36,6 +36,7 @@ type AuthActionFormProps = {
 type AuthResponse = {
   message?: string;
   mfaRequired?: boolean;
+  postLoginRoute?: string;
 };
 
 function payloadFromForm(form: HTMLFormElement): Record<string, string | boolean> {
@@ -90,7 +91,13 @@ export function AuthActionForm({
       }
 
       if (mode === "sign-in" || mode === "mfa") {
-        router.push(safeReturnUrl(searchParams.get("callbackUrl")));
+        // An explicit callbackUrl (e.g. "/professional-application" after
+        // being redirected to sign in) always wins over the generic
+        // role-based default - it's a more specific destination than
+        // "wherever this role normally lands."
+        router.push(
+          safeReturnUrl(searchParams.get("callbackUrl"), data.postLoginRoute),
+        );
         router.refresh();
         return;
       }

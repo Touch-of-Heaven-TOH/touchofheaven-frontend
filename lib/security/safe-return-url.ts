@@ -1,19 +1,22 @@
-export function safeReturnUrl(value: string | null | undefined): string {
-  if (!value) return "/account";
+export function safeReturnUrl(
+  value: string | null | undefined,
+  fallback = "/account",
+): string {
+  if (!value) return fallback;
 
   try {
     const decoded = decodeURIComponent(value);
 
     if (!decoded.startsWith("/") || decoded.startsWith("//")) {
-      return "/account";
+      return fallback;
     }
 
     if (decoded.includes("\\") || decoded.includes("\u0000")) {
-      return "/account";
+      return fallback;
     }
 
     return decoded;
   } catch {
-    return "/account";
+    return fallback;
   }
 }

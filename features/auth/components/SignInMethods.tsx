@@ -55,6 +55,12 @@ export function SignInMethods() {
                 Forgot Password?
               </Link>
             </div>
+            <p className="text-xs text-[var(--color-text-muted)]">
+              Are you a braider?{" "}
+              <Link className="text-[var(--color-text-muted)] underline" href="/braider/sign-in">
+                Sign in to your studio →
+              </Link>
+            </p>
           </div>
         }
       />
@@ -102,6 +108,12 @@ export function SignInMethods() {
             Forgot Password?
           </Link>
         </div>
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Are you a braider?{" "}
+          <Link className="text-[var(--color-text-muted)] underline" href="/braider/sign-in">
+            Sign in to your studio →
+          </Link>
+        </p>
       </div>
     </section>
   );

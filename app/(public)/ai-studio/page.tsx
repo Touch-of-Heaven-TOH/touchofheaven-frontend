@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { AiStudioExperience } from "@/features/ai-studio";
+import { toAiStudioStyle } from "@/features/ai-studio/api/style-mapper";
+import type { RawStyle } from "@/features/ai-studio/api/style-mapper";
 import { fallbackAiStudioStyles } from "@/features/ai-studio/data/fallback-catalog";
-import type { AiStudioStyle } from "@/features/ai-studio/types";
 import { serverApiFetch } from "@/lib/api/server";
 import { getCurrentUser } from "@/lib/auth/session";
 
@@ -19,10 +20,10 @@ type AiStudioPageProps = {
 };
 
 type StylesPayload =
-  | AiStudioStyle[]
+  | RawStyle[]
   | {
-      styles?: AiStudioStyle[];
-      items?: AiStudioStyle[];
+      styles?: RawStyle[];
+      items?: RawStyle[];
     };
 
 function asStyles(payload: StylesPayload) {
@@ -32,7 +33,8 @@ function asStyles(payload: StylesPayload) {
 
 async function getInitialCatalogue() {
   try {
-    const styles = asStyles(await serverApiFetch<StylesPayload>("/api/v1/studio/styles"));
+    const rawStyles = asStyles(await serverApiFetch<StylesPayload>("/api/v1/studio/styles"));
+    const styles = rawStyles.map(toAiStudioStyle);
     if (styles.length > 0) {
       return {
         styles,

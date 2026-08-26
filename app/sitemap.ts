@@ -8,6 +8,7 @@ const publicRoutes = [
   "/how-it-works",
   "/braiders",
   "/beauty",
+  "/for-clients",
   "/legal",
   "/map",
   "/contact",

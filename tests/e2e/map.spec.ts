@@ -84,7 +84,7 @@ test.describe('Braider discovery map', () => {
     // a dead click, is what "Book Now navigates correctly" actually means
     // for a signed-out visitor - the exact braider id must survive the
     // redirect.
-    await expect(page).toHaveURL(/\/sign-in\?callbackUrl=.*book%2Fbraider-e2e-1/);
+    await expect(page).toHaveURL(/\/customer\/sign-in\?callbackUrl=.*book%2Fbraider-e2e-1/);
   });
 
   test('selecting a result from the map pin highlights the matching sidebar row', async ({

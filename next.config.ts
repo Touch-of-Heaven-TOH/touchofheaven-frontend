@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.ggpht.com" },
       { protocol: "https", hostname: "*.mapbox.com" },
       { protocol: "https", hostname: "*.stripe.com" },
+      // Temporary: the 4 AI Studio styles currently in the local dev DB
+      // still have their raw scraped Pinterest source URL as thumbnailUrl
+      // because R2 was never configured when scripts/scrape-styles.ts ran
+      // (the R2 upload step failed and left the placeholder in place - see
+      // that script's `thumbnailUrl: existing?.thumbnailUrl ?? style.imageUrl`
+      // fallback). Without this, next/image throws and crashes the whole
+      // /ai-studio page for any style still in that state. Remove once R2
+      // is configured and the catalog is re-scraped so every thumbnailUrl
+      // is actually R2-hosted - hotlinking Pinterest's CDN isn't something
+      // to rely on long-term.
+      { protocol: "https", hostname: "i.pinimg.com" },
     ],
   },
   async headers() {

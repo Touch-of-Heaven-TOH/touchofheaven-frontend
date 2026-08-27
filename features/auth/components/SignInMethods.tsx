@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { AuthActionForm } from "@/features/auth/components/AuthActionForm";
 import { GoogleSignInButton } from "@/features/auth/components/GoogleSignInButton";
@@ -8,6 +9,14 @@ import { MagicCodeSignIn } from "@/features/auth/components/MagicCodeSignIn";
 
 export function SignInMethods() {
   const [usePassword, setUsePassword] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+  // Carries the destination (e.g. /professional-application) through to
+  // sign-up, so someone without an account yet who clicked "List your
+  // business" doesn't lose that context after creating one.
+  const signUpHref = callbackUrl
+    ? `/customer/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/customer/sign-up";
 
   if (usePassword) {
     return (
@@ -36,7 +45,7 @@ export function SignInMethods() {
               ← Use email code or Google instead
             </button>
             <div className="flex flex-wrap gap-3">
-              <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
+              <Link className="font-semibold text-[var(--color-brand)]" href={signUpHref}>
                 Create Account
               </Link>
               <Link
@@ -46,6 +55,12 @@ export function SignInMethods() {
                 Forgot Password?
               </Link>
             </div>
+            <p className="text-xs text-[var(--color-text-muted)]">
+              Own a beauty business?{" "}
+              <Link className="text-[var(--color-text-muted)] underline" href="/business/sign-in">
+                Sign in to your studio →
+              </Link>
+            </p>
           </div>
         }
       />
@@ -83,7 +98,7 @@ export function SignInMethods() {
           Sign In With Password
         </button>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link className="font-semibold text-[var(--color-brand)]" href="/sign-up">
+          <Link className="font-semibold text-[var(--color-brand)]" href={signUpHref}>
             Create Account
           </Link>
           <Link
@@ -93,6 +108,12 @@ export function SignInMethods() {
             Forgot Password?
           </Link>
         </div>
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Own a beauty business?{" "}
+          <Link className="text-[var(--color-text-muted)] underline" href="/business/sign-in">
+            Sign in to your studio →
+          </Link>
+        </p>
       </div>
     </section>
   );

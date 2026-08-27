@@ -27,7 +27,7 @@ import {
   type DragEvent,
   type KeyboardEvent,
 } from "react";
-import { brandAssets, siteConfig } from "@/config/site";
+import { brandAssets } from "@/config/site";
 import {
   fetchAiStudioCredits,
   fetchAiStudioSession,
@@ -458,13 +458,13 @@ function AuthGateModal({
           </a>
           <Link
             className="btn-primary w-full"
-            href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/customer/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
             Sign in with email
           </Link>
           <Link
             className="btn-ghost w-full"
-            href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/customer/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
             New here? Create a free account
           </Link>
@@ -845,18 +845,16 @@ export function AiStudioExperience({
     <div className="min-h-dvh bg-[var(--color-surface-strong)] text-[var(--color-text-primary)]">
       <header className="border-b border-[var(--color-border)] bg-white/80 backdrop-blur">
         <div className="mx-auto grid min-h-16 w-full max-w-[1360px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:px-8">
-          <Link className="flex items-center gap-3" href="/">
-            <span className="relative size-9">
+          <Link className="flex items-center" href="/" aria-label="Touch of Heaven home">
+            <span className="relative block h-11 w-36 sm:w-44">
               <Image
-                alt=""
-                className="object-contain"
+                alt="Touch of Heaven"
+                className="object-contain object-left"
                 fill
-                sizes="36px"
-                src={brandAssets.logoMark}
+                priority
+                sizes="(max-width: 640px) 144px, 176px"
+                src={brandAssets.logoLockup}
               />
-            </span>
-            <span className="hidden font-serif text-lg font-semibold tracking-[0.18em] text-[var(--color-brand-strong)] sm:inline">
-              {siteConfig.name}
             </span>
           </Link>
           <nav className="flex rounded-md bg-[var(--color-brand-soft)] p-1 text-sm font-semibold">

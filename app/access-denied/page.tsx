@@ -24,7 +24,7 @@ export default function AccessDeniedPage() {
           <Link className="btn-primary" href="/account">
             Go to account
           </Link>
-          <Link className="btn-secondary" href="/sign-in">
+          <Link className="btn-secondary" href="/customer/sign-in">
             Sign in
           </Link>
         </div>

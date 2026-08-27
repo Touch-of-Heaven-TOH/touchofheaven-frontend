@@ -9,6 +9,20 @@ type SharePageProps = {
   params: Promise<{ shareToken: string }>;
 };
 
+// Matches modules/studio/studio.service.ts#getPublicSharedSession's real
+// response shape, wrapped in { session } by the route handler - not the
+// flat shape this page originally assumed.
+type SharedStudioPreviewResponse = {
+  session: {
+    style: { name: string; slug: string };
+    outputImageUrl: string | null;
+    selectedColor: string;
+    selectedSize: string;
+    selectedLength: string;
+    createdAt: string;
+  };
+};
+
 type SharedStudioPreview = {
   styleName: string;
   styleSlug: string;
@@ -23,11 +37,24 @@ export const metadata: Metadata = {
   description: "A Touch of Heaven AI Studio hairstyle preview.",
 };
 
-async function getSharedPreview(token: string) {
+async function getSharedPreview(token: string): Promise<SharedStudioPreview | null> {
   try {
-    return await serverApiFetch<SharedStudioPreview>(
+    const { session } = await serverApiFetch<SharedStudioPreviewResponse>(
       `/api/v1/studio/share/${encodeURIComponent(token)}`,
     );
+    // A share link only ever exists for a COMPLETED session (see
+    // findSharedSessionByTokenHash's own status filter), so outputImageUrl
+    // should always be set here - but treat a null as "not ready to show"
+    // rather than rendering a broken image.
+    if (!session.outputImageUrl) return null;
+    return {
+      styleName: session.style.name,
+      styleSlug: session.style.slug,
+      selectedColor: session.selectedColor,
+      selectedSize: session.selectedSize,
+      selectedLength: session.selectedLength,
+      resultImageUrl: session.outputImageUrl,
+    };
   } catch {
     return null;
   }

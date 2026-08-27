@@ -49,7 +49,7 @@ export function FeatureShowcaseSection() {
                 alt={current.alt}
                 fill
                 sizes="(max-width: 768px) 90vw, 420px"
-                className="object-contain p-4"
+                className="object-cover"
               />
             </div>
 

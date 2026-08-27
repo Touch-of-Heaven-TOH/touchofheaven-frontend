@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
-  guestOnlyRoutePrefixes,
+  businessProtectedRoutePrefixes,
   protectedRoutePrefixes,
 } from "@/config/route-access";
 
@@ -17,10 +17,13 @@ const publicPrefixes = [
   "/legal",
   "/for-clients",
   "/for-braiders",
-  "/sign-in",
-  "/sign-up",
-  "/braider/sign-in",
-  "/braider/register",
+  "/customer/sign-in",
+  "/customer/sign-up",
+  "/business/sign-in",
+  "/business/sign-up",
+  "/business/forgot-password",
+  "/business/reset-password",
+  "/business/verify-email",
   "/forgot-password",
   "/reset-password",
   "/verify-email",
@@ -183,17 +186,21 @@ export function proxy(request: NextRequest) {
   requestHeaders.set("x-toh-search", search);
   requestHeaders.set("Content-Security-Policy", buildCsp(nonce, securityHeaderOptions));
 
-  if (startsWithRoute(pathname, guestOnlyRoutePrefixes) && hasSession) {
-    return redirectTo(request, "/account", nonce);
-  }
+  // Previously force-redirected an already-signed-in visitor away from
+  // guest-only pages (sign-in, sign-up, etc.) straight to /account. Removed
+  // at the request of the team doing hands-on design/QA review: those pages
+  // need to stay reachable and viewable regardless of session state.
 
   if (pathname === "/mfa" && !hasPendingMfa && !hasSession) {
-    return redirectTo(request, "/sign-in", nonce);
+    return redirectTo(request, "/customer/sign-in", nonce);
   }
 
   if (startsWithRoute(pathname, protectedRoutePrefixes) && !hasSession) {
     const callbackUrl = encodeURIComponent(`${pathname}${search}`);
-    return redirectTo(request, `/sign-in?callbackUrl=${callbackUrl}`, nonce);
+    const signInPath = startsWithRoute(pathname, businessProtectedRoutePrefixes)
+      ? "/business/sign-in"
+      : "/customer/sign-in";
+    return redirectTo(request, `${signInPath}?callbackUrl=${callbackUrl}`, nonce);
   }
 
   if (

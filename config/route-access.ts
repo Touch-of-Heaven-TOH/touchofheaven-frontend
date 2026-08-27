@@ -28,10 +28,10 @@ export const routeAccessRules: RouteAccessRule[] = [
   {
     family: "(auth)",
     examples:
-      "/sign-in, /sign-up, /forgot-password, /reset-password, /mfa. " +
-      "/braider/sign-in and /braider/register are also public but NOT " +
+      "/customer/sign-in, /customer/sign-up, /forgot-password, /reset-password, /mfa. " +
+      "/business/sign-in and /business/sign-up are also public but NOT " +
       "guest-only (an already-signed-in customer must still be able to " +
-      "reach /braider/register to apply)",
+      "reach /business/sign-up to apply as a business)",
     visibility: "guest-only",
     roles: "any signed-in user",
     recentMfa: "not required",
@@ -46,7 +46,7 @@ export const routeAccessRules: RouteAccessRule[] = [
     visibility: "protected",
     roles: ["CUSTOMER", "BRAIDER", "ADMIN"],
     recentMfa: "not required",
-    deniedRedirect: "/sign-in",
+    deniedRedirect: "/customer/sign-in",
     cachePolicy: "private no-store",
     indexing: "noindex",
     backendEndpoint:
@@ -59,7 +59,7 @@ export const routeAccessRules: RouteAccessRule[] = [
     visibility: "protected",
     roles: ["CUSTOMER", "BRAIDER", "ADMIN"],
     recentMfa: "backend-enforced",
-    deniedRedirect: "/sign-in",
+    deniedRedirect: "/customer/sign-in",
     cachePolicy: "private no-store",
     indexing: "noindex",
     backendEndpoint:
@@ -102,9 +102,17 @@ export const protectedRoutePrefixes = [
   "/professional-application",
 ] as const;
 
+// A signed-out visitor denied one of these specifically should land on
+// /business/sign-in, not the generic /customer/sign-in - both are a subset
+// of protectedRoutePrefixes above, checked first in proxy.ts.
+export const businessProtectedRoutePrefixes = [
+  "/studio",
+  "/professional-application",
+] as const;
+
 export const guestOnlyRoutePrefixes = [
-  "/sign-in",
-  "/sign-up",
+  "/customer/sign-in",
+  "/customer/sign-up",
   "/forgot-password",
   "/reset-password",
   "/verify-email",

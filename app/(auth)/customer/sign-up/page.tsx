@@ -64,7 +64,7 @@ export default function SignUpPage() {
           <AppleSignInButton />
           <p>
             Already have an account?{" "}
-            <Link className="font-semibold text-[var(--color-brand)]" href="/sign-in">
+            <Link className="font-semibold text-[var(--color-brand)]" href="/customer/sign-in">
               Sign In
             </Link>
           </p>

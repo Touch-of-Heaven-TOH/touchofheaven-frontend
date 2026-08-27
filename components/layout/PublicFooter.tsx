@@ -104,7 +104,7 @@ export function PublicFooter() {
           <p className="mt-2 text-sm leading-6 text-white/72">
             Get beauty tips, exclusive offers, and community updates.
           </p>
-          <form className="mt-4 flex overflow-hidden rounded-md bg-white" action="/sign-up">
+          <form className="mt-4 flex overflow-hidden rounded-md bg-white" action="/customer/sign-up">
             <label className="sr-only" htmlFor="footer-email">
               Email address
             </label>
@@ -123,7 +123,7 @@ export function PublicFooter() {
             <GooglePlayBadge />
             <Link
               className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-gold-light)]"
-              href="/sign-up"
+              href="/customer/sign-up"
             >
               <Mail aria-hidden="true" size={16} />
               Create your account

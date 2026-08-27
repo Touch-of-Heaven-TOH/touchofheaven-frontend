@@ -19,7 +19,7 @@ export default function AuthErrorPage() {
         The provider may have cancelled, expired, or returned an unavailable
         account state.
       </p>
-      <Link className="btn-primary mt-6" href="/sign-in">
+      <Link className="btn-primary mt-6" href="/customer/sign-in">
         Try again
       </Link>
     </section>

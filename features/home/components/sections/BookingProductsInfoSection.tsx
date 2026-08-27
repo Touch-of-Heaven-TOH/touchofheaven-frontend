@@ -88,7 +88,7 @@ export function BookingProductsInfoSection() {
                 {slide.description}
               </p>
             </div>
-            <Link href="/sign-up" className="btn-primary w-fit">
+            <Link href="/customer/sign-up" className="btn-primary w-fit">
               Try for Free
             </Link>
           </div>

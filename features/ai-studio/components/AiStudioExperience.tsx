@@ -458,13 +458,13 @@ function AuthGateModal({
           </a>
           <Link
             className="btn-primary w-full"
-            href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/customer/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
             Sign in with email
           </Link>
           <Link
             className="btn-ghost w-full"
-            href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/customer/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
             New here? Create a free account
           </Link>

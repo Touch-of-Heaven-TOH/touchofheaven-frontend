@@ -122,7 +122,11 @@ export function PublicHeader({ user }: PublicHeaderProps) {
     ? { label: "My Studio", href: "/studio/today" }
     : { label: "List your business", href: "/professional-application" };
   const isBusinessHeader = pathname !== "/for-clients";
-  const authHref = user ? "/account" : "/sign-in";
+  const authHref = user
+    ? "/account"
+    : isBusinessHeader
+      ? "/business/sign-in"
+      : "/customer/sign-in";
   const dropdownHeading = isBusinessHeader
     ? selectedLanguage.businessHeading
     : selectedLanguage.customerHeading;
@@ -194,7 +198,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           ) : (
             <Link
               className="hidden min-h-11 items-center px-2 text-sm font-bold text-[var(--color-text-primary)] transition hover:text-[var(--color-brand)] sm:inline-flex"
-              href={user ? "/account" : "/sign-in"}
+              href={user ? "/account" : "/customer/sign-in"}
             >
               {user ? "Account" : "Log in"}
             </Link>
@@ -209,7 +213,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
               isBusinessHeader
                 ? user
                   ? "/account"
-                  : "/sign-up"
+                  : "/business/sign-up"
                 : professionalLink.href
             }
           >

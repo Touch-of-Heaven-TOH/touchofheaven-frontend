@@ -15,8 +15,8 @@ export function SignInMethods() {
   // sign-up, so someone without an account yet who clicked "List your
   // business" doesn't lose that context after creating one.
   const signUpHref = callbackUrl
-    ? `/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`
-    : "/sign-up";
+    ? `/customer/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/customer/sign-up";
 
   if (usePassword) {
     return (
@@ -56,8 +56,8 @@ export function SignInMethods() {
               </Link>
             </div>
             <p className="text-xs text-[var(--color-text-muted)]">
-              Are you a braider?{" "}
-              <Link className="text-[var(--color-text-muted)] underline" href="/braider/sign-in">
+              Own a beauty business?{" "}
+              <Link className="text-[var(--color-text-muted)] underline" href="/business/sign-in">
                 Sign in to your studio →
               </Link>
             </p>
@@ -109,8 +109,8 @@ export function SignInMethods() {
           </Link>
         </div>
         <p className="text-xs text-[var(--color-text-muted)]">
-          Are you a braider?{" "}
-          <Link className="text-[var(--color-text-muted)] underline" href="/braider/sign-in">
+          Own a beauty business?{" "}
+          <Link className="text-[var(--color-text-muted)] underline" href="/business/sign-in">
             Sign in to your studio →
           </Link>
         </p>

@@ -95,14 +95,14 @@ export const featureShowcaseSlides: FeatureSlide[] = [
   {
     id: "no-cost-setup",
     title: "No fees to get started, ever",
-    description:"Other booking platforms charge braiders a monthly fee or take a commission on every service. Here, listing your services and taking bookings costs nothing — you keep what you earn.",
+    description:"Other booking platforms charge businesses a monthly fee or take a commission on every service. Here, listing your services and taking bookings costs nothing — you keep what you earn.",
     ctaLabel: "Create your profile",
-    ctaHref: "/sign-up",
+    ctaHref: "/business/sign-up",
     // IMAGE NEEDED: illustration works better than a screenshot here — a simple
     // "$0" badge or a wallet/checkmark graphic. There's no UI screen that visually
     // represents "absence of a fee," so don't force one.
     image: "/images/home/images/platform.png",
-    alt: "No fees to join as a braider",
+    alt: "No fees to join as a business on Touch of Heaven",
   },
   {
     id: "ai-style-preview",

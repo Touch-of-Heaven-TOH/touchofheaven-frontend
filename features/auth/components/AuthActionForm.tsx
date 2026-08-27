@@ -210,7 +210,7 @@ export function AuthActionForm({
         ) : null}
 
         {mode === "verify-email" && status === "success" ? (
-          <Link className="btn-secondary justify-center" href="/sign-in">
+          <Link className="btn-secondary justify-center" href="/customer/sign-in">
             Continue to Sign In
           </Link>
         ) : null}

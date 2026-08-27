@@ -13,7 +13,10 @@ export const publicNavigation: NavigationItem[] = [
   { label: "Braiders", href: "/braiders" },
   { label: "AI Studio", href: "/ai-studio" },
   { label: "About", href: "/about" },
-  { label: "For Braiders", href: "/braider/register" },
+  {
+    label: "For Businesses",
+    href: "/business/sign-up?callbackUrl=%2Fprofessional-application",
+  },
 ];
 
 export const accountNavigation: NavigationItem[] = [

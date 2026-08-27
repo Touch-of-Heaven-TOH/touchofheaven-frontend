@@ -43,7 +43,7 @@ export async function requireUser(): Promise<SafeUser> {
   if (user) return user;
 
   const returnTo = encodeURIComponent(await currentPath());
-  redirect(`/sign-in?callbackUrl=${returnTo}`);
+  redirect(`/customer/sign-in?callbackUrl=${returnTo}`);
 }
 
 export async function requireRole(

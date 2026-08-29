@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { AppleSignInButton } from "@/features/auth/components/AppleSignInButton";
 import { AuthActionForm } from "@/features/auth/components/AuthActionForm";
 import { GoogleSignInButton } from "@/features/auth/components/GoogleSignInButton";
 import { MagicCodeSignIn } from "@/features/auth/components/MagicCodeSignIn";
@@ -50,7 +51,7 @@ export function SignInMethods() {
               </Link>
               <Link
                 className="font-semibold text-[var(--color-brand)]"
-                href="/forgot-password"
+                href="/customer/forgot-password"
               >
                 Forgot Password?
               </Link>
@@ -78,6 +79,7 @@ export function SignInMethods() {
 
       <div className="mt-6 grid gap-4">
         <GoogleSignInButton />
+        <AppleSignInButton />
         <div
           aria-hidden="true"
           className="flex items-center gap-3 text-xs font-semibold uppercase text-[var(--color-text-muted)]"
@@ -103,7 +105,7 @@ export function SignInMethods() {
           </Link>
           <Link
             className="font-semibold text-[var(--color-brand)]"
-            href="/forgot-password"
+            href="/customer/forgot-password"
           >
             Forgot Password?
           </Link>

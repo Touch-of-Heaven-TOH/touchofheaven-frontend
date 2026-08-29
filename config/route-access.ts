@@ -100,6 +100,7 @@ export const protectedRoutePrefixes = [
   "/admin",
   "/support",
   "/professional-application",
+  "/business/setup",
 ] as const;
 
 // A signed-out visitor denied one of these specifically should land on
@@ -108,6 +109,7 @@ export const protectedRoutePrefixes = [
 export const businessProtectedRoutePrefixes = [
   "/studio",
   "/professional-application",
+  "/business/setup",
 ] as const;
 
 export const guestOnlyRoutePrefixes = [

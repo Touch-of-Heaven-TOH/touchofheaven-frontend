@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Sign in to your Touch of Heaven studio.",
 };
 
-export default function BraiderSignInPage() {
+export default function BusinessSignInPage() {
   return (
     <BusinessAuthShell
       headline="Run your beauty business with ease, empower your clients to glow."

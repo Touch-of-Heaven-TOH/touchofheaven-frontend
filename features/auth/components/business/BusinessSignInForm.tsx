@@ -6,6 +6,7 @@ import { type FormEvent, useState } from "react";
 import { ApiClientError } from "@/lib/api/errors";
 import { browserApiFetch } from "@/lib/api/browser";
 import { safeReturnUrl } from "@/lib/security/safe-return-url";
+import { AppleSignInButton } from "@/features/auth/components/AppleSignInButton";
 import { GoogleSignInButton } from "@/features/auth/components/GoogleSignInButton";
 import { PasswordField } from "@/features/auth/components/business/PasswordField";
 
@@ -94,6 +95,7 @@ export function BusinessSignInForm() {
 
       <div className="mt-6 grid gap-4">
         <GoogleSignInButton />
+        <AppleSignInButton />
         <div
           aria-hidden="true"
           className="flex items-center gap-3 text-xs font-semibold uppercase text-[var(--color-text-muted)]"

@@ -31,7 +31,28 @@ type AuthActionFormProps = {
     | "mfa";
   terms?: boolean;
   footer?: React.ReactNode;
+  // Optional: redirect somewhere after a successful submit instead of
+  // showing the generic inline success message. Only used for modes other
+  // than sign-in/mfa (those already redirect via postLoginRoute above).
+  // A plain string template (not a function - this component is rendered
+  // from Server Component pages, which can't pass closures across the
+  // RSC boundary). {fieldName} tokens are replaced with the matching
+  // submitted-payload value, URL-encoded. e.g.
+  // "/customer/verify-email?email={email}".
+  successRedirectPath?: string;
+  // Fixed key/value pairs merged into every submit, alongside whatever the
+  // rendered fields collect - e.g. { audience: "client" } for signup.
+  extraPayload?: Record<string, string | boolean>;
 };
+
+function resolveRedirectPath(
+  template: string,
+  payload: Record<string, string | boolean>,
+) {
+  return template.replace(/\{(\w+)\}/g, (_match, key: string) =>
+    encodeURIComponent(String(payload[key] ?? "")),
+  );
+}
 
 type AuthResponse = {
   message?: string;
@@ -65,6 +86,8 @@ export function AuthActionForm({
   mode,
   terms,
   footer,
+  successRedirectPath,
+  extraPayload,
 }: AuthActionFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -102,6 +125,11 @@ export function AuthActionForm({
         return;
       }
 
+      if (successRedirectPath) {
+        router.push(resolveRedirectPath(successRedirectPath, payload));
+        return;
+      }
+
       setStatus("success");
       setMessage(data.message ?? "Request completed.");
     } catch (error) {
@@ -116,7 +144,7 @@ export function AuthActionForm({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void submit(payloadFromForm(event.currentTarget));
+    void submit({ ...payloadFromForm(event.currentTarget), ...extraPayload });
   }
 
   // Clicking the emailed verification link lands here with ?token=... -

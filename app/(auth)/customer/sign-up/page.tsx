@@ -18,6 +18,8 @@ export default function SignUpPage() {
       submitLabel="Create Account"
       mode="sign-up"
       terms
+      extraPayload={{ audience: "client" }}
+      successRedirectPath="/customer/verify-email?email={email}"
       fields={[
         {
           name: "firstName",

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Confirm your Touch of Heaven business email.",
 };
 
-export default function BraiderVerifyEmailPage() {
+export default function BusinessVerifyEmailPage() {
   return (
     <BusinessAuthShell
       headline="One final step to secure your account."

@@ -28,7 +28,7 @@ export const routeAccessRules: RouteAccessRule[] = [
   {
     family: "(auth)",
     examples:
-      "/customer/sign-in, /customer/sign-up, /forgot-password, /reset-password, /mfa. " +
+      "/customer/sign-in, /customer/sign-up, /customer/forgot-password, /customer/reset-password, /mfa. " +
       "/business/sign-in and /business/sign-up are also public but NOT " +
       "guest-only (an already-signed-in customer must still be able to " +
       "reach /business/sign-up to apply as a business)",
@@ -113,8 +113,8 @@ export const businessProtectedRoutePrefixes = [
 export const guestOnlyRoutePrefixes = [
   "/customer/sign-in",
   "/customer/sign-up",
-  "/forgot-password",
-  "/reset-password",
+  "/customer/forgot-password",
+  "/customer/reset-password",
   "/verify-email",
   "/auth-error",
 ] as const;

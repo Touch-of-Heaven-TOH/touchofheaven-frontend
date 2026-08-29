@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Reset your Touch of Heaven business password.",
 };
 
-export default function BraiderForgotPasswordPage() {
+export default function BusinessForgotPasswordPage() {
   return (
     <BusinessAuthShell
       headline="We'll help you get back to business."

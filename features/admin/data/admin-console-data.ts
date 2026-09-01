@@ -7,7 +7,7 @@ import type {
 export const adminNavigationItems: AdminNavigationItem[] = [
   { key: "overview", label: "Overview", href: "/admin", icon: "LayoutDashboard" },
   { key: "bookings", label: "Bookings", href: "/admin/bookings", icon: "CalendarDays" },
-  { key: "braiders", label: "Braiders", href: "/admin/braiders", icon: "UserRoundCheck" },
+  { key: "braiders", label: "Businesses", href: "/admin/businesses", icon: "UserRoundCheck" },
   { key: "clients", label: "Clients", href: "/admin/clients", icon: "UsersRound" },
   { key: "marketplace", label: "Marketplace", href: "/admin/marketplace", icon: "ShoppingCart" },
   { key: "orders", label: "Orders", href: "/admin/orders", icon: "PackageCheck" },
@@ -38,8 +38,8 @@ export const adminSectionContent: Record<
   },
   braiders: {
     eyebrow: "Providers",
-    title: "Braiders",
-    description: "Manage braiders, applications, provider compliance, and service readiness.",
+    title: "Businesses",
+    description: "Manage service businesses, applications, provider compliance, and service readiness.",
   },
   clients: {
     eyebrow: "Customers",
@@ -127,6 +127,7 @@ export function resolveAdminSectionKey(segments?: string[]): AdminSectionKey {
     appointments: "bookings",
     bookings: "bookings",
     braiders: "braiders",
+    businesses: "braiders",
     clients: "clients",
     customers: "clients",
     marketplace: "marketplace",
@@ -172,7 +173,7 @@ export const overviewMetrics: AdminMetric[] = [
     icon: "BadgeDollarSign",
   },
   {
-    label: "Active Braiders",
+    label: "Active Businesses",
     value: "162",
     detail: "8 new this week",
     trend: "+8",
@@ -237,7 +238,7 @@ export const orderMetrics: AdminMetric[] = [
 ];
 
 export const braiderMetrics: AdminMetric[] = [
-  { label: "Active Braiders", value: "162", detail: "+8 this week", tone: "gold", icon: "UserRoundCheck" },
+  { label: "Active Businesses", value: "162", detail: "+8 this week", tone: "gold", icon: "UserRoundCheck" },
   { label: "New Applications", value: "27", detail: "+6 this week", tone: "purple", icon: "ClipboardCheck" },
   { label: "Suspended Providers", value: "5", detail: "-1 this week", tone: "gold", icon: "ShieldAlert" },
 ];
@@ -294,15 +295,15 @@ export const financeRows = [
 ];
 
 export const actionCenter: Array<[string, string, string, string]> = [
-  ["Professional applications", "27 pending reviews", "Review now", "/admin/braiders"],
+  ["Professional applications", "27 pending reviews", "Review now", "/admin/businesses"],
   ["Failed payout transfer", "$215.60 requires reconciliation", "Open finance", "/admin/payments"],
   ["Return requests", "6 marketplace returns need triage", "Open orders", "/admin/orders"],
   ["Reported reviews", "4 reports awaiting moderation", "Open reviews", "/admin/reviews"],
 ];
 
 export const pendingApplications = [
-  ["Jasmine Brown", "Braider", "Applied 1 hour ago"],
-  ["Lashae Mitchell", "Braider", "Applied 3 hours ago"],
+  ["Jasmine Brown", "Service Business", "Applied 1 hour ago"],
+  ["Lashae Mitchell", "Service Business", "Applied 3 hours ago"],
   ["Royalty Hair Co.", "Seller", "Applied 5 hours ago"],
 ];
 

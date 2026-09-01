@@ -9,7 +9,7 @@ type SearchOption = {
   label: string;
   hint: string;
   icon: ReactNode;
-  route?: "braiders" | "marketplace";
+  route?: "businesses" | "marketplace";
 };
 
 const whatOptions: SearchOption[] = [
@@ -30,7 +30,7 @@ const whatOptions: SearchOption[] = [
   },
   {
     label: "Touched by Tee",
-    hint: "Verified braider profile",
+    hint: "Verified business profile",
     icon: <UserRound aria-hidden="true" size={17} />,
   },
   {
@@ -102,7 +102,7 @@ export function SmartHeroSearch() {
   const router = useRouter();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [what, setWhat] = useState("");
-  const [searchRoute, setSearchRoute] = useState<"braiders" | "marketplace">("braiders");
+  const [searchRoute, setSearchRoute] = useState<"businesses" | "marketplace">("businesses");
   const [recentSearches, setRecentSearches] = useState<string[]>(readRecentSearches);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -164,12 +164,12 @@ export function SmartHeroSearch() {
         <input
           aria-label="Search Touch of Heaven"
           className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[var(--color-brand-strong)] outline-none placeholder:font-normal placeholder:text-[var(--color-text-muted)]"
-          placeholder="Hair style, braider, or product..."
+          placeholder="Hair style, business, or product..."
           type="search"
           value={what}
           onChange={(event) => {
             setWhat(event.target.value);
-            setSearchRoute("braiders");
+            setSearchRoute("businesses");
           }}
           onFocus={() => setShowSuggestions(true)}
         />
@@ -212,7 +212,7 @@ export function SmartHeroSearch() {
                 key={item.label}
                 onClick={() => {
                   setWhat(item.label);
-                  setSearchRoute(item.route ?? "braiders");
+                  setSearchRoute(item.route ?? "businesses");
                   setShowSuggestions(false);
                 }}
               >

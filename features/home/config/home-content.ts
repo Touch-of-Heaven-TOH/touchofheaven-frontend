@@ -10,7 +10,7 @@ import type {
 export const homePrimaryActions = {
   book: { label: "Book a Hairstyle", href: "/book" },
   marketplace: { label: "Shop Marketplace", href: "/marketplace" },
-  braiders: { label: "Find Braiders", href: "/braiders" },
+  businesses: { label: "Find Businesses", href: "/businesses" },
   aiStudio: { label: "Start AI Style Preview", href: "/ai-studio" },
   styleQuiz: { label: "Take the Style Quiz", href: "/style-quiz" },
 } satisfies Record<string, HomeLink>;
@@ -26,7 +26,7 @@ export const heroSearchSuggestions = [
 
 export const trustFeatures = [
   {
-    title: "Verified Braiders",
+    title: "Verified Businesses",
     description: "Public profiles are reviewed before they appear in discovery.",
     icon: "verified",
   },
@@ -160,7 +160,7 @@ export const communityLooks = [
 
 export const appPromoFeatures = [
   "Book appointments on the go",
-  "Review braider profiles",
+  "Review business profiles",
   "Track marketplace orders",
 ] as const;
 
@@ -169,14 +169,14 @@ export const requiredHomeApiContracts = [
     name: "Public homepage feed",
     endpoint: "/api/v1/public/homepage",
     purpose:
-      "Single response for public activity, featured braiders, published services, and marketplace previews.",
+      "Single response for public activity, featured businesses, published services, and marketplace previews.",
     status: "pending",
   },
   {
-    name: "Nearby braiders",
+    name: "Nearby businesses",
     endpoint: "/api/v1/braiders/nearby",
     purpose:
-      "Already used by discovery map; homepage can reuse it for location-aware braider cards once approved.",
+      "Already used by discovery map; homepage can reuse it for location-aware business cards once approved.",
     status: "available",
   },
   {

@@ -6,7 +6,7 @@ const publicRoutes = [
   "",
   "/about",
   "/how-it-works",
-  "/braiders",
+  "/businesses",
   "/beauty",
   "/for-clients",
   "/legal",

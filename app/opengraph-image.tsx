@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
 import { getBrandMarkDataUrl } from "@/lib/seo/brand-image";
 
-export const alt = "Touch of Heaven braiding appointments";
+export const alt = "Touch of Heaven beauty and marketplace appointments";
 export const size = {
   width: 1200,
   height: 630,
@@ -29,13 +29,13 @@ export default async function OpenGraphImage() {
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
           <div style={{ color: "#9b6b1f", fontSize: 30, fontWeight: 700 }}>
-            Verified African Hair Braiding
+            Verified Beauty Businesses
           </div>
           <div style={{ fontSize: 76, fontWeight: 800, maxWidth: 760 }}>
             {siteConfig.name}
           </div>
           <div style={{ color: "#6f5365", fontSize: 32, maxWidth: 790 }}>
-            Discover braiders, book securely, and manage every appointment.
+            Discover professionals, book securely, and manage every appointment.
           </div>
         </div>
         <div

@@ -1145,7 +1145,7 @@ export function AiStudioExperience({
                     type="button"
                     onClick={() =>
                       router.push(
-                        `/braiders?style=${selectedStyle?.slug ?? ""}&q=${encodeURIComponent(
+                        `/businesses?style=${selectedStyle?.slug ?? ""}&q=${encodeURIComponent(
                           selectedStyle?.name ?? "",
                         )}`,
                       )

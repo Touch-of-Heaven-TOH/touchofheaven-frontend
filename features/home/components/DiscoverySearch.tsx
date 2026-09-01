@@ -5,7 +5,7 @@ export function DiscoverySearch() {
     <section className="page-container -mt-14 relative z-10">
       <form
         className="surface-panel grid gap-3 p-4 md:grid-cols-[1.2fr_1fr_auto]"
-        action="/braiders"
+        action="/businesses"
       >
         <label className="grid gap-2 text-sm font-semibold text-[var(--color-text-primary)]">
           Location

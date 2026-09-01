@@ -59,7 +59,7 @@ export function MyBookings() {
             My Bookings
           </h1>
         </div>
-        <Link href="/braiders" className="btn-primary">
+        <Link href="/businesses" className="btn-primary">
           Book new appointment
         </Link>
       </div>
@@ -111,7 +111,7 @@ export function MyBookings() {
                     {appointment.serviceName ?? "Appointment"}
                   </p>
                   <p className="text-xs text-[var(--color-text-muted)]">
-                    {appointment.braiderName ?? "Braider"} ·{" "}
+                    {appointment.braiderName ?? "Business"} ·{" "}
                     {start.toLocaleString(undefined, {
                       weekday: "short",
                       hour: "numeric",

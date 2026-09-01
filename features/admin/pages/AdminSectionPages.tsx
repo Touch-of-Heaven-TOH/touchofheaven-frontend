@@ -115,7 +115,7 @@ export function AdminOverviewPage() {
         </div>
 
         <div className="grid gap-4 xl:grid-cols-[1fr_1fr_1fr]">
-          <AdminPanel title="Pending Applications" action={<Link className="text-sm font-bold text-[var(--color-brand)]" href="/admin/braiders">View all</Link>}>
+          <AdminPanel title="Pending Applications" action={<Link className="text-sm font-bold text-[var(--color-brand)]" href="/admin/businesses">View all</Link>}>
             <div className="grid gap-3">
               {pendingApplications.map(([name, role, detail]) => (
                 <div className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border)] p-3" key={name}>
@@ -267,7 +267,7 @@ export function AdminBraidersPage() {
       <div className="grid gap-4">
         <MetricGrid metrics={braiderMetrics} />
         <div className="grid gap-4 xl:grid-cols-[1fr_380px]">
-          <AdminPanel title="All Braiders (162)" action={<Toolbar />}>
+          <AdminPanel title="All Businesses (162)" action={<Toolbar />}>
             <ContractNotice>
               Approval and suspension buttons stay disabled until transactional professional-review endpoints exist.
             </ContractNotice>

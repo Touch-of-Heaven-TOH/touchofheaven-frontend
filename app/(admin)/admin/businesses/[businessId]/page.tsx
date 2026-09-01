@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type AdminBraiderDetailPageProps = {
-  params: Promise<{ braiderId: string }>;
+type AdminBusinessDetailPageProps = {
+  params: Promise<{ businessId: string }>;
 };
 
-export default async function AdminBraiderDetailPage({
+export default async function AdminBusinessDetailPage({
   params,
-}: AdminBraiderDetailPageProps) {
-  const { braiderId } = await params;
+}: AdminBusinessDetailPageProps) {
+  const { businessId } = await params;
   return (
     <RouteStatusPage
       content={{
         ...content,
-        description: `${content.description} (braider ${braiderId})`,
+        description: `${content.description} (business ${businessId})`,
       }}
-      href="/admin/braiders"
+      href="/admin/businesses"
     />
   );
 }

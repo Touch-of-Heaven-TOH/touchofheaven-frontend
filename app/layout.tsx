@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  icons: {
+    icon: brandAssets.favicon,
+    apple: brandAssets.favicon,
+  },
   alternates: {
     canonical: "/",
   },

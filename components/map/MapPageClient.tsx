@@ -4,12 +4,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import BraiderListSidebar from '@/components/map/BraiderListSidebar';
-import type { MapFocusRequest } from '@/components/map/BraiderMap';
-import BraiderProfileCard from '@/components/map/BraiderProfileCard';
+import BraiderListSidebar from '@/components/map/BusinessListSidebar';
+import type { MapFocusRequest } from '@/components/map/BusinessMap';
+import BraiderProfileCard from '@/components/map/BusinessProfileCard';
 import MapSearchPanel from '@/components/map/MapSearchPanel';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { useNearbyBraiders } from '@/hooks/useNearbyBraiders';
+import { useNearbyBraiders } from '@/hooks/useNearbyBusinesses';
 import { KATHLEEN_GEORGIA_CENTER } from '@/lib/maps/config';
 import type { Coordinates } from '@/lib/maps/types';
 import {
@@ -25,7 +25,7 @@ const TERMINAL_UNRESOLVED_STATUSES = new Set(['denied', 'timeout', 'unsupported'
 // initial client bundle - it's pure browser interactivity, and `ssr:
 // false` plus this loading fallback keep it out of both until the page
 // actually needs it.
-const BraiderMap = dynamic(() => import('@/components/map/BraiderMap'), {
+const BraiderMap = dynamic(() => import('@/components/map/BusinessMap'), {
   ssr: false,
   loading: () => (
     <div
@@ -41,7 +41,7 @@ const BraiderMap = dynamic(() => import('@/components/map/BraiderMap'), {
 /**
  * Wires the discovery map's pieces together: useGeolocation resolves a
  * starting point (falling back to Kathleen, GA if it can't), which feeds
- * useNearbyBraiders, whose results feed BraiderMap and BraiderListSidebar
+ * useNearbyBraiders, whose results feed the map and list sidebar
  * in parallel. Selection state is shared between the two - see
  * BraiderMapProps's doc comment on why it's keyed by NearbyBraider.id.
  * Rendered by app/(public)/map/page.tsx, which owns the page's metadata.
@@ -94,12 +94,6 @@ export default function MapPageClient() {
     setMobileListOpen(false);
   }
 
-  // /book/[braiderId] exists as a route today but only renders a "coming
-  // soon" RouteStatusPage stub - the real booking flow (Model 9/10) isn't
-  // built yet. Navigating there anyway is still the honest behavior: it's
-  // the platform's actual intended URL for this action, and landing on a
-  // real, intentional stub is correct where fabricating booking logic
-  // that belongs to a different feature would not be.
   function handleBookNow(braider: NearbyBraider) {
     router.push(`/book/${braider.braiderId}`);
   }
@@ -119,8 +113,8 @@ export default function MapPageClient() {
   const resultsSummary = isLoading
     ? 'Searching…'
     : locationLabel
-      ? `${total} braider${total === 1 ? '' : 's'} near ${locationLabel}`
-      : `${total} braider${total === 1 ? '' : 's'} nearby`;
+      ? `${total} business${total === 1 ? '' : 'es'} near ${locationLabel}`
+      : `${total} business${total === 1 ? '' : 'es'} nearby`;
 
   return (
     <div className="relative flex h-dvh w-full overflow-hidden">
@@ -181,7 +175,7 @@ export default function MapPageClient() {
           braider={selectedBraider}
           onClose={() => setSelectedBraiderId(null)}
           onBookNow={handleBookNow}
-          onViewFullProfile={(braider) => router.push(`/braiders/${braider.braiderId}`)}
+          onViewFullProfile={(braider) => router.push(`/businesses/${braider.braiderId}`)}
         />
       </div>
 
@@ -195,7 +189,7 @@ export default function MapPageClient() {
             className="fixed inset-x-0 bottom-0 z-30 flex h-[80dvh] flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl md:hidden"
             role="dialog"
             aria-modal="true"
-            aria-label="Nearby braiders list"
+            aria-label="Nearby businesses list"
           >
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
               <p className="text-sm font-semibold text-gray-900">{resultsSummary}</p>

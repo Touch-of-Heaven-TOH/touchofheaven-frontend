@@ -136,7 +136,7 @@ export default async function AiStudioSharePage({ params }: SharePageProps) {
           </Link>
           <Link
             className="btn-secondary"
-            href={`/braiders?style=${encodeURIComponent(
+            href={`/businesses?style=${encodeURIComponent(
               preview.styleSlug,
             )}&q=${encodeURIComponent(preview.styleName)}`}
           >

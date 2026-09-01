@@ -16,8 +16,8 @@ const MESSAGE_MAX_CHARS = 2000;
 const ROLE_OPTIONS: { value: RequestableRole; label: string; description: string }[] = [
   {
     value: "BRAIDER",
-    label: "Braider / Barber",
-    description: "Offer hair braiding, barbering, or styling services and take bookings.",
+    label: "Service Business",
+    description: "Offer beauty, barbering, braiding, wellness, or styling services and take bookings.",
   },
   {
     value: "SELLER",

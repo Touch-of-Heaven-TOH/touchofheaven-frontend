@@ -19,6 +19,8 @@ const languageOptions = [
     businessHeading: "For businesses",
     customerHeading: "For customers",
     auth: "Log in or sign up",
+    signIn: "Sign in",
+    createAccount: "Create account",
     home: "Home",
     downloadApp: "Download the app",
     blog: "Blog",
@@ -34,6 +36,8 @@ const languageOptions = [
     businessHeading: "Pour les entreprises",
     customerHeading: "Pour les clients",
     auth: "Connexion ou inscription",
+    signIn: "Se connecter",
+    createAccount: "Creer un compte",
     home: "Accueil",
     downloadApp: "Telecharger l'application",
     blog: "Blog",
@@ -49,6 +53,8 @@ const languageOptions = [
     businessHeading: "Para negocios",
     customerHeading: "Para clientes",
     auth: "Iniciar sesion o registrarse",
+    signIn: "Iniciar sesion",
+    createAccount: "Crear cuenta",
     home: "Inicio",
     downloadApp: "Descargar la app",
     blog: "Blog",
@@ -64,6 +70,8 @@ const languageOptions = [
     businessHeading: "Para empresas",
     customerHeading: "Para clientes",
     auth: "Entrar ou criar conta",
+    signIn: "Entrar",
+    createAccount: "Criar conta",
     home: "Inicio",
     downloadApp: "Baixar o app",
     blog: "Blog",
@@ -79,6 +87,8 @@ const languageOptions = [
     businessHeading: "Kwa biashara",
     customerHeading: "Kwa wateja",
     auth: "Ingia au jisajili",
+    signIn: "Ingia",
+    createAccount: "Fungua akaunti",
     home: "Nyumbani",
     downloadApp: "Pakua app",
     blog: "Blogu",
@@ -94,6 +104,8 @@ const languageOptions = [
     businessHeading: "للاعمال",
     customerHeading: "للعملاء",
     auth: "تسجيل الدخول او الاشتراك",
+    signIn: "تسجيل الدخول",
+    createAccount: "إنشاء حساب",
     home: "الرئيسية",
     downloadApp: "تنزيل التطبيق",
     blog: "المدونة",
@@ -187,6 +199,14 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         ) : null}
 
         <div className="relative flex items-center gap-2 sm:gap-3">
+          {isBusinessHeader && !user ? (
+            <Link
+              className="hidden min-h-11 items-center px-2 text-sm font-bold text-[var(--color-text-primary)] transition hover:text-[var(--color-brand)] sm:inline-flex"
+              href="/business/sign-in"
+            >
+              {selectedLanguage.signIn}
+            </Link>
+          ) : null}
           {isBusinessHeader ? (
             <Link
               className="hidden min-h-12 items-center gap-2 rounded-full border border-[var(--color-border)] bg-white/78 px-5 text-sm font-bold text-[var(--color-text-primary)] shadow-[var(--shadow-subtle)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] md:inline-flex"
@@ -214,14 +234,18 @@ export function PublicHeader({ user }: PublicHeaderProps) {
                 ? user
                   ? "/account"
                   : "/business/sign-up"
-                : professionalLink.href
+                : user
+                  ? "/account"
+                  : "/customer/sign-up"
             }
           >
             {isBusinessHeader
               ? user
                 ? "Account"
                 : "Sign up"
-              : professionalLink.label}
+              : user
+                ? "Account"
+                : selectedLanguage.createAccount}
           </Link>
           <button
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/78 px-4 text-sm font-bold text-[var(--color-text-primary)] shadow-[var(--shadow-subtle)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] sm:px-5"
@@ -264,7 +288,15 @@ export function PublicHeader({ user }: PublicHeaderProps) {
                   >
                     {selectedLanguage.home}
                   </Link>
-                ) : null}
+                ) : (
+                  <Link
+                    className="rounded-md px-3 py-3 text-sm font-semibold transition hover:bg-[var(--color-brand-soft)] hover:text-[var(--color-brand)]"
+                    href={professionalLink.href}
+                    onClick={closeMenu}
+                  >
+                    {professionalLink.label}
+                  </Link>
+                )}
 
                 <button
                   className="flex w-full cursor-not-allowed items-center justify-between rounded-md px-3 py-3 text-left text-sm font-semibold text-[var(--color-text-muted)]"

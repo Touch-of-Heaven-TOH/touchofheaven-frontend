@@ -62,7 +62,7 @@ const gallery = [
   homeMediaAssets.bookingMarketplace,
 ] as const;
 
-export function DemoBraiderProfileSection() {
+export function DemoBusinessProfileSection() {
   return (
     <section className="bg-white py-10 md:py-14">
       <div className="page-container">
@@ -81,7 +81,7 @@ export function DemoBraiderProfileSection() {
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <p className="inline-flex items-center gap-2 rounded-full bg-white/14 px-3 py-1 text-xs font-bold uppercase backdrop-blur">
                   <ShieldCheck aria-hidden="true" size={14} />
-                  Featured public braider profile
+                  Featured public business profile
                 </p>
                 <h2 className="mt-3 font-serif text-3xl font-semibold">
                   Royalty Hair Co.
@@ -104,7 +104,7 @@ export function DemoBraiderProfileSection() {
                   <Link className="btn-primary" href="/book?braider=royalty-hair-co">
                     Book profile
                   </Link>
-                  <Link className="btn-secondary border-white/60 bg-white/12 text-white hover:bg-white/18" href="/braiders/royalty-hair-co">
+                  <Link className="btn-secondary border-white/60 bg-white/12 text-white hover:bg-white/18" href="/businesses/royalty-hair-co">
                     View profile
                   </Link>
                 </div>
@@ -142,7 +142,7 @@ export function DemoBraiderProfileSection() {
                     Book like a real profile page.
                   </h3>
                 </div>
-                <Link className="btn-secondary w-fit" href="/braiders">
+                <Link className="btn-secondary w-fit" href="/businesses">
                   View all profiles
                 </Link>
               </div>

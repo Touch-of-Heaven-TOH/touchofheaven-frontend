@@ -10,7 +10,7 @@ export function MapPreviewSection() {
             Near You
           </p>
           <h2 className="mt-2 font-serif text-3xl font-semibold text-[var(--color-brand-strong)]">
-            Explore braiders around Kathleen
+            Explore businesses around Kathleen
           </h2>
           <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
             This live map can be panned and zoomed. Use the full discovery map
@@ -21,9 +21,9 @@ export function MapPreviewSection() {
               <LocateFixed aria-hidden="true" size={18} />
               Open discovery
             </Link>
-            <Link className="btn-secondary" href="/braiders">
+            <Link className="btn-secondary" href="/businesses">
               <MapPinned aria-hidden="true" size={18} />
-              Browse all braiders
+              Browse all businesses
             </Link>
           </div>
         </div>
@@ -56,7 +56,7 @@ export function MapPreviewSection() {
               Full discovery has filters
             </p>
             <p className="mt-1 text-xs leading-5 text-[var(--color-text-muted)]">
-              Location-aware braider cards remain on the dedicated map page.
+              Location-aware business cards remain on the dedicated map page.
             </p>
             <Link
               className="pointer-events-auto mt-3 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]"

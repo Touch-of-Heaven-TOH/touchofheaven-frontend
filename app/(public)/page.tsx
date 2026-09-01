@@ -6,7 +6,7 @@ import {
   HeroSection,
   MarketplaceShowcaseSection,
   MobileAppSection,
-  TopBraidersSection,
+  TopBusinessesSection,
 } from "@/features/home";
 import { getHomePageData } from "@/features/home/api/home.queries";
 
@@ -24,7 +24,7 @@ export default async function HomePage() {
       <HeroSection />
       <BookingProductsInfoSection />
       <ActivityStrip activity={homeData.activity} />
-      <TopBraidersSection braiders={homeData.featuredBraiders} />
+      <TopBusinessesSection businesses={homeData.featuredBraiders} />
       <MarketplaceShowcaseSection />
       <FeatureShowcaseSection />
       <MobileAppSection />

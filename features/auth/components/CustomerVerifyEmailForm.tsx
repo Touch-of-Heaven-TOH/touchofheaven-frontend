@@ -105,8 +105,11 @@ export function CustomerVerifyEmailForm() {
         <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
           Your account is ready to go.
         </p>
-        <Link className="btn-primary mt-6 w-full" href="/customer/sign-in">
-          Continue to sign in
+        <Link
+          className="btn-primary mt-6 w-full"
+          href="/customer/sign-in?callbackUrl=%2Fclient-onboarding"
+        >
+          Continue to setup
         </Link>
       </section>
     );

@@ -10,7 +10,7 @@ export type NavigationItem = {
 export const publicNavigation: NavigationItem[] = [
   { label: "Beauty", href: "/beauty" },
   { label: "Marketplace", href: "/marketplace" },
-  { label: "Braiders", href: "/braiders" },
+  { label: "Businesses", href: "/businesses" },
   { label: "AI Studio", href: "/ai-studio" },
   { label: "About", href: "/about" },
   {
@@ -38,10 +38,10 @@ export const accountNavigation: NavigationItem[] = [
 
 export const bookingNavigation: NavigationItem[] = [
   { label: "Service", href: "/book" },
-  { label: "Time", href: "/book/sample-braider" },
-  { label: "Consultation", href: "/book/sample-braider/consultation" },
-  { label: "Review", href: "/book/sample-braider/review" },
-  { label: "Payment", href: "/book/sample-braider/payment" },
+  { label: "Time", href: "/book/sample-business" },
+  { label: "Consultation", href: "/book/sample-business/consultation" },
+  { label: "Review", href: "/book/sample-business/review" },
+  { label: "Payment", href: "/book/sample-business/payment" },
 ];
 
 export const studioNavigation: NavigationItem[] = [
@@ -65,7 +65,7 @@ export const adminNavigation: NavigationItem[] = [
   { label: "Overview", href: "/admin" },
   { label: "Users", href: "/admin/users" },
   { label: "Applications", href: "/admin/applications" },
-  { label: "Braiders", href: "/admin/braiders" },
+  { label: "Businesses", href: "/admin/businesses" },
   { label: "Appointments", href: "/admin/appointments" },
   { label: "Payments", href: "/admin/payments" },
   { label: "Payouts", href: "/admin/payouts" },

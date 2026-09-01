@@ -5,7 +5,7 @@ import { GooglePlayBadge } from "@/components/shared/StoreBadges";
 import { brandAssets, siteConfig } from "@/config/site";
 
 const exploreLinks = [
-  { label: "Find Braiders", href: "/braiders" },
+  { label: "Find Businesses", href: "/businesses" },
   { label: "Marketplace", href: "/marketplace" },
   { label: "Beauty Services", href: "/beauty" },
   { label: "AI Studio", href: "/ai-studio" },

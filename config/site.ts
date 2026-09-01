@@ -6,7 +6,7 @@ export const siteConfig = {
     process.env.NEXT_PUBLIC_APP_URL ??
     "https://touchofheavenafricanhairbraiding.com",
   description:
-    "Discover verified African hair braiders, compare services, book securely, and manage every appointment from one trusted platform.",
+    "Discover verified beauty businesses, compare services, shop the marketplace, and manage every appointment from one trusted platform.",
   supportEmail: "support@touchofheavenafricanhairbraiding.com",
   locale: "en-US",
 } as const;
@@ -15,7 +15,7 @@ export const brandAssets = {
   logoMark: "/images/brand/touch-of-heaven-mark.png",
   logoLockup: "/images/brand/touch-of-heaven-logo-lockup.png",
   appQrCode: "/images/brand/touch-of-heaven-app-qr.png",
-  favicon: "/images/brand/touch-of-heaven-favicon.png",
+  favicon: "/images/brand/touch-of-heaven-mark.png",
   heroImage: "/images/home/braiding-appointment-hero.png",
   ogImage: "/opengraph-image",
 } as const;

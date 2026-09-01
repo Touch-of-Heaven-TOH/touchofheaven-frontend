@@ -15,7 +15,7 @@ export type RouteAccessRule = {
 export const routeAccessRules: RouteAccessRule[] = [
   {
     family: "(public)",
-    examples: "/, /about, /braiders, /beauty, /marketplace, /legal/privacy",
+    examples: "/, /about, /businesses, /beauty, /marketplace, /legal/privacy",
     visibility: "public",
     roles: "any signed-in user",
     recentMfa: "not required",
@@ -42,7 +42,7 @@ export const routeAccessRules: RouteAccessRule[] = [
   },
   {
     family: "(booking)",
-    examples: "/book, /book/[braiderId]/payment, /book/confirmation",
+    examples: "/book, /book/[businessId]/payment, /book/confirmation",
     visibility: "protected",
     roles: ["CUSTOMER", "BRAIDER", "ADMIN"],
     recentMfa: "not required",
@@ -66,7 +66,7 @@ export const routeAccessRules: RouteAccessRule[] = [
       "/api/v1/customer/*, /api/v1/auth/account/*, /api/v1/messaging/*, /api/v1/resolution/*",
   },
   {
-    family: "(braider)",
+    family: "(business-studio)",
     examples: "/studio, /studio/calendar, /studio/services, /studio/messages",
     visibility: "protected",
     roles: ["BRAIDER"],

@@ -10,9 +10,9 @@ import type {
   PublicBraiderProfile,
   ReviewItem,
   ServiceItem,
-} from "@/lib/braiders/types";
+} from "@/lib/businesses/types";
 
-export type BraiderProfileContentProps = {
+export type BusinessProfileContentProps = {
   profile: PublicBraiderProfile;
   portfolio: PortfolioMediaItem[];
   reviews: ReviewItem[];
@@ -26,12 +26,12 @@ function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(0)}`;
 }
 
-export function BraiderProfileContent({
+export function BusinessProfileContent({
   profile,
   portfolio,
   reviews,
   services,
-}: BraiderProfileContentProps) {
+}: BusinessProfileContentProps) {
   const [tab, setTab] = useState<Tab>("About");
   const heroPhoto = portfolio[0] ?? null;
 
@@ -106,7 +106,7 @@ export function BraiderProfileContent({
         <div className="mt-6">
           {tab === "About" ? (
             <p className="max-w-2xl whitespace-pre-wrap text-sm leading-7 text-[var(--color-text-primary)]">
-              {profile.bio ?? "This braider hasn't added a bio yet."}
+              {profile.bio ?? "This business hasn't added a bio yet."}
             </p>
           ) : null}
 

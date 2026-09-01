@@ -52,8 +52,8 @@ export default function BeautyPage() {
             Browse protective looks, compare appointment expectations, then book
             directly with a verified professional.
           </p>
-          <Link className="btn-primary mt-6" href="/braiders">
-            Find a braider
+          <Link className="btn-primary mt-6" href="/businesses">
+            Find a business
             <ArrowRight aria-hidden="true" size={18} />
           </Link>
         </div>

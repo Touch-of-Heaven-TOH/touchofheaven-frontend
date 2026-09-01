@@ -90,7 +90,7 @@ export function BookingFlow({ braiderId }: { braiderId: string }) {
       .catch((err: unknown) => {
         if (cancelled) return;
         setLoadError(
-          err instanceof ApiClientError ? err.message : "We couldn't load this braider.",
+          err instanceof ApiClientError ? err.message : "We couldn't load this business.",
         );
       });
     return () => {
@@ -211,7 +211,7 @@ export function BookingFlow({ braiderId }: { braiderId: string }) {
             </div>
           ) : services.length === 0 ? (
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-              This braider has no published services yet.
+              This business has no published services yet.
             </p>
           ) : (
             <ul role="list" className="mt-3 grid gap-2">

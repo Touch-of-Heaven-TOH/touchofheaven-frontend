@@ -9,12 +9,12 @@ type BookingPageProps = {
   params: Promise<{ step?: string[] }>;
 };
 
-// A single segment that isn't the literal "confirmation" is a braiderId -
+// A single segment that isn't the literal "confirmation" is a business id -
 // the real, connected booking flow. Every other shape (bare /book,
 // /book/confirmation, and the deeper .../consultation, .../review,
 // .../payment sub-steps) stays the RouteStatusPage placeholder below;
 // those are separate, larger pieces of work not built yet.
-function braiderIdFromSegments(segments: string[] | undefined): string | null {
+function businessIdFromSegments(segments: string[] | undefined): string | null {
   if (segments?.length === 1 && segments[0] !== "confirmation") {
     return segments[0]!;
   }
@@ -50,14 +50,14 @@ export async function generateMetadata({
 
 export default async function BookingPage({ params }: BookingPageProps) {
   const segments = (await params).step;
-  const braiderId = braiderIdFromSegments(segments);
+  const businessId = businessIdFromSegments(segments);
 
-  if (braiderId) {
+  if (businessId) {
     return (
       // BookingFlow reads useSearchParams() for an optional ?serviceId= -
       // Next.js requires that behind a Suspense boundary.
       <Suspense>
-        <BookingFlow braiderId={braiderId} />
+        <BookingFlow braiderId={businessId} />
       </Suspense>
     );
   }
@@ -67,5 +67,5 @@ export default async function BookingPage({ params }: BookingPageProps) {
 
   if (!content) notFound();
 
-  return <RouteStatusPage content={content} href="/braiders" />;
+  return <RouteStatusPage content={content} href="/businesses" />;
 }

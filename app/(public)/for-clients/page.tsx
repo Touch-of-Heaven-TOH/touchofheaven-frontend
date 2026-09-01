@@ -17,7 +17,7 @@ import { homeMediaAssets } from "@/features/home/config/hero-media";
 export const metadata: Metadata = {
   title: "For Clients",
   description:
-    "Find trusted braiders, beauty professionals, barbers, nail techs, and authentic African products with Touch of Heaven.",
+    "Find trusted beauty businesses, barbers, nail techs, and authentic African products with Touch of Heaven.",
 };
 
 const heroLooks = [
@@ -31,7 +31,7 @@ const serviceCategories = [
   {
     label: "Hair Braiding",
     detail: "Knotless, boho, cornrows, loc care",
-    href: "/braiders",
+    href: "/businesses",
     image: "/images/ai-studio/catalog/knotless-small-midback-front.jpg",
   },
   {
@@ -106,7 +106,7 @@ const productCards = [
 
 const activity = [
   "Amara booked medium knotless braids",
-  "Grace found a braider 1.2 mi away",
+  "Grace found a professional 1.2 mi away",
   "Brianna added shea butter to cart",
   "Tasha saved a boho braids look",
   "Nia viewed weekend appointments",
@@ -439,9 +439,9 @@ export default function ForClientsPage() {
           </div>
           <Link
             className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]"
-            href="/braiders"
+            href="/businesses"
           >
-            Browse braiders <ArrowRight aria-hidden="true" size={16} />
+            Browse businesses <ArrowRight aria-hidden="true" size={16} />
           </Link>
         </div>
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
@@ -483,7 +483,7 @@ export default function ForClientsPage() {
                     {provider.rating} ({provider.reviews})
                   </span>
                 </div>
-                <Link className="btn-primary mt-5 w-full" href="/braiders">
+                <Link className="btn-primary mt-5 w-full" href="/businesses">
                   View profile
                 </Link>
               </div>
@@ -565,7 +565,7 @@ export default function ForClientsPage() {
               Built to expand
             </p>
             <h2 className="mt-2 font-serif text-4xl font-semibold leading-tight text-[var(--color-brand-strong)]">
-              Starting with braiders, ready for nail techs, barbers, and more.
+              Starting with beauty businesses, ready for nail techs, barbers, and more.
             </h2>
             <p className="mt-4 text-base leading-7 text-[var(--color-text-muted)]">
               The client homepage introduces those categories now, while the

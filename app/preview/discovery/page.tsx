@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-function BraiderSkeleton() {
+function BusinessSkeleton() {
   return (
     <div className="rounded-md border border-[var(--color-border)] bg-white p-3">
       <div className="flex items-center gap-3">
@@ -28,7 +28,7 @@ function BraiderSkeleton() {
 
 export default async function DiscoveryPreviewPage() {
   const homeData = await getHomePageData();
-  const braiders = homeData.featuredBraiders.items.slice(0, 3);
+  const businesses = homeData.featuredBraiders.items.slice(0, 3);
 
   return (
     <main className="min-h-dvh overflow-hidden bg-[var(--color-page)] text-[var(--color-text-primary)]">
@@ -42,7 +42,7 @@ export default async function DiscoveryPreviewPage() {
             src={brandAssets.logoMark}
           />
         </div>
-        <p className="text-sm font-bold">Find Braiders</p>
+        <p className="text-sm font-bold">Find Businesses</p>
         <button
           aria-label="Filter discovery results"
           className="grid size-9 place-items-center rounded-md border border-[var(--color-border)] bg-white text-[var(--color-brand-strong)]"
@@ -55,7 +55,7 @@ export default async function DiscoveryPreviewPage() {
       <div className="p-4">
         <label className="flex min-h-11 items-center gap-2 rounded-md border border-[var(--color-border)] bg-white px-3 text-sm text-[var(--color-text-muted)]">
           <Search aria-hidden="true" size={16} />
-          <span>Braider, style, or service</span>
+          <span>Business, style, or service</span>
         </label>
       </div>
 
@@ -80,44 +80,44 @@ export default async function DiscoveryPreviewPage() {
           <div className="absolute bottom-3 left-3 right-3 rounded-md bg-white/92 p-3 shadow-[var(--shadow-subtle)] backdrop-blur">
             <p className="flex items-center gap-2 text-xs font-bold text-[var(--color-brand-strong)]">
               <ShieldCheck aria-hidden="true" size={15} />
-              Discovery feed uses verified braider data when available.
+              Discovery feed uses verified business data when available.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-3 p-4" aria-label="Nearby braiders">
+      <section className="grid gap-3 p-4" aria-label="Nearby businesses">
         <div className="flex items-center justify-between">
           <h1 className="font-serif text-xl font-semibold text-[var(--color-brand-strong)]">
-            Top Braiders Near You
+            Top Businesses Near You
           </h1>
           <span className="text-xs font-bold text-[var(--color-brand)]">Map</span>
         </div>
 
         {homeData.featuredBraiders.status === "ready" ? (
-          braiders.map((braider) => (
+          businesses.map((business) => (
             <article
               className="rounded-md border border-[var(--color-border)] bg-white p-3 shadow-[var(--shadow-subtle)]"
-              key={braider.id}
+              key={business.id}
             >
               <div className="flex gap-3">
                 <div className="relative size-14 shrink-0 overflow-hidden rounded-full bg-[var(--color-brand-soft)]">
-                  {braider.image ? (
+                  {business.image ? (
                     <Image
                       alt=""
                       className="object-cover"
                       fill
                       sizes="56px"
-                      src={braider.image.src}
+                      src={business.image.src}
                     />
                   ) : null}
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-sm font-bold text-[var(--color-brand-strong)]">
-                    {braider.name}
+                    {business.name}
                   </h2>
                   <p className="truncate text-xs text-[var(--color-text-muted)]">
-                    {braider.specialty}
+                    {business.specialty}
                   </p>
                   <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-[var(--color-text-muted)]">
                     <Star
@@ -125,7 +125,7 @@ export default async function DiscoveryPreviewPage() {
                       className="fill-[var(--color-gold)] text-[var(--color-gold)]"
                       size={13}
                     />
-                    {braider.ratingAverage?.toFixed(1) ?? "New"} ({braider.ratingCount})
+                    {business.ratingAverage?.toFixed(1) ?? "New"} ({business.ratingCount})
                   </p>
                 </div>
               </div>
@@ -134,11 +134,11 @@ export default async function DiscoveryPreviewPage() {
         ) : (
           <>
             <div className="rounded-md border border-[var(--color-warning)] bg-[var(--color-warning-soft)] p-3 text-xs font-semibold text-[var(--color-warning)]">
-              Braider discovery data is pending from the public homepage feed.
+              Business discovery data is pending from the public homepage feed.
             </div>
-            <BraiderSkeleton />
-            <BraiderSkeleton />
-            <BraiderSkeleton />
+            <BusinessSkeleton />
+            <BusinessSkeleton />
+            <BusinessSkeleton />
           </>
         )}
       </section>

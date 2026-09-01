@@ -55,7 +55,7 @@ export const routeAccessRules: RouteAccessRule[] = [
   {
     family: "(account)",
     examples:
-      "/account, /bookings, /messages, /support, /professional-application, /account/settings/security",
+      "/account, /client-onboarding, /bookings, /messages, /support, /professional-application, /account/settings/security",
     visibility: "protected",
     roles: ["CUSTOMER", "BRAIDER", "ADMIN"],
     recentMfa: "backend-enforced",
@@ -91,6 +91,7 @@ export const routeAccessRules: RouteAccessRule[] = [
 
 export const protectedRoutePrefixes = [
   "/account",
+  "/client-onboarding",
   "/book",
   "/bookings",
   "/checkout",

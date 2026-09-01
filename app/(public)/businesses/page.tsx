@@ -5,26 +5,26 @@ import { BadgeCheck, MapPin, Star } from "lucide-react";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
 
 export const metadata: Metadata = {
-  title: "Braiders",
+  title: "Businesses",
   description:
-    "Browse verified Touch of Heaven braiders and open public profiles.",
+    "Browse verified Touch of Heaven beauty and wellness businesses and open public profiles.",
 };
 
-const braiders = [
+const businesses = [
   ["Royalty Hair Co.", "Knotless braids, boho braids", "Kathleen, GA", "4.9", "128", homeMediaAssets.communitySalon],
   ["Touched by Tee", "Goddess braids, loc care", "Warner Robins, GA", "4.8", "96", homeMediaAssets.studioBooking],
   ["Braids by Nia", "Cornrows, stitch braids", "Macon, GA", "4.9", "142", homeMediaAssets.primaryHero],
   ["Hair by Milly", "Box braids, kids styles", "Atlanta, GA", "4.7", "83", homeMediaAssets.stylePortrait],
 ] as const;
 
-export default function BraidersPage() {
+export default function BusinessesPage() {
   return (
     <section className="bg-white">
       <div className="page-container py-12 md:py-16">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-bold uppercase text-[var(--color-brand-strong)]">
-              Braiders
+              Businesses
             </p>
             <h1 className="mt-3 max-w-3xl font-serif text-5xl font-semibold leading-tight text-[var(--color-brand-strong)]">
               Verified professionals with clear services, reviews, and booking paths.
@@ -36,7 +36,7 @@ export default function BraidersPage() {
         </div>
 
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {braiders.map(([name, specialty, location, rating, reviews, image]) => (
+          {businesses.map(([name, specialty, location, rating, reviews, image]) => (
             <article
               className="overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-page)] shadow-[var(--shadow-subtle)]"
               key={name}
@@ -72,7 +72,7 @@ export default function BraidersPage() {
                 </p>
                 <Link
                   className="btn-primary mt-4 w-full"
-                  href={`/braiders/${name.toLowerCase().replaceAll(" ", "-").replaceAll(".", "")}`}
+                  href={`/businesses/${name.toLowerCase().replaceAll(" ", "-").replaceAll(".", "")}`}
                 >
                   View Profile
                 </Link>

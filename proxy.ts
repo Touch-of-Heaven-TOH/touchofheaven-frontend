@@ -75,8 +75,6 @@ function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
       "'strict-dynamic'",
       isDev ? "'unsafe-eval'" : "",
       "https://js.stripe.com",
-      "https://maps.googleapis.com",
-      "https://maps.gstatic.com",
       "https://api.mapbox.com",
     ]
       .filter(Boolean)
@@ -86,7 +84,6 @@ function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
       "'unsafe-inline'",
       "https://fonts.googleapis.com",
       "https://api.mapbox.com",
-      "https://maps.googleapis.com",
     ]
       .filter(Boolean)
       .join(" "),
@@ -96,12 +93,15 @@ function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
       "https://*.supabase.co",
       "https://*.mapbox.com",
       "https://*.stripe.com",
-      "https://maps.googleapis.com",
-      "https://maps.gstatic.com",
       "https://*.googleusercontent.com",
       "https://*.ggpht.com",
     ].join(" "),
     "font-src 'self' https://fonts.gstatic.com",
+    // worker-src: MapLibre GL JS parses vector tiles off the main thread in
+    // a blob-sourced Web Worker it constructs itself - without this, the
+    // browser falls back to script-src for workers, which has no `blob:`
+    // source and silently breaks tile rendering.
+    "worker-src 'self' blob:",
     [
       "connect-src 'self'",
       apiOrigin,
@@ -111,7 +111,10 @@ function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
       "https://events.mapbox.com",
       "https://*.supabase.co",
       "wss://*.supabase.co",
-      "https://maps.googleapis.com",
+      // OpenFreeMap (free, keyless vector map tiles) and Nominatim (free,
+      // keyless OpenStreetMap geocoding) - see lib/maps/config.ts.
+      "https://tiles.openfreemap.org",
+      "https://nominatim.openstreetmap.org",
     ].join(" "),
     [
       "frame-src",

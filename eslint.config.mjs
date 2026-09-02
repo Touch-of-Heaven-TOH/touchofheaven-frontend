@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static assets, never source to lint - notably the vendored MapLibre
+    // worker bundle (components/map/BusinessMap.tsx explains why it lives
+    // here instead of going through the bundler).
+    "public/**",
   ]),
 ]);
 

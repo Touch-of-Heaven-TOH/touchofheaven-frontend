@@ -10,7 +10,7 @@ import BraiderProfileCard from '@/components/map/BusinessProfileCard';
 import MapSearchPanel from '@/components/map/MapSearchPanel';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useNearbyBraiders } from '@/hooks/useNearbyBusinesses';
-import { KATHLEEN_GEORGIA_CENTER } from '@/lib/maps/config';
+import { DEFAULT_MAP_CENTER } from '@/lib/maps/config';
 import type { Coordinates } from '@/lib/maps/types';
 import {
   EMPTY_DISCOVERY_FILTERS,
@@ -20,11 +20,10 @@ import {
 
 const TERMINAL_UNRESOLVED_STATUSES = new Set(['denied', 'timeout', 'unsupported']);
 
-// The Google Maps JS SDK (and BraiderMap's own client-only DOM/marker
-// work) has no business being in the server-rendered payload or the
-// initial client bundle - it's pure browser interactivity, and `ssr:
-// false` plus this loading fallback keep it out of both until the page
-// actually needs it.
+// MapLibre GL JS (and BraiderMap's own client-only DOM/marker work) has no
+// business being in the server-rendered payload or the initial client
+// bundle - it's pure browser interactivity, and `ssr: false` plus this
+// loading fallback keep it out of both until the page actually needs it.
 const BraiderMap = dynamic(() => import('@/components/map/BusinessMap'), {
   ssr: false,
   loading: () => (
@@ -83,7 +82,7 @@ export default function MapPageClient() {
       setSearchCenter(geolocation.coordinates);
     } else if (TERMINAL_UNRESOLVED_STATUSES.has(geolocation.status)) {
       setAppliedGeolocationStatus(geolocation.status);
-      setSearchCenter(KATHLEEN_GEORGIA_CENTER);
+      setSearchCenter(DEFAULT_MAP_CENTER);
     }
   }
 

@@ -7,8 +7,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "*.cloudflare.com" },
       { protocol: "https", hostname: "*.supabase.co" },
-      { protocol: "https", hostname: "maps.googleapis.com" },
-      { protocol: "https", hostname: "maps.gstatic.com" },
       { protocol: "https", hostname: "*.googleusercontent.com" },
       { protocol: "https", hostname: "*.ggpht.com" },
       { protocol: "https", hostname: "*.mapbox.com" },

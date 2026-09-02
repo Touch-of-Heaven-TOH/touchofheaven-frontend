@@ -1,9 +1,9 @@
 'use client';
 
-import { MarkerClusterer, type Renderer } from '@googlemaps/markerclusterer';
+import * as maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useRef, useState } from 'react';
-import { isMapsConfigured, KATHLEEN_GEORGIA_CENTER } from '@/lib/maps/config';
-import { loadMapsLibrary, loadMarkerLibrary } from '@/lib/maps/loader';
+import { DEFAULT_MAP_CENTER, MAP_STYLE_URL } from '@/lib/maps/config';
 import type { Coordinates } from '@/lib/maps/types';
 import type { NearbyBraider } from '@/lib/discovery/types';
 import {
@@ -11,12 +11,26 @@ import {
   buildUserLocationMarkerContent,
 } from '@/components/map/marker-content';
 
-// Below this zoom, individual pins merge into clustered count circles - see
-// the clusterer's SuperClusterAlgorithm maxZoom below.
-const CLUSTER_MAX_ZOOM = 9;
 const PAN_DEBOUNCE_MS = 600;
 const SEARCH_THIS_AREA_THRESHOLD_METERS = 2_000;
 const GEOLOCATION_FLY_TO_ZOOM = 12;
+
+// MapLibre parses vector tiles off the main thread in a module Worker it
+// builds from its own bundled URL (import.meta.url-relative) - under this
+// app's Turbopack dev server, that resolution comes out wrong (it points
+// at the current page's own URL instead of MapLibre's worker script),
+// so the worker gets created, immediately fails to load real code, and
+// silently closes - the map style/sprite still load fine, but no vector
+// tile ever gets requested, rendering just the style's blank background.
+// Pointing MapLibre at a copy of its own worker bundle served as a plain
+// static file (public/, untouched by any bundler) sidesteps the bad
+// resolution entirely. The worker script itself imports
+// ./maplibre-gl-shared.mjs by a relative URL, so that file has to sit
+// alongside it in public/ too - without it the worker loads, immediately
+// 404s on that import, and closes just as silently. If maplibre-gl is
+// upgraded, re-copy both node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs
+// and node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs into public/.
+maplibregl.setWorkerUrl('/maplibre-gl-worker.mjs');
 
 export type MapMoveEvent = {
   center: Coordinates;
@@ -41,12 +55,12 @@ export type BraiderMapProps = {
   isLoading?: boolean;
   selectedBraiderId?: string | null;
   // Set this to a *new object* (not a mutated one) to command the map to
-  // pan/zoom there - e.g. when the search bar's Places autocomplete
-  // resolves a selection. Unlike userCoordinates (which only ever flies
-  // once, the first time it's granted), every new focusRequest re-fires,
-  // since each is a distinct, explicit user action. Plain map dragging
-  // never goes through this - the camera is already where the user put
-  // it, so only onMapMove/searchCenterRef need to know about that.
+  // pan/zoom there - e.g. when the search bar's place search resolves a
+  // selection. Unlike userCoordinates (which only ever flies once, the
+  // first time it's granted), every new focusRequest re-fires, since each
+  // is a distinct, explicit user action. Plain map dragging never goes
+  // through this - the camera is already where the user put it, so only
+  // onMapMove/searchCenterRef need to know about that.
   focusRequest?: MapFocusRequest | null;
 };
 
@@ -62,41 +76,17 @@ function haversineMeters(a: Coordinates, b: Coordinates): number {
   return 2 * earthRadiusMeters * Math.asin(Math.sqrt(h));
 }
 
-function buildClusterRenderer(): Renderer {
-  return {
-    render: ({ count, position }) => {
-      const diameter = Math.min(56, 32 + count * 2);
-      const el = document.createElement('div');
-      el.setAttribute('aria-label', `${count} braiders in this area`);
-      el.setAttribute('role', 'button');
-      el.style.width = `${diameter}px`;
-      el.style.height = `${diameter}px`;
-      el.style.borderRadius = '9999px';
-      el.style.background = 'var(--color-brand-purple)';
-      el.style.color = '#ffffff';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.style.fontWeight = '600';
-      el.style.fontSize = '13px';
-      el.style.boxShadow = '0 1px 4px rgba(0,0,0,0.35)';
-      el.style.cursor = 'pointer';
-      el.textContent = String(count);
-      // The global `google` namespace comes from @types/google.maps; by
-      // the time the clusterer ever calls this renderer, the "marker"
-      // library has already been loaded (BraiderMap awaits
-      // loadMarkerLibrary() before constructing the MarkerClusterer).
-      return new google.maps.marker.AdvancedMarkerElement({ position, content: el });
-    },
-  };
-}
-
 /**
  * The braider discovery map. Renders custom photo markers for every
- * braider, clusters them below zoom 10, tracks the user's own pulsing
- * location dot, and reports user-initiated pans (not the map's own
- * programmatic moves, like flying to a newly-granted location) so the
- * caller can offer a "Search this area" re-fetch.
+ * braider, tracks the user's own pulsing location dot, and reports
+ * user-initiated pans (not the map's own programmatic moves, like flying to
+ * a newly-granted location) so the caller can offer a "Search this area"
+ * re-fetch.
+ *
+ * Runs on MapLibre GL JS against OpenFreeMap's free vector tiles - no API
+ * key required, see lib/maps/config.ts. Marker clustering (the previous
+ * Google Maps build had one below zoom 9) isn't reimplemented here yet;
+ * individual pins render at every zoom level.
  */
 export default function BraiderMap({
   braiders,
@@ -108,16 +98,10 @@ export default function BraiderMap({
   focusRequest,
 }: BraiderMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const clustererRef = useRef<MarkerClusterer | null>(null);
-  const markersRef = useRef<Map<string, google.maps.marker.AdvancedMarkerElement>>(
-    new Map(),
-  );
-  const userMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
-  const searchCenterRef = useRef<Coordinates>({
-    lat: KATHLEEN_GEORGIA_CENTER.lat,
-    lng: KATHLEEN_GEORGIA_CENTER.lng,
-  });
+  const mapRef = useRef<maplibregl.Map | null>(null);
+  const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
+  const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const searchCenterRef = useRef<Coordinates>({ ...DEFAULT_MAP_CENTER });
   const hasFlownToUserRef = useRef(false);
   const userGestureRef = useRef(false);
   const panDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -125,8 +109,6 @@ export default function BraiderMap({
   const [loadError, setLoadError] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [showSearchThisArea, setShowSearchThisArea] = useState(false);
-
-  const configured = isMapsConfigured();
 
   // The mount-once effect below wires the "idle" listener a single time,
   // but onMapMove is free to change identity on every parent render (it
@@ -140,147 +122,116 @@ export default function BraiderMap({
 
   // Mount the map exactly once.
   useEffect(() => {
-    if (!configured) {
-      console.error(
-        '[BraiderMap] NEXT_PUBLIC_GOOGLE_MAPS_API_KEY and/or NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID are not set. The map cannot render until both are configured.',
-      );
-      return;
-    }
+    if (!containerRef.current) return;
 
     let cancelled = false;
 
-    Promise.all([loadMapsLibrary(), loadMarkerLibrary()])
-      .then(([{ Map }]) => {
-        if (cancelled || !containerRef.current) return;
+    const map = new maplibregl.Map({
+      container: containerRef.current,
+      style: MAP_STYLE_URL,
+      center: [searchCenterRef.current.lng, searchCenterRef.current.lat],
+      zoom: 10,
+    });
+    mapRef.current = map;
 
-        const map = new Map(containerRef.current, {
-          center: searchCenterRef.current,
-          zoom: 10,
-          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID,
-          disableDefaultUI: false,
-          clickableIcons: false,
-          gestureHandling: 'greedy',
-        });
-        mapRef.current = map;
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
-        // Distinguish a user-driven pan/zoom from our own programmatic
-        // camera moves (the geolocation fly-to, or centering on a
-        // selected braider) - only the former should ever surface
-        // "Search this area" or trigger a re-fetch. See this component's
-        // doc comment.
-        map.addListener('dragstart', () => {
-          userGestureRef.current = true;
-        });
-        containerRef.current.addEventListener(
-          'wheel',
-          () => {
-            userGestureRef.current = true;
-          },
-          { passive: true },
-        );
-        containerRef.current.addEventListener(
-          'touchstart',
-          () => {
-            userGestureRef.current = true;
-          },
-          { passive: true },
-        );
+    map.on('error', (event: maplibregl.ErrorEvent) => {
+      if (cancelled) return;
+      console.error('[BraiderMap] MapLibre failed to load.', event.error);
+      setLoadError(true);
+    });
 
-        map.addListener('idle', () => {
-          if (panDebounceRef.current) clearTimeout(panDebounceRef.current);
-          panDebounceRef.current = setTimeout(() => {
-            if (!userGestureRef.current) return;
-            userGestureRef.current = false;
+    map.on('load', () => {
+      if (cancelled) return;
+      setMapReady(true);
+    });
 
-            const center = map.getCenter();
-            const zoom = map.getZoom();
-            if (!center || zoom === undefined) return;
+    // Distinguish a user-driven pan/zoom from our own programmatic camera
+    // moves (the geolocation fly-to, or centering on a selected braider) -
+    // only the former should ever surface "Search this area" or trigger a
+    // re-fetch. See this component's doc comment.
+    map.on('dragstart', () => {
+      userGestureRef.current = true;
+    });
+    map.on('wheel', () => {
+      userGestureRef.current = true;
+    });
+    map.on('touchstart', () => {
+      userGestureRef.current = true;
+    });
 
-            const currentCenter: Coordinates = { lat: center.lat(), lng: center.lng() };
-            const distanceFromSearchCenter = haversineMeters(
-              searchCenterRef.current,
-              currentCenter,
-            );
-
-            // Within the threshold: chase the pan silently, same as the
-            // spec's "debounced pan -> re-fetch". Beyond it: only surface
-            // the "Search this area" pill and wait for an explicit click
-            // (handleSearchThisArea) rather than re-fetching out from under
-            // the user - a small nudge shouldn't refetch the same way a
-            // fast pan across the map to a different city does.
-            if (distanceFromSearchCenter > SEARCH_THIS_AREA_THRESHOLD_METERS) {
-              setShowSearchThisArea(true);
-              return;
-            }
-
-            searchCenterRef.current = currentCenter;
-            setShowSearchThisArea(false);
-            onMapMoveRef.current?.({ center: currentCenter, zoom });
-          }, PAN_DEBOUNCE_MS);
-        });
-
-        setMapReady(true);
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        console.error('[BraiderMap] Failed to load Google Maps.', error);
-        setLoadError(true);
-      });
-
-    return () => {
-      cancelled = true;
+    map.on('idle', () => {
       if (panDebounceRef.current) clearTimeout(panDebounceRef.current);
-    };
-  }, [configured]);
+      panDebounceRef.current = setTimeout(() => {
+        if (!userGestureRef.current) return;
+        userGestureRef.current = false;
 
-  // Rebuild braider markers and the clusterer when the result set changes.
-  useEffect(() => {
-    if (!mapReady || !mapRef.current) return;
+        const center = map.getCenter();
+        const zoom = map.getZoom();
 
-    let cancelled = false;
-    loadMarkerLibrary().then(({ AdvancedMarkerElement }) => {
-      if (cancelled || !mapRef.current) return;
+        const currentCenter: Coordinates = { lat: center.lat, lng: center.lng };
+        const distanceFromSearchCenter = haversineMeters(
+          searchCenterRef.current,
+          currentCenter,
+        );
 
-      clustererRef.current?.clearMarkers();
-      markersRef.current.clear();
+        // Within the threshold: chase the pan silently, same as the spec's
+        // "debounced pan -> re-fetch". Beyond it: only surface the "Search
+        // this area" pill and wait for an explicit click
+        // (handleSearchThisArea) rather than re-fetching out from under the
+        // user - a small nudge shouldn't refetch the same way a fast pan
+        // across the map to a different city does.
+        if (distanceFromSearchCenter > SEARCH_THIS_AREA_THRESHOLD_METERS) {
+          setShowSearchThisArea(true);
+          return;
+        }
 
-      const markers = braiders.map((braider) => {
-        const content = buildBraiderMarkerContent(braider);
-        content.addEventListener('click', () => onBraiderSelect?.(braider.id));
-        content.addEventListener('keydown', (event) => {
-          if (event instanceof KeyboardEvent && (event.key === 'Enter' || event.key === ' ')) {
-            event.preventDefault();
-            onBraiderSelect?.(braider.id);
-          }
-        });
-
-        const marker = new AdvancedMarkerElement({
-          position: { lat: braider.latitude, lng: braider.longitude },
-          content,
-        });
-        markersRef.current.set(braider.id, marker);
-        return marker;
-      });
-
-      clustererRef.current = new MarkerClusterer({
-        map: mapRef.current,
-        markers,
-        renderer: buildClusterRenderer(),
-        algorithmOptions: { maxZoom: CLUSTER_MAX_ZOOM },
-      });
+        searchCenterRef.current = currentCenter;
+        setShowSearchThisArea(false);
+        onMapMoveRef.current?.({ center: currentCenter, zoom });
+      }, PAN_DEBOUNCE_MS);
     });
 
     return () => {
       cancelled = true;
+      if (panDebounceRef.current) clearTimeout(panDebounceRef.current);
+      map.remove();
+      mapRef.current = null;
     };
+    // Mount-once: none of this effect's captured values are meant to react
+    // to prop changes - see the dedicated effects below for that.
+  }, []);
+
+  // Rebuild braider markers when the result set changes.
+  useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
+    const map = mapRef.current;
+
+    for (const marker of markersRef.current.values()) marker.remove();
+    markersRef.current.clear();
+
+    for (const braider of braiders) {
+      const content = buildBraiderMarkerContent(braider);
+      content.addEventListener('click', () => onBraiderSelect?.(braider.id));
+      content.addEventListener('keydown', (event) => {
+        if (event instanceof KeyboardEvent && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          onBraiderSelect?.(braider.id);
+        }
+      });
+
+      const marker = new maplibregl.Marker({ element: content })
+        .setLngLat([braider.longitude, braider.latitude])
+        .addTo(map);
+      markersRef.current.set(braider.id, marker);
+    }
   }, [braiders, mapReady, onBraiderSelect]);
 
   // Toggle the active (selected) marker's highlight class.
   useEffect(() => {
     for (const [id, marker] of markersRef.current) {
-      const content = marker.content;
-      if (!(content instanceof HTMLElement)) continue;
-      content.classList.toggle('toh-marker--active', id === selectedBraiderId);
+      marker.getElement().classList.toggle('toh-marker--active', id === selectedBraiderId);
     }
   }, [selectedBraiderId, braiders]);
 
@@ -288,41 +239,31 @@ export default function BraiderMap({
   // fly to it once (not on every re-render) the first time it's granted.
   useEffect(() => {
     if (!mapReady || !mapRef.current) return;
+    const map = mapRef.current;
 
-    let cancelled = false;
-    loadMarkerLibrary().then(({ AdvancedMarkerElement }) => {
-      if (cancelled || !mapRef.current) return;
+    if (!userCoordinates) {
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
+      hasFlownToUserRef.current = false;
+      return;
+    }
 
-      if (!userCoordinates) {
-        if (userMarkerRef.current) userMarkerRef.current.map = null;
-        userMarkerRef.current = null;
-        hasFlownToUserRef.current = false;
-        return;
-      }
+    if (userMarkerRef.current) {
+      userMarkerRef.current.setLngLat([userCoordinates.lng, userCoordinates.lat]);
+    } else {
+      userMarkerRef.current = new maplibregl.Marker({
+        element: buildUserLocationMarkerContent(),
+      })
+        .setLngLat([userCoordinates.lng, userCoordinates.lat])
+        .addTo(map);
+    }
 
-      if (userMarkerRef.current) {
-        userMarkerRef.current.position = userCoordinates;
-      } else {
-        userMarkerRef.current = new AdvancedMarkerElement({
-          map: mapRef.current,
-          position: userCoordinates,
-          content: buildUserLocationMarkerContent(),
-          zIndex: 1,
-        });
-      }
-
-      if (!hasFlownToUserRef.current) {
-        hasFlownToUserRef.current = true;
-        searchCenterRef.current = userCoordinates;
-        mapRef.current.panTo(userCoordinates);
-        mapRef.current.setZoom(GEOLOCATION_FLY_TO_ZOOM);
-        setShowSearchThisArea(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
+    if (!hasFlownToUserRef.current) {
+      hasFlownToUserRef.current = true;
+      searchCenterRef.current = userCoordinates;
+      map.flyTo({ center: [userCoordinates.lng, userCoordinates.lat], zoom: GEOLOCATION_FLY_TO_ZOOM });
+      setShowSearchThisArea(false);
+    }
   }, [userCoordinates, mapReady]);
 
   // Pan/zoom to an explicit focus request (e.g. a search bar selection).
@@ -332,8 +273,10 @@ export default function BraiderMap({
   useEffect(() => {
     if (!mapReady || !mapRef.current || !focusRequest) return;
     searchCenterRef.current = focusRequest.coordinates;
-    mapRef.current.panTo(focusRequest.coordinates);
-    mapRef.current.setZoom(focusRequest.zoom ?? GEOLOCATION_FLY_TO_ZOOM);
+    mapRef.current.flyTo({
+      center: [focusRequest.coordinates.lng, focusRequest.coordinates.lat],
+      zoom: focusRequest.zoom ?? GEOLOCATION_FLY_TO_ZOOM,
+    });
     setShowSearchThisArea(false);
   }, [focusRequest, mapReady]);
 
@@ -341,14 +284,13 @@ export default function BraiderMap({
     if (!mapRef.current) return;
     const center = mapRef.current.getCenter();
     const zoom = mapRef.current.getZoom();
-    if (!center || zoom === undefined) return;
-    const currentCenter: Coordinates = { lat: center.lat(), lng: center.lng() };
+    const currentCenter: Coordinates = { lat: center.lat, lng: center.lng };
     searchCenterRef.current = currentCenter;
     setShowSearchThisArea(false);
     onMapMove?.({ center: currentCenter, zoom });
   }
 
-  if (!configured || loadError) {
+  if (loadError) {
     return (
       <div
         role="status"

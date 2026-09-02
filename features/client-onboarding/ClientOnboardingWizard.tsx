@@ -40,11 +40,16 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { Button } from "@/components/shared/Button";
 import { siteConfig } from "@/config/site";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { ApiClientError } from "@/lib/api/errors";
 import { browserApiFetch } from "@/lib/api/browser";
+import { DEFAULT_MAP_CENTER } from "@/lib/maps/config";
+import { reverseGeocode, searchPlaces } from "@/lib/maps/geocode";
+import type { Coordinates } from "@/lib/maps/types";
 import type { SafeUser } from "@/types/auth";
 import {
   CLIENT_ONBOARDING_SECTION_STEPS,
@@ -54,6 +59,22 @@ import {
   previousStepSlug,
   stepByNumber,
 } from "@/features/client-onboarding/client-onboarding-steps";
+
+// The map (MapLibre GL JS + its own client-only DOM work) has no business
+// being in the server-rendered payload or the initial client bundle - see
+// the identical dynamic import in components/map/MapPageClient.tsx.
+const BraiderMap = dynamic(() => import("@/components/map/BusinessMap"), {
+  ssr: false,
+  loading: () => (
+    <div
+      role="status"
+      aria-label="Loading map"
+      className="flex h-full min-h-[300px] w-full items-center justify-center rounded-md border border-[var(--color-border)] bg-[#eef1ea]"
+    >
+      <div className="size-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-brand)]" />
+    </div>
+  ),
+});
 
 type ClientOnboardingWizardProps = {
   basePath?: string;
@@ -1294,6 +1315,64 @@ function LocationStep({
   draft: DraftState;
   setDraft: React.Dispatch<React.SetStateAction<DraftState>>;
 }) {
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locateError, setLocateError] = useState<string | null>(null);
+  const debouncedSearchArea = useDebouncedValue(draft.searchArea, 500);
+
+  // Geocode the typed address as the user pauses typing, so the map below
+  // actually reflects what they wrote instead of always sitting on the
+  // default center - see lib/maps/geocode.ts.
+  useEffect(() => {
+    const query = debouncedSearchArea.trim();
+    if (query.length < 3) return;
+
+    let cancelled = false;
+    searchPlaces(query)
+      .then((results) => {
+        if (cancelled || results.length === 0) return;
+        setCoordinates(results[0].coordinates);
+      })
+      .catch((error: unknown) => {
+        console.error("[LocationStep] Place search failed.", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedSearchArea]);
+
+  function handleUseCurrentLocation() {
+    if (!navigator.geolocation) {
+      setLocateError("Your browser doesn't support location detection.");
+      return;
+    }
+
+    setLocating(true);
+    setLocateError(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const point: Coordinates = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCoordinates(point);
+        reverseGeocode(point)
+          .then((label) => {
+            if (label) setDraft((current) => ({ ...current, searchArea: label }));
+          })
+          .catch((error: unknown) => {
+            console.error("[LocationStep] Reverse geocode failed.", error);
+          })
+          .finally(() => setLocating(false));
+      },
+      () => {
+        setLocating(false);
+        setLocateError("Couldn't get your location. Check your browser's location permission.");
+      },
+    );
+  }
+
   return (
     <section className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_520px]">
       <Panel title="Search area">
@@ -1303,7 +1382,13 @@ function LocationStep({
           onChange={(value) => setDraft((current) => ({ ...current, searchArea: value }))}
           value={draft.searchArea}
         />
-        <MapPreview radius={draft.searchRadius} />
+        <div className="h-[300px] overflow-hidden rounded-md border border-[var(--color-border)]">
+          <BraiderMap
+            braiders={[]}
+            userCoordinates={coordinates ?? DEFAULT_MAP_CENTER}
+            focusRequest={coordinates ? { coordinates } : null}
+          />
+        </div>
         <div className="grid gap-4">
           <div className="flex items-center justify-between">
             <span className="font-serif text-2xl">Search radius</span>
@@ -1339,9 +1424,19 @@ function LocationStep({
             setDraft((current) => ({ ...current, useDefaultSearchArea: checked }))
           }
         />
-        <button className="w-fit text-lg text-[var(--color-brand)] underline" type="button">
-          Use my current location
+        <button
+          className="w-fit text-lg text-[var(--color-brand)] underline disabled:opacity-60"
+          disabled={locating}
+          onClick={handleUseCurrentLocation}
+          type="button"
+        >
+          {locating ? "Locating..." : "Use my current location"}
         </button>
+        {locateError ? (
+          <p className="text-base text-[var(--color-danger)]" role="alert">
+            {locateError}
+          </p>
+        ) : null}
       </Panel>
 
       <div className="grid gap-6">
@@ -2415,39 +2510,6 @@ function InfoPanel({
     <div className={`flex min-w-0 items-center gap-5 rounded-md border p-5 text-lg leading-7 text-slate-700 shadow-[var(--shadow-subtle)] max-sm:p-4 ${toneClass}`}>
       <Icon aria-hidden="true" className="shrink-0 text-[var(--color-copper)]" size={44} strokeWidth={1.5} />
       {text}
-    </div>
-  );
-}
-
-function MapPreview({ radius }: { radius: number }) {
-  return (
-    <div className="relative min-h-[300px] overflow-hidden rounded-md border border-[var(--color-border)] bg-[#eef1ea]">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-85"
-        style={{
-          backgroundImage:
-            "linear-gradient(20deg, transparent 48%, rgba(117,131,143,0.28) 49%, rgba(117,131,143,0.28) 51%, transparent 52%), linear-gradient(95deg, transparent 48%, rgba(117,131,143,0.24) 49%, rgba(117,131,143,0.24) 51%, transparent 52%), linear-gradient(155deg, transparent 48%, rgba(117,131,143,0.20) 49%, rgba(117,131,143,0.20) 51%, transparent 52%), radial-gradient(circle at 22% 24%, rgba(148,198,132,0.25), transparent 20%), radial-gradient(circle at 78% 68%, rgba(148,198,132,0.22), transparent 24%)",
-          backgroundSize: "160px 120px, 220px 180px, 260px 180px, 100% 100%, 100% 100%",
-        }}
-      />
-      <div className="absolute left-[33%] top-[18%] size-56 rounded-full border-2 border-[var(--color-brand)] bg-[rgba(92,39,71,0.14)]" />
-      <span className="absolute right-[22%] top-[30%] text-3xl font-semibold text-slate-800">
-        Atlanta
-      </span>
-      {["Mableton", "Austell", "Lithia Springs", "Douglasville", "East Point", "College Park", "Union City", "Riverdale", "Stockbridge"].map((label, index) => (
-        <span
-          className="absolute text-base text-slate-700"
-          key={label}
-          style={{
-            left: `${10 + (index % 3) * 25}%`,
-            top: `${12 + Math.floor(index / 3) * 25}%`,
-          }}
-        >
-          {label}
-        </span>
-      ))}
-      <span className="sr-only">Map preview with an approximate {radius} mile radius.</span>
     </div>
   );
 }

@@ -4,11 +4,9 @@ import { describe, expect, it, vi } from 'vitest';
 import MapSearchPanel from '@/components/map/MapSearchPanel';
 import { EMPTY_DISCOVERY_FILTERS, type DiscoveryFilters } from '@/lib/discovery/types';
 
-// NEXT_PUBLIC_GOOGLE_MAPS_API_KEY/MAP_ID are unset in the test env, so
-// isMapsConfigured() is false and the component renders its disabled
-// fallback input instead of trying to load the Places library - exactly
-// the path these filter-logic tests want, since none of them touch the
-// search bar itself.
+// The search bar's Nominatim lookups only fire after 3+ characters and a
+// debounce, so these filter-logic tests never trigger a network call -
+// none of them touch the search bar itself.
 
 function renderPanel(filters: DiscoveryFilters = EMPTY_DISCOVERY_FILTERS) {
   const onFiltersChange = vi.fn();
@@ -24,9 +22,9 @@ function renderPanel(filters: DiscoveryFilters = EMPTY_DISCOVERY_FILTERS) {
 }
 
 describe('MapSearchPanel filter logic', () => {
-  it('renders the disabled search fallback when Maps is not configured', () => {
+  it('renders an enabled search input', () => {
     renderPanel();
-    expect(screen.getByPlaceholderText('Search coming soon')).toBeDisabled();
+    expect(screen.getByPlaceholderText('Search by city or address')).toBeEnabled();
   });
 
   it('selects a style chip by calling onFiltersChange with its category slug', async () => {

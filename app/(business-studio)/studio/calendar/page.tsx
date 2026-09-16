@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.calendar;
+import { StudioCalendar } from "@/features/studio/components/calendar/StudioCalendar";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Calendar",
   robots: { index: false, follow: false },
 };
 
 export default function StudioCalendarPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+  return <StudioCalendar />;
 }

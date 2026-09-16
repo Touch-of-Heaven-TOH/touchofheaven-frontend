@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.appointmentDetail;
+import { AppointmentDetail } from "@/features/studio/components/appointments/AppointmentDetail";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Appointment",
   robots: { index: false, follow: false },
-};
-
-type StudioAppointmentDetailPageProps = {
-  params: Promise<{ id: string }>;
 };
 
 export default async function StudioAppointmentDetailPage({
   params,
-}: StudioAppointmentDetailPageProps) {
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  return (
-    <RouteStatusPage
-      content={{
-        ...content,
-        description: `${content.description} (appointment ${id})`,
-      }}
-      href="/studio/appointments"
-    />
-  );
+  return <AppointmentDetail appointmentId={id} />;
 }

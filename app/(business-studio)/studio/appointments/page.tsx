@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { StudioAppointments } from "@/features/studio/components/StudioAppointments";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.appointments;
+import { Suspense } from "react";
+import { AppointmentsList } from "@/features/studio/components/appointments/AppointmentsList";
+import { SkeletonRows } from "@/features/studio/components/ui/primitives";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Appointments",
   robots: { index: false, follow: false },
 };
 
 export default function StudioAppointmentsPage() {
-  return <StudioAppointments />;
+  return (
+    <Suspense fallback={<SkeletonRows label="Loading appointments" />}>
+      <AppointmentsList />
+    </Suspense>
+  );
 }

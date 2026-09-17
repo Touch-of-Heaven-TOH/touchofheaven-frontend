@@ -22,12 +22,12 @@ import {
   Sparkles,
   Star,
   User,
-  XCircle,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
 import { brandAssets } from "@/config/site";
+import { AppointmentChangeRequests } from "@/features/bookings/components/AppointmentChangeRequests";
 import { browserApiFetch } from "@/lib/api/browser";
 import { ApiClientError } from "@/lib/api/errors";
 import {
@@ -496,6 +496,7 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
   const [storedAppointment, setStoredAppointment] = useState<StoredAppointment | null>(null);
   const [loading, setLoading] = useState(isUuid(appointmentId));
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
@@ -538,7 +539,7 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
     return () => {
       cancelled = true;
     };
-  }, [appointmentId]);
+  }, [appointmentId, reloadToken]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const view = useMemo(
@@ -780,24 +781,19 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
                   </button>
                 }
               />
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Link
-                  href={`/book/${featuredProfessional.slug}/time`}
-                  className="inline-flex min-h-14 items-center justify-center gap-3 rounded-[var(--radius-control)] border border-[var(--color-gold)] bg-white px-5 font-semibold text-[var(--color-copper)]"
-                >
-                  <Calendar size={20} aria-hidden="true" />
-                  Reschedule
-                </Link>
-                <button
-                  type="button"
-                  className="inline-flex min-h-14 items-center justify-center gap-3 rounded-[var(--radius-control)] border border-[var(--color-brand)] bg-white px-5 font-semibold text-[var(--color-brand)]"
-                >
-                  <XCircle size={20} aria-hidden="true" />
-                  Cancel booking
-                </button>
-              </div>
+              {view.isLive ? (
+                <AppointmentChangeRequests
+                  appointmentId={view.id}
+                  startAt={view.startAt}
+                  businessName={view.businessName}
+                  canRequestChange={view.canRequestChange}
+                  pendingRequest={view.pendingChangeRequest}
+                  onRequested={() => setReloadToken((token) => token + 1)}
+                />
+              ) : null}
               <p className="text-center text-sm text-[var(--color-text-muted)]">
-                Changes are subject to Amara&apos;s availability and our cancellation policy.
+                Changes are subject to {view.providerName}&apos;s availability and the cancellation
+                policy above.
               </p>
             </aside>
           </div>

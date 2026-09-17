@@ -15,7 +15,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Matches local development. npm 11 (bundled with Node 24) wrote the
+          # lockfile; npm 10 on Node 20 reads it as out of sync, and several
+          # dependencies require Node 22 or newer.
+          node-version: 24
           cache: npm
 
       - run: npm ci

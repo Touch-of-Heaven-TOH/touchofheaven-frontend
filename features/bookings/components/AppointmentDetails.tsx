@@ -36,6 +36,14 @@ import {
   type DiscoveryImage,
 } from "@/features/discovery/discovery-data";
 
+type PendingChangeRequest = {
+  id: string;
+  type: "RESCHEDULE" | "CANCELLATION";
+  requestedStartAt: string | null;
+  reason: string;
+  createdAt: string;
+};
+
 type ApiAppointment = {
   id: string;
   status: string;
@@ -44,6 +52,12 @@ type ApiAppointment = {
   computedPriceCents: number;
   depositPaidCents: number;
   balanceDueCents: number;
+  checkInCode?: string | null;
+  canRequestChange?: boolean;
+  pendingChangeRequest?: PendingChangeRequest | null;
+  business?: { id: string; name: string; professionalName: string; phone: string | null } | null;
+  location?: { label: string; locationType: string } | null;
+  cancellationPolicy?: { key: string; label: string; description: string } | null;
   snapshot?: {
     serviceName?: string | null;
     braiderName?: string | null;
@@ -110,6 +124,11 @@ type AppointmentView = {
   color: string;
   parting: string;
   extras: string[];
+  checkInCode: string | null;
+  canRequestChange: boolean;
+  pendingChangeRequest: PendingChangeRequest | null;
+  cancellationPolicy: { label: string; description: string } | null;
+  isLive: boolean;
 };
 
 function classNames(...values: Array<string | false | null | undefined>) {
@@ -242,9 +261,15 @@ function buildView(
   return {
     id: appointment?.id ?? appointmentId,
     status: appointment?.status ?? "CONFIRMED",
-    providerName: snapshot?.braiderName ?? provider?.name ?? featuredProfessional.name,
-    businessName: provider?.businessName ?? featuredProfessional.businessName,
+    providerName:
+      apiAppointment?.business?.professionalName ??
+      snapshot?.braiderName ??
+      provider?.name ??
+      featuredProfessional.name,
+    businessName:
+      apiAppointment?.business?.name ?? provider?.businessName ?? featuredProfessional.businessName,
     location:
+      apiAppointment?.location?.label ??
       snapshot?.braiderLocationDescription ??
       provider?.location ??
       featuredProfessional.location,
@@ -267,6 +292,11 @@ function buildView(
     color: firstVariationLabel(snapshot, "COLOR", stored?.color ?? "Natural Black 1B"),
     parting: stored?.parting ?? "Standard",
     extras: extraLabels(snapshot, stored),
+    checkInCode: apiAppointment?.checkInCode ?? null,
+    canRequestChange: apiAppointment?.canRequestChange ?? false,
+    pendingChangeRequest: apiAppointment?.pendingChangeRequest ?? null,
+    cancellationPolicy: apiAppointment?.cancellationPolicy ?? null,
+    isLive: Boolean(apiAppointment),
   };
 }
 
@@ -707,11 +737,33 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
                 detail="Your booking is protected. You will not be charged twice if this page is refreshed."
                 action={<Link href="/how-it-works" className="font-semibold text-[var(--color-brand)]">Learn more</Link>}
               />
+              {view.checkInCode && view.status === "CONFIRMED" ? (
+                <DetailPanel className="border-[var(--color-brand)]/30 bg-[var(--color-brand-soft)]/40">
+                  <h2 className="font-serif text-2xl font-semibold">Your check-in code</h2>
+                  <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+                    Show this when you arrive so {view.providerName} can record your arrival time.
+                  </p>
+                  <p className="mt-4 text-center font-mono text-4xl tracking-[0.35em] text-[var(--color-brand)]">
+                    {view.checkInCode}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => void navigator.clipboard?.writeText(view.checkInCode ?? "")}
+                    className="mx-auto mt-3 inline-flex min-h-11 items-center gap-2 font-semibold text-[var(--color-brand)]"
+                  >
+                    <Copy size={18} aria-hidden="true" />
+                    Copy code
+                  </button>
+                </DetailPanel>
+              ) : null}
               <InfoRow
                 icon={<Clock size={28} aria-hidden="true" />}
-                title="Cancellation policy"
-                detail="Cancel or reschedule at least 48 hours before your appointment to avoid a fee."
-                action={<Link href="/legal/terms-of-service" className="font-semibold text-[var(--color-brand)]">View policy</Link>}
+                title={view.cancellationPolicy ? `${view.cancellationPolicy.label} cancellation policy` : "Cancellation policy"}
+                detail={
+                  view.cancellationPolicy?.description ??
+                  "Cancel or reschedule at least 48 hours before your appointment to avoid a fee."
+                }
+                action={<Link href="/legal/cancellation" className="font-semibold text-[var(--color-brand)]">View policy</Link>}
               />
               <InfoRow
                 icon={<CreditCard size={28} aria-hidden="true" />}

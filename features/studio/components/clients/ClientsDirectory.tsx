@@ -99,7 +99,7 @@ export function ClientsDirectory() {
         />
       ) : (
         <>
-          <div className="hidden overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-subtle)] md:block">
+          <div className="relative hidden overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-subtle)] md:block">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead className="border-b border-[var(--color-border)] text-xs text-[var(--color-text-muted)] uppercase">
                 <tr>

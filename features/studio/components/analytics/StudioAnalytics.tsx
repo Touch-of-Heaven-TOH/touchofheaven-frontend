@@ -160,7 +160,7 @@ export function StudioAnalytics() {
               {data.topServices.length === 0 ? (
                 <p className="text-sm text-[var(--color-text-muted)]">No bookings in this period.</p>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                   <table className="w-full min-w-[420px] text-left text-sm">
                     <thead className="text-xs text-[var(--color-text-muted)] uppercase">
                       <tr>
@@ -196,7 +196,7 @@ export function StudioAnalytics() {
 
             {data.team.length > 0 ? (
               <Card title="Team performance">
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                   <table className="w-full min-w-[420px] text-left text-sm">
                     <thead className="text-xs text-[var(--color-text-muted)] uppercase">
                       <tr>

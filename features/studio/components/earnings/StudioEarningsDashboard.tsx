@@ -93,7 +93,7 @@ export function StudioEarningsDashboard() {
                   description="Each deposit a client pays through the app appears here, net of the platform fee."
                 />
               ) : (
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                   <table className="w-full min-w-[560px] text-left text-sm">
                     <thead className="text-xs text-[var(--color-text-muted)] uppercase">
                       <tr>

@@ -11,20 +11,13 @@ import {
   BLOCK_TYPE_LABEL,
   BlockTimeDialog,
 } from "@/features/studio/components/calendar/BlockTimeDialog";
-import { StudioDialog } from "@/features/studio/components/ui/StudioDialog";
 import {
   PageHeader,
   Segmented,
   SelectField,
   toneAccentClass,
 } from "@/features/studio/components/ui/primitives";
-import { useToast } from "@/features/studio/components/ui/Toaster";
-import {
-  errorMessage,
-  studioFetcher,
-  studioRequest,
-  withQuery,
-} from "@/features/studio/lib/api";
+import { studioFetcher, withQuery } from "@/features/studio/lib/api";
 import { useStudio } from "@/features/studio/lib/context";
 import {
   APPOINTMENT_STATUS,
@@ -304,16 +297,18 @@ export function StudioCalendar() {
       {blockDialogOpen ? (
         <BlockTimeDialog open onClose={() => setBlockDialogOpen(false)} initialDate={anchor} />
       ) : null}
-      <BlockDetailDialog
-        block={selectedBlock}
-        timezone={timezone}
-        canDelete={studio.isOwner}
-        onClose={() => setSelectedBlock(null)}
-        onDeleted={() => {
-          setSelectedBlock(null);
-          void mutate();
-        }}
-      />
+      {selectedBlock ? (
+        <BlockTimeDialog
+          open
+          block={selectedBlock}
+          canEdit={studio.isOwner}
+          onClose={() => setSelectedBlock(null)}
+          onDeleted={() => {
+            setSelectedBlock(null);
+            void mutate();
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -663,87 +658,3 @@ function MonthGrid({
   );
 }
 
-function BlockDetailDialog({
-  block,
-  timezone,
-  canDelete,
-  onClose,
-  onDeleted,
-}: {
-  block: CalendarBlockedPeriod | null;
-  timezone: string;
-  canDelete: boolean;
-  onClose: () => void;
-  onDeleted: () => void;
-}) {
-  const notify = useToast();
-  const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  if (!block) return null;
-
-  return (
-    <StudioDialog
-      open
-      onClose={onClose}
-      title={BLOCK_TYPE_LABEL[block.blockType]}
-      size="sm"
-      footer={
-        <>
-          <Button variant="secondary" onClick={onClose}>
-            Close
-          </Button>
-          {canDelete ? (
-            <Button
-              variant="danger"
-              loading={deleting}
-              onClick={async () => {
-                setDeleting(true);
-                setError(null);
-                try {
-                  await studioRequest(`/api/v1/availability/blocked-periods/${block.id}`, "DELETE");
-                  notify({ tone: "success", title: "Time unblocked", description: "Clients can book it again." });
-                  onDeleted();
-                } catch (caught) {
-                  setError(errorMessage(caught));
-                } finally {
-                  setDeleting(false);
-                }
-              }}
-            >
-              Remove block
-            </Button>
-          ) : null}
-        </>
-      }
-    >
-      <dl className="grid *:min-w-0 gap-3 text-sm">
-        <div>
-          <dt className="text-[var(--color-text-muted)]">From</dt>
-          <dd className="font-semibold text-[var(--color-text-primary)]">
-            {keyToLabel(dateKeyIn(new Date(block.startAt), timezone), { weekday: "short", month: "short", day: "numeric" })}{" "}
-            · {formatTime(block.startAt, timezone)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-[var(--color-text-muted)]">Until</dt>
-          <dd className="font-semibold text-[var(--color-text-primary)]">
-            {keyToLabel(dateKeyIn(new Date(block.endAt), timezone), { weekday: "short", month: "short", day: "numeric" })}{" "}
-            · {formatTime(block.endAt, timezone)}
-          </dd>
-        </div>
-        {block.reason ? (
-          <div>
-            <dt className="text-[var(--color-text-muted)]">Note</dt>
-            <dd className="text-[var(--color-text-primary)]">{block.reason}</dd>
-          </div>
-        ) : null}
-        {error ? (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
-            {error}
-          </p>
-        ) : null}
-      </dl>
-    </StudioDialog>
-  );
-}

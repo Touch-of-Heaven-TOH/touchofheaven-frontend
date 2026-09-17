@@ -33,15 +33,7 @@ const SIZE: Record<NonNullable<StudioDialogProps["size"]>, string> = {
  * push its Save button off screen or under the Studio's bottom navigation
  * (the dialog sits above it in z-order).
  */
-export function StudioDialog({
-  open,
-  onClose,
-  title,
-  description,
-  children,
-  footer,
-  size = "md",
-}: StudioDialogProps) {
+export function StudioDialog({ open, onClose, title, description, children, footer, size = "md" }: StudioDialogProps) {
   const titleId = useId();
   const descriptionId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -94,47 +86,51 @@ export function StudioDialog({
 
   if (!open) return null;
 
+  // Portalled to <body>, outside the shell, so it re-applies the Studio
+  // theme tokens itself (display: contents keeps it out of layout).
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-6">
-      <div aria-hidden="true" className="absolute inset-0 bg-[#1b0f17]/55" onClick={onClose} />
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={description ? descriptionId : undefined}
-        tabIndex={-1}
-        className={[
-          "relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-[var(--color-surface)] shadow-[var(--shadow-soft)] outline-none sm:rounded-2xl",
-          SIZE[size],
-        ].join(" ")}
-      >
-        <div className="flex items-start gap-3 border-b border-[var(--color-border)] px-5 py-4">
-          <div className="min-w-0 flex-1">
-            <h2 id={titleId} className="text-lg font-semibold text-[var(--color-text-primary)]">
-              {title}
-            </h2>
-            {description ? (
-              <p id={descriptionId} className="mt-1 text-sm text-[var(--color-text-muted)]">
-                {description}
-              </p>
-            ) : null}
+    <div className="studio-theme contents">
+      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-6">
+        <div aria-hidden="true" className="absolute inset-0 bg-[#1b0f17]/55" onClick={onClose} />
+        <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={description ? descriptionId : undefined}
+          tabIndex={-1}
+          className={[
+            "relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-[var(--color-surface)] shadow-[var(--shadow-soft)] outline-none sm:rounded-2xl",
+            SIZE[size],
+          ].join(" ")}
+        >
+          <div className="flex items-start gap-3 border-b border-[var(--color-border)] px-5 py-4">
+            <div className="min-w-0 flex-1">
+              <h2 id={titleId} className="font-display text-xl font-normal text-[var(--color-text-primary)]">
+                {title}
+              </h2>
+              {description ? (
+                <p id={descriptionId} className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  {description}
+                </p>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="grid size-10 shrink-0 place-items-center rounded-full text-[var(--color-text-muted)] hover:bg-[var(--color-brand-soft)] hover:text-[var(--color-brand)]"
+            >
+              <X aria-hidden="true" className="size-5" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="grid size-10 shrink-0 place-items-center rounded-full text-[var(--color-text-muted)] hover:bg-[var(--color-brand-soft)] hover:text-[var(--color-brand)]"
-          >
-            <X aria-hidden="true" className="size-5" />
-          </button>
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
+          {footer ? (
+            <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[var(--color-border)] px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+              {footer}
+            </div>
+          ) : null}
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
-        {footer ? (
-          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[var(--color-border)] px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-            {footer}
-          </div>
-        ) : null}
       </div>
     </div>,
     document.body,

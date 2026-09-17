@@ -1,12 +1,14 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 
 const variantClassName: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--color-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-subtle)] hover:bg-[var(--color-brand-strong)] active:bg-[var(--color-brand-strong)]",
   secondary:
     "border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] active:bg-[var(--color-brand-soft)]",
+  outline:
+    "border border-[var(--color-brand)] bg-[var(--color-surface)] text-[var(--color-brand)] hover:bg-[var(--color-brand-soft)] active:bg-[var(--color-brand-soft)]",
   ghost:
     "text-[var(--color-text-muted)] hover:bg-[var(--color-brand-soft)] hover:text-[var(--color-brand)] active:bg-[var(--color-brand-soft)]",
   danger:

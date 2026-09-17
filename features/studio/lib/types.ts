@@ -25,6 +25,10 @@ export type TeamRole = "OWNER" | "MANAGER" | "STAFF" | "RECEPTIONIST";
 export type BusinessContext = {
   businessId: string;
   businessName: string;
+  businessLogoUrl: string | null;
+  businessHandle: string | null;
+  locationLabel: string | null;
+  otherBusinessCount: number;
   timezone: string;
   role: TeamRole;
   isOwner: boolean;
@@ -48,14 +52,21 @@ export type AppointmentStatus =
 
 export type ChangeRequestType = "RESCHEDULE" | "CANCELLATION";
 
+export type PaymentState = "UNPAID" | "DEPOSIT_PAID" | "PAID";
+
 export type AppointmentSummary = {
   id: string;
+  reference: string;
+  refundedCents: number;
+  paidCents: number;
   status: AppointmentStatus;
+  paymentState: PaymentState;
+  location: { label: string; locationType: string };
   startAt: string;
   endAt: string;
   durationMins: number;
   serviceName: string;
-  customer: { id: string; name: string };
+  customer: { id: string; name: string; phone: string | null };
   teamMember: { id: string; name: string } | null;
   priceCents: number;
   depositPaidCents: number;
@@ -77,9 +88,14 @@ export type AppointmentSummary = {
 
 export type OverviewResponse = {
   date: string;
+  scheduleDate: string;
+  profileHealth: ProfileHealth | null;
+  weeklyRevenue: WeeklyRevenue | null;
+  upcomingWeek: UpcomingWeek;
   timezone: string;
   businessName: string;
   today: {
+    newClients: number;
     booked: number;
     completed: number;
     inChair: number;
@@ -132,6 +148,8 @@ export type Refund = {
   createdAt: string;
   completedAt: string | null;
   failureMessage: string | null;
+  explanation: string | null;
+  providerReference: string | null;
 };
 
 export type ChangeRequest = {
@@ -163,10 +181,13 @@ export type BalanceCollectionMethod =
 
 export type AppointmentDetail = {
   id: string;
+  reference: string;
   status: AppointmentStatus;
+  paymentState: PaymentState;
   startAt: string;
   endAt: string;
   durationMins: number;
+  noShowGraceMinutes: number;
   originalStartAt: string | null;
   rescheduleCount: number;
   createdAt: string;
@@ -252,6 +273,7 @@ export type CancellationQuoteResponse = {
   alreadyRefundedCents: number;
   business: RefundQuote;
   clientPolicy: RefundQuote;
+  clientRequest: { requestId: string; requestedAt: string; quote: RefundQuote } | null;
 };
 
 export type BlockType =
@@ -563,4 +585,78 @@ export type OwnLocation = {
   id: string;
   label: string;
   locationType: string;
+};
+
+export type StudioNotification = {
+  id: string;
+  kind: "CHANGE_REQUEST" | "AWAITING_DEPOSIT" | "OVERDUE_CHECK_IN" | "STARTING_SOON" | "WAITLIST_ACCEPTED" | "REFUND_FAILED";
+  title: string;
+  body: string;
+  href: string;
+  at: string;
+  urgent: boolean;
+};
+
+export type NotificationsResponse = { unreadCount: number; notifications: StudioNotification[] };
+
+export type SearchResponse = {
+  clients: Array<{ id: string; name: string; email: string; href: string }>;
+  appointments: Array<{ id: string; title: string; startAt: string; status: AppointmentStatus; href: string }>;
+  services: Array<{ id: string; name: string; status: ServiceStatus; priceCents: number; href: string }>;
+};
+
+export type ProfileHealth = {
+  score: number;
+  label: string;
+  checks: Array<{ key: string; label: string; done: boolean; weight: number; href: string }>;
+};
+
+export type WeeklyRevenue = {
+  weekStart: string;
+  days: Array<{ key: string; revenueCents: number; isToday: boolean; isFuture: boolean }>;
+  totalCents: number;
+  previousWeekTotalCents: number;
+  changeBp: number | null;
+};
+
+export type UpcomingWeek = {
+  bookings: number;
+  expectedRevenueCents: number | null;
+  newClients: number;
+  returningClients: number;
+  changes: {
+    bookingsBp: number | null;
+    expectedRevenueBp: number | null;
+    newClientsBp: number | null;
+    returningClientsBp: number | null;
+  };
+};
+
+export type PeriodSummary = {
+  completed: number;
+  cancelled: number;
+  noShows: number;
+  revenueCents: number | null;
+  tipsCents: number | null;
+  refundedCents: number | null;
+  completedClients: number;
+  returningClients: number;
+  returningRateBp: number;
+};
+
+export type SlotCheck = {
+  startAt: string;
+  endAt: string;
+  available: boolean;
+  conflict: { code: string; message: string } | null;
+  withinWorkingHours: boolean;
+};
+
+export type AppointmentOpenings = {
+  date: string;
+  timezone: string;
+  durationMins: number;
+  currentStartAt: string;
+  workingDay: boolean;
+  slots: Array<{ startAt: string; endAt: string; isCurrent: boolean }>;
 };

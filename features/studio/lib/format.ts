@@ -176,14 +176,14 @@ export function initials(name: string): string {
 export type StatusTone = "warning" | "info" | "accent" | "brand" | "success" | "neutral" | "danger";
 
 export const APPOINTMENT_STATUS: Record<AppointmentStatus, { label: string; tone: StatusTone }> = {
-  PENDING_PAYMENT: { label: "Awaiting deposit", tone: "warning" },
-  CONFIRMED: { label: "Confirmed", tone: "info" },
-  ARRIVED: { label: "Checked in", tone: "accent" },
-  IN_PROGRESS: { label: "In service", tone: "brand" },
+  PENDING_PAYMENT: { label: "Deposit pending", tone: "warning" },
+  CONFIRMED: { label: "Confirmed", tone: "success" },
+  ARRIVED: { label: "In studio", tone: "info" },
+  IN_PROGRESS: { label: "In service", tone: "info" },
   COMPLETED: { label: "Completed", tone: "success" },
-  CANCELLED_BY_CUSTOMER: { label: "Cancelled by client", tone: "neutral" },
-  CANCELLED_BY_PROFESSIONAL: { label: "Cancelled by business", tone: "neutral" },
-  NO_SHOW: { label: "No-show", tone: "danger" },
+  CANCELLED_BY_CUSTOMER: { label: "Cancelled", tone: "danger" },
+  CANCELLED_BY_PROFESSIONAL: { label: "Cancelled", tone: "danger" },
+  NO_SHOW: { label: "No-show", tone: "neutral" },
   DISPUTED: { label: "Disputed", tone: "danger" },
 };
 

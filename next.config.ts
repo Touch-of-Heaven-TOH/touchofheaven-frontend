@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Turbopack's persistent dev cache has crashed the dev server twice on
+    // this machine ("Restore of All for task ... failed", then Aborting),
+    // taking the whole site down mid-session. Without it each cold compile
+    // is slower, but the server stays up. Production builds are unaffected.
+    turbopackFileSystemCacheForDev: false,
+  },
   // The floating dev-tools badge sits over the Studio sidebar and mobile
   // navigation during local testing; it never ships to production anyway.
   devIndicators: false,

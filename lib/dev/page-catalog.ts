@@ -139,7 +139,8 @@ export const pageCatalog: CatalogSection[] = [
     title: "Public pages",
     description: "No sign-in needed.",
     pages: [
-      { label: "Home", path: "/", status: "connected", note: "Featured businesses, activity and products from the backend" },
+      { label: "Home (clients)", path: "/", status: "connected", note: "Featured businesses, activity and products from the backend" },
+      { label: "Home (business owners)", path: "/for-business", status: "connected", note: "Platform counts from the backend; switch link in the header" },
       { label: "AI Studio", path: "/ai-studio", status: "partial", note: "Photo upload needs file storage keys" },
       { label: "Explore", path: "/explore", status: "demo" },
       { label: "Search results", path: "/explore/search", status: "demo" },
@@ -156,7 +157,7 @@ export const pageCatalog: CatalogSection[] = [
       { label: "Direct booking page", path: "/book-with/amara-braids-beauty", status: "demo", note: "Duplicate of Business profile" },
       { label: "About", path: "/about", status: "static" },
       { label: "How it works", path: "/how-it-works", status: "static" },
-      { label: "For clients", path: "/for-clients", status: "static" },
+      { label: "For clients (older client page)", path: "/for-clients", status: "static", note: "Overlaps the client home page" },
       { label: "Beauty", path: "/beauty", status: "static" },
       { label: "Marketplace", path: "/marketplace", status: "static", note: "Shop backend exists but isn't connected" },
       { label: "Style quiz", path: "/style-quiz", status: "static" },

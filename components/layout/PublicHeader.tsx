@@ -126,14 +126,20 @@ export function PublicHeader({ user }: PublicHeaderProps) {
     languageOptions.find((language) => language.id === selectedLanguageId) ??
     languageOptions[0];
   const businessPrimaryLinks = [
-    { label: "Business types", href: "/for-clients#coming-next" },
-    { label: "Features", href: "/for-clients" },
-    { label: "Pricing", href: "/marketplace" },
+    { label: "How it works", href: "/for-business#how-it-works" },
+    { label: "Your Studio", href: "/for-business#studio" },
+    { label: "Questions", href: "/for-business#questions" },
   ];
   const professionalLink = user?.roles.includes("BRAIDER")
-    ? { label: "My Studio", href: "/studio/today" }
-    : { label: "List your business", href: "/professional-application" };
-  const isBusinessHeader = pathname !== "/for-clients";
+    ? { label: "My Studio", href: "/studio" }
+    : { label: "List your business", href: "/business/sign-up" };
+  // Two home pages live side by side: "/" for someone booking an
+  // appointment, "/for-business" for someone offering services. Only the
+  // business side (and the pages it leads to) gets the business header.
+  const isBusinessHeader =
+    pathname === "/for-business" ||
+    pathname.startsWith("/for-business/") ||
+    pathname.startsWith("/business/");
   const authHref = user
     ? "/account"
     : isBusinessHeader
@@ -143,8 +149,8 @@ export function PublicHeader({ user }: PublicHeaderProps) {
     ? selectedLanguage.businessHeading
     : selectedLanguage.customerHeading;
   const switchItem = isBusinessHeader
-    ? { label: selectedLanguage.switchToCustomers, href: "/for-clients" }
-    : { label: selectedLanguage.switchToBusiness, href: "/" };
+    ? { label: selectedLanguage.switchToCustomers, href: "/" }
+    : { label: selectedLanguage.switchToBusiness, href: "/for-business" };
 
   const handleMenuToggle = () => {
     setOpen((value) => {
@@ -199,6 +205,14 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         ) : null}
 
         <div className="relative flex items-center gap-2 sm:gap-3">
+          {/* Switch between the two home pages: booking an appointment and
+              offering services. */}
+          <Link
+            className="hidden min-h-11 items-center px-2 text-sm font-bold text-[var(--color-text-primary)] transition hover:text-[var(--color-brand)] md:inline-flex"
+            href={switchItem.href}
+          >
+            {switchItem.label}
+          </Link>
           {isBusinessHeader && !user ? (
             <Link
               className="hidden min-h-11 items-center px-2 text-sm font-bold text-[var(--color-text-primary)] transition hover:text-[var(--color-brand)] sm:inline-flex"
@@ -210,7 +224,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           {isBusinessHeader ? (
             <Link
               className="hidden min-h-12 items-center gap-2 rounded-full border border-[var(--color-border)] bg-white/78 px-5 text-sm font-bold text-[var(--color-text-primary)] shadow-[var(--shadow-subtle)] transition hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] md:inline-flex"
-              href="/for-clients"
+              href="/marketplace"
             >
               <Store aria-hidden="true" size={18} />
               Marketplace

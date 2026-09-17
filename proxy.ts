@@ -95,6 +95,7 @@ function buildCsp(nonce: string, options: SecurityHeaderOptions = {}) {
       "https://*.stripe.com",
       "https://*.googleusercontent.com",
       "https://*.ggpht.com",
+      "https://api.qrserver.com",
     ].join(" "),
     "font-src 'self' https://fonts.gstatic.com",
     // worker-src: MapLibre GL JS parses vector tiles off the main thread in

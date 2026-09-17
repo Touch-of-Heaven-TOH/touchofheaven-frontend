@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.ggpht.com" },
       { protocol: "https", hostname: "*.mapbox.com" },
       { protocol: "https", hostname: "*.stripe.com" },
+      { protocol: "https", hostname: "api.qrserver.com" },
       // Temporary: the 4 AI Studio styles currently in the local dev DB
       // still have their raw scraped Pinterest source URL as thumbnailUrl
       // because R2 was never configured when scripts/scrape-styles.ts ran

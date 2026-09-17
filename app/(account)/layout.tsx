@@ -17,6 +17,10 @@ export default async function AccountLayout({
   const user = await requireUser();
   const currentPath = (await headers()).get("x-toh-pathname") ?? "/account";
 
+  if (currentPath.startsWith("/bookings/")) {
+    return <>{children}</>;
+  }
+
   return (
     <DashboardShell
       currentPath={currentPath}

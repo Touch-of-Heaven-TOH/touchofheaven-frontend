@@ -85,6 +85,13 @@ export const pageCatalog: CatalogSection[] = [
     description: "Opens as the demo client, Nadia Fotso.",
     pages: [
       { label: "My bookings", path: "/bookings", as: "customer", status: "connected" },
+      {
+        label: "Appointment details",
+        path: "/bookings/382474a4-b4b6-4db1-acea-4d216d32cd6e",
+        as: "customer",
+        status: "connected",
+        note: "Check-in code, and asking to cancel or move the booking",
+      },
       { label: "Book Amara Hair Studio (live)", path: `/book/${BUSINESS_ID}`, as: "customer", status: "connected", note: "Payment is simulated" },
       { label: "Client onboarding", path: "/client-onboarding", as: "customer", status: "connected" },
       { label: "Messages", path: "/messages", as: "customer", status: "connected" },
@@ -132,7 +139,7 @@ export const pageCatalog: CatalogSection[] = [
     title: "Public pages",
     description: "No sign-in needed.",
     pages: [
-      { label: "Home", path: "/", status: "partial", note: "Asks for /api/v1/public/homepage, which the backend doesn't have yet" },
+      { label: "Home", path: "/", status: "connected", note: "Featured businesses, activity and products from the backend" },
       { label: "AI Studio", path: "/ai-studio", status: "partial", note: "Photo upload needs file storage keys" },
       { label: "Explore", path: "/explore", status: "demo" },
       { label: "Search results", path: "/explore/search", status: "demo" },

@@ -10,12 +10,21 @@ export default async function PublicLayout({
   const currentPath = headerList.get("x-toh-pathname") ?? "/";
   const isStudioApp =
     currentPath === "/ai-studio" || currentPath.startsWith("/ai-studio/");
+  const isDiscoveryApp =
+    currentPath === "/explore" ||
+    currentPath.startsWith("/explore/") ||
+    currentPath === "/businesses" ||
+    currentPath.startsWith("/businesses/") ||
+    currentPath === "/map" ||
+    currentPath.startsWith("/map/") ||
+    currentPath.startsWith("/book-with/");
+  const hidePublicChrome = isStudioApp || isDiscoveryApp;
 
   return (
     <div className="flex min-h-dvh flex-col">
-      {isStudioApp ? null : <PublicHeader user={user} />}
+      {hidePublicChrome ? null : <PublicHeader user={user} />}
       <main className="flex-1">{children}</main>
-      {isStudioApp ? null : <PublicFooter />}
+      {hidePublicChrome ? null : <PublicFooter />}
     </div>
   );
 }

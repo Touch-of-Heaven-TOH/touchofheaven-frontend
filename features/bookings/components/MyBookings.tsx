@@ -97,34 +97,39 @@ export function MyBookings() {
           {appointments.map((appointment) => {
             const start = new Date(appointment.startAt);
             return (
-              <li key={appointment.id} className="surface-panel flex items-center gap-4 p-4">
-                <div className="grid w-14 shrink-0 place-items-center rounded-[var(--radius-control)] bg-[var(--color-brand-soft)] py-2 text-center">
-                  <span className="text-xs font-semibold uppercase text-[var(--color-brand)]">
-                    {start.toLocaleDateString(undefined, { month: "short" })}
-                  </span>
-                  <span className="text-lg font-bold text-[var(--color-text-primary)]">
-                    {start.getDate()}
-                  </span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-[var(--color-text-primary)]">
-                    {appointment.serviceName ?? "Appointment"}
-                  </p>
-                  <p className="text-xs text-[var(--color-text-muted)]">
-                    {appointment.braiderName ?? "Business"} ·{" "}
-                    {start.toLocaleString(undefined, {
-                      weekday: "short",
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <AppointmentStatusBadge status={appointment.status} />
-                  <span className="text-sm font-semibold text-[var(--color-text-primary)]">
-                    {formatPrice(appointment.computedPriceCents)}
-                  </span>
-                </div>
+              <li key={appointment.id}>
+                <Link
+                  href={`/bookings/${appointment.id}`}
+                  className="surface-panel flex items-center gap-4 p-4 transition hover:border-[var(--color-brand)]"
+                >
+                  <div className="grid w-14 shrink-0 place-items-center rounded-[var(--radius-control)] bg-[var(--color-brand-soft)] py-2 text-center">
+                    <span className="text-xs font-semibold uppercase text-[var(--color-brand)]">
+                      {start.toLocaleDateString(undefined, { month: "short" })}
+                    </span>
+                    <span className="text-lg font-bold text-[var(--color-text-primary)]">
+                      {start.getDate()}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-[var(--color-text-primary)]">
+                      {appointment.serviceName ?? "Appointment"}
+                    </p>
+                    <p className="text-xs text-[var(--color-text-muted)]">
+                      {appointment.braiderName ?? "Business"} ·{" "}
+                      {start.toLocaleString(undefined, {
+                        weekday: "short",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <AppointmentStatusBadge status={appointment.status} />
+                    <span className="text-sm font-semibold text-[var(--color-text-primary)]">
+                      {formatPrice(appointment.computedPriceCents)}
+                    </span>
+                  </div>
+                </Link>
               </li>
             );
           })}

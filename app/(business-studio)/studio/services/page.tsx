@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.services;
+import { StudioServices } from "@/features/studio/components/services/StudioServices";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Services",
   robots: { index: false, follow: false },
 };
 
 export default function StudioServicesPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+  return <StudioServices />;
 }

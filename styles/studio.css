@@ -1,0 +1,64 @@
+/*
+ * Business Studio theme.
+ *
+ * The Studio designs use a deeper burgundy, warm ivory and gold than the
+ * public site. Rather than forking every component, the Studio shell adds
+ * `.studio-theme` to its root and these variables re-point the shared tokens
+ * (styles/tokens.css) for everything rendered inside it. The public site keeps
+ * its own palette untouched.
+ *
+ * Text colours were checked for WCAG AA (4.5:1) on their own soft backgrounds
+ * and on white; the brighter gold is used for icons only, never for text.
+ */
+@layer base {
+  .studio-theme {
+    --color-page: #fbf8f6;
+    --color-surface: #ffffff;
+    --color-surface-strong: #f6f1ef;
+    --color-surface-ink: #2a1a1f;
+
+    --color-brand: #7a1024;
+    --color-brand-strong: #5e0b1b;
+    --color-brand-soft: #f7e9eb;
+    --color-accent: #7a1024;
+    --color-accent-soft: #f7e9eb;
+
+    --color-gold: #c4822f;
+    --color-gold-light: #fbeedd;
+    --color-gold-text: #8f5a1d;
+
+    --color-text-primary: #1f1a1c;
+    --color-text-muted: #6b5e63;
+    --color-text-inverse: #ffffff;
+    --color-border: #eee4e1;
+    --color-border-strong: #ddd0cc;
+
+    --color-success: #2e7440;
+    --color-success-soft: #e8f4ea;
+    --color-warning: #955012;
+    --color-warning-soft: #fcefdd;
+    --color-danger: #9f1631;
+    --color-danger-soft: #fbe9eb;
+    --color-info: #2f5e9a;
+    --color-info-soft: #e6eff9;
+    --color-copper: #955012;
+    --color-copper-soft: #fcefdd;
+
+    --shadow-subtle: 0 1px 2px rgba(42, 26, 31, 0.04), 0 1px 3px rgba(42, 26, 31, 0.04);
+    --shadow-soft: 0 18px 48px rgba(42, 26, 31, 0.14);
+    --radius-control: 8px;
+    --radius-panel: 14px;
+
+    background: var(--color-page);
+    color: var(--color-text-primary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-theme *,
+  .studio-theme *::before,
+  .studio-theme *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

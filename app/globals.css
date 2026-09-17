@@ -2,6 +2,7 @@
 @import "../styles/tokens.css";
 @import "../styles/typography.css";
 @import "../styles/utilities.css";
+@import "../styles/studio.css";
 
 :root {
   --background: var(--color-page);
@@ -24,6 +25,7 @@
   --color-brand: var(--color-brand);
   --color-accent: var(--color-accent);
   --font-sans: var(--font-inter);
+  --font-display: var(--font-display-serif), Georgia, "Times New Roman", serif;
 }
 
 body {

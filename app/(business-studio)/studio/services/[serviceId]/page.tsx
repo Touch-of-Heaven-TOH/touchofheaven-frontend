@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.serviceEdit;
+import { ServiceEditor } from "@/features/studio/components/services/ServiceEditor";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Edit service",
   robots: { index: false, follow: false },
 };
 
-type StudioServiceEditPageProps = {
-  params: Promise<{ serviceId: string }>;
-};
-
-export default async function StudioServiceEditPage({
+export default async function StudioEditServicePage({
   params,
-}: StudioServiceEditPageProps) {
+}: {
+  params: Promise<{ serviceId: string }>;
+}) {
   const { serviceId } = await params;
-  return (
-    <RouteStatusPage
-      content={{
-        ...content,
-        description: `${content.description} (service ${serviceId})`,
-      }}
-      href="/studio/services"
-    />
-  );
+  return <ServiceEditor serviceId={serviceId} />;
 }

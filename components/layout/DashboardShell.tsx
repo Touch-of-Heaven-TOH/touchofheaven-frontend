@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { brandAssets } from "@/config/site";
 import type { NavigationItem } from "@/config/navigation";
 import type { SafeUser } from "@/types/auth";
 
@@ -89,9 +91,9 @@ export function DashboardShell({
 
   return (
     <div className={`min-h-dvh ${toneClassName[tone]}`}>
-      <div className="grid min-h-dvh md:grid-cols-[248px_1fr]">
+      <div className="grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[248px_minmax(0,1fr)] md:grid-rows-1">
         <aside
-          className={`flex flex-col border-b px-4 py-4 md:border-r md:border-b-0 ${
+          className={`flex min-w-0 flex-col border-b px-4 py-3 md:border-r md:border-b-0 md:py-4 ${
             isDarkSidebar ? "border-white/10" : "border-[var(--color-border)]"
           } ${sidebarToneClassName[tone]}`}
         >
@@ -101,8 +103,8 @@ export function DashboardShell({
             }`}
             href="/"
           >
-            <span className="grid size-9 place-items-center rounded-md bg-[var(--color-brand)] text-sm font-bold text-[var(--color-gold-light)]">
-              TOH
+            <span className="relative size-9 shrink-0 overflow-hidden rounded-full">
+              <Image alt="" src={brandAssets.logoMark} fill sizes="36px" className="object-contain" />
             </span>
             Touch of Heaven
           </Link>
@@ -113,13 +115,18 @@ export function DashboardShell({
             </span>
           ) : null}
 
-          <nav className="mt-8 flex flex-1 gap-2 overflow-x-auto md:grid md:content-start md:overflow-visible">
+          {/* Phones: one row that scrolls sideways inside the header instead of
+              widening the page. Tablets and up: the sidebar list. */}
+          <nav
+            aria-label={`${title} navigation`}
+            className="-mx-4 mt-3 flex min-w-0 gap-1 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:mt-8 md:grid md:flex-1 md:content-start md:gap-2 md:overflow-visible md:px-0 md:pb-0"
+          >
             {navigation.map((item) => {
               const isActive = item === activeItem;
               return (
                 <Link
                   aria-current={isActive ? "page" : undefined}
-                  className={`whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold ${
+                  className={`inline-flex min-h-10 shrink-0 items-center whitespace-nowrap rounded-md px-3 text-sm font-semibold ${
                     isActive ? linkTone.active : linkTone.inactive
                   }`}
                   href={item.href}
@@ -144,7 +151,7 @@ export function DashboardShell({
         </aside>
         <main className="min-w-0">
           <header className="border-b border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div className="flex flex-col gap-2 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-8">
+            <div className="flex flex-col gap-1 px-4 py-4 sm:px-5 md:flex-row md:items-center md:justify-between md:gap-2 md:px-8 md:py-5">
               <div>
                 <p className="text-xs font-semibold uppercase text-[var(--color-brand)]">
                   {eyebrow}
@@ -158,7 +165,7 @@ export function DashboardShell({
               </p>
             </div>
           </header>
-          <div className="px-5 py-6 md:px-8">{children}</div>
+          <div className="px-4 py-5 sm:px-5 md:px-8 md:py-6">{children}</div>
         </main>
       </div>
     </div>

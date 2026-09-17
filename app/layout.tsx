@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Libre_Caslon_Text } from "next/font/google";
 import { brandAssets, siteConfig } from "@/config/site";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+// The display serif for Business Studio headings and figures (see
+// styles/studio.css). Only exposed as a variable here, so it is not applied
+// anywhere unless a component opts in with `font-display`.
+const displaySerif = Libre_Caslon_Text({
+  variable: "--font-display-serif",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
 });
 
 export const dynamic = "force-dynamic";
@@ -44,7 +54,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} ${displaySerif.variable} h-full antialiased`}>
       <body className="min-h-full bg-[var(--color-page)] text-[var(--color-text-primary)]">
         {children}
       </body>

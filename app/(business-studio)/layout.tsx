@@ -1,32 +1,47 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { studioNavigation } from "@/config/navigation";
-import { DashboardShell } from "@/components/layout/DashboardShell";
-import { requireRole } from "@/lib/auth/session";
+import { redirect } from "next/navigation";
+import { StudioShell } from "@/features/studio/components/shell/StudioShell";
+import type { BusinessContext } from "@/features/studio/lib/types";
+import { ApiClientError } from "@/lib/api/errors";
+import { serverApiFetch } from "@/lib/api/server";
+import { requireUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Studio",
+  title: {
+    default: "Studio",
+    template: "%s · Studio | Touch of Heaven",
+  },
   robots: { index: false, follow: false },
 };
 
+/**
+ * Access to the Studio is decided by the backend's business context, not
+ * by the BRAIDER role alone: an owner qualifies through their business
+ * profile, and an invited stylist or receptionist through their accepted
+ * team membership. Anyone signed in without either lands on the
+ * invitations page, which also explains how to set up a business.
+ */
 export default async function StudioLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const user = await requireRole("BRAIDER", "/account");
-  const currentPath = (await headers()).get("x-toh-pathname") ?? "/studio";
+  await requireUser();
 
-  return (
-    <DashboardShell
-      currentPath={currentPath}
-      eyebrow="Professional workspace"
-      navigation={studioNavigation}
-      title="Studio"
-      tone="studio"
-      user={user}
-    >
-      {children}
-    </DashboardShell>
+  const result = await serverApiFetch<BusinessContext>("/api/v1/business/context").then(
+    (context) => ({ ok: true as const, context }),
+    (error: unknown) => ({ ok: false as const, error }),
   );
+
+  if (!result.ok) {
+    if (result.error instanceof ApiClientError && result.error.status === 404) {
+      redirect("/team-invitations");
+    }
+    if (result.error instanceof ApiClientError && result.error.status === 401) {
+      redirect("/business/sign-in?callbackUrl=%2Fstudio");
+    }
+    throw result.error;
+  }
+
+  return <StudioShell context={result.context}>{children}</StudioShell>;
 }

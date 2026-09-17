@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The floating dev-tools badge sits over the Studio sidebar and mobile
+  // navigation during local testing; it never ships to production anyway.
+  devIndicators: false,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   images: {

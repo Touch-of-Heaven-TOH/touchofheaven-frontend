@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { studioContent } from "@/config/page-content";
-
-const content = studioContent.settingsAvailability;
+import { StudioAvailability } from "@/features/studio/components/availability/StudioAvailability";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Availability",
   robots: { index: false, follow: false },
 };
 
-export default function StudioSettingsAvailabilityPage() {
-  return <RouteStatusPage content={content} href="/studio" />;
+export default function StudioAvailabilityPage() {
+  return <StudioAvailability />;
 }

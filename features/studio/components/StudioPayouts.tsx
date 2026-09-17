@@ -73,7 +73,7 @@ export function StudioPayouts() {
           description="Payouts sent to you will show up here."
         />
       ) : (
-        <div className="surface-panel overflow-x-auto">
+        <div className="surface-panel relative overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[var(--color-border)] text-xs uppercase text-[var(--color-text-muted)]">
               <tr>

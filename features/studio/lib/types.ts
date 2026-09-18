@@ -660,3 +660,15 @@ export type AppointmentOpenings = {
   workingDay: boolean;
   slots: Array<{ startAt: string; endAt: string; isCurrent: boolean }>;
 };
+
+export type TeamAvailabilityResponse = {
+  startAt: string;
+  endAt: string;
+  members: Array<{
+    memberId: string;
+    displayName: string;
+    busy: boolean;
+    /** The clash is at another business, which is never named. */
+    busyElsewhere: boolean;
+  }>;
+};

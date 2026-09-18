@@ -45,7 +45,7 @@ import {
   StatusPill,
 } from "@/features/studio/components/ui/primitives";
 import { useToast } from "@/features/studio/components/ui/Toaster";
-import { errorCode, errorMessage, studioFetcher, studioRequest } from "@/features/studio/lib/api";
+import { errorCode, errorMessage, studioFetcher, studioRequest, withQuery } from "@/features/studio/lib/api";
 import { useStudio } from "@/features/studio/lib/context";
 import {
   APPOINTMENT_STATUS,
@@ -60,6 +60,7 @@ import type {
   AppointmentDetail as Detail,
   AppointmentDetailResponse,
   AppointmentStatus,
+  TeamAvailabilityResponse,
   TeamResponse,
   TimelineEntry,
 } from "@/features/studio/lib/types";
@@ -598,9 +599,20 @@ function NotesCard({ appointment, onSaved }: { appointment: Detail; onSaved: (re
 function AssignmentCard({ appointment, onSaved }: { appointment: Detail; onSaved: (response: AppointmentDetailResponse) => void }) {
   const notify = useToast();
   const { data } = useSWR<TeamResponse>("/api/v1/business/team", studioFetcher);
+  // Who could actually take this appointment: someone already working then,
+  // here or at another business they also work for, cannot.
+  const { data: availability } = useSWR<TeamAvailabilityResponse>(
+    withQuery("/api/v1/business/team/availability", {
+      startAt: appointment.startAt,
+      endAt: appointment.endAt,
+      excludeAppointmentId: appointment.id,
+    }),
+    studioFetcher,
+  );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const active = data?.members.filter((member) => member.status === "ACTIVE") ?? [];
+  const busyById = new Map((availability?.members ?? []).map((row) => [row.memberId, row]));
 
   if (data && active.length === 0) {
     return (
@@ -638,13 +650,23 @@ function AssignmentCard({ appointment, onSaved }: { appointment: Detail; onSaved
         }}
       >
         <option value="">Owner (unassigned)</option>
-        {active.map((member) => (
-          <option key={member.id} value={member.id}>
-            {member.displayName}
-            {member.jobTitle ? ` · ${member.jobTitle}` : ""}
-          </option>
-        ))}
+        {active.map((member) => {
+          const busy = busyById.get(member.id);
+          return (
+            <option key={member.id} value={member.id} disabled={busy?.busy ?? false}>
+              {member.displayName}
+              {member.jobTitle ? ` · ${member.jobTitle}` : ""}
+              {busy?.busy ? (busy.busyElsewhere ? " · busy at another business" : " · already booked then") : ""}
+            </option>
+          );
+        })}
       </SelectField>
+      {availability && availability.members.some((row) => row.busy) ? (
+        <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+          Anyone already working at this time is greyed out. Someone can work for more than one
+          business, so that includes work outside your salon.
+        </p>
+      ) : null}
       <div className="mt-2">
         <FormError message={error} />
       </div>

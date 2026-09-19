@@ -14,6 +14,7 @@ import {
   StatusBadge,
   TrendChart,
 } from "@/features/admin/components/AdminPrimitives";
+// TODO: replace with real API — sample data (the metrics and rows below are invented)
 import {
   actionCenter,
   adminSectionContent,

@@ -27,6 +27,7 @@ import {
   ProviderPopup,
 } from "@/features/discovery/ProviderCards";
 import { SearchCard, type DiscoverySearchInput } from "@/features/discovery/SearchCard";
+import { discoveryCategory, type DiscoveryCategory } from "@/features/discovery/categories";
 import {
   DEFAULT_SEARCH_RADIUS_KM,
   SEARCH_RADIUS_OPTIONS_KM,
@@ -108,22 +109,6 @@ const DEFAULT_FILTERS: Filters = {
   minRating: 0,
 };
 
-// The explore page's category tiles. The backend's category filter only
-// knows hair styles (braids, twists, locs...), so these match on the
-// service names each provider publishes instead.
-const CATEGORY_FILTERS: Record<string, { label: string; keywords: string[] }> = {
-  "braids-hair": {
-    label: "Braids & hair",
-    keywords: ["braid", "cornrow", "loc", "twist", "silk press", "hair", "weave", "wig", "natural"],
-  },
-  nails: { label: "Nails", keywords: ["nail", "manicure", "pedicure", "gel", "acrylic"] },
-  barbering: { label: "Barbering", keywords: ["barber", "fade", "beard", "shave", "haircut"] },
-  "spa-wellness": {
-    label: "Spa & wellness",
-    keywords: ["spa", "massage", "facial", "wax", "lash", "brow", "wellness"],
-  },
-};
-
 const LOCATION_TYPE_OPTIONS: Array<{ value: DiscoveryLocationType | null; label: string }> = [
   { value: null, label: "Any" },
   { value: "PUBLIC_SALON", label: "Salon" },
@@ -162,11 +147,10 @@ function matchesText(provider: NearbyProvider, text: string) {
     .every((word) => haystack.includes(word));
 }
 
-function matchesCategory(provider: NearbyProvider, category: string | undefined) {
-  const filter = category ? CATEGORY_FILTERS[category] : undefined;
-  if (!filter) return true;
+function matchesCategory(provider: NearbyProvider, category: DiscoveryCategory | null) {
+  if (!category) return true;
   const services = provider.specialties.join(" ").toLowerCase();
-  return filter.keywords.some((keyword) => services.includes(keyword));
+  return category.keywords.some((keyword) => services.includes(keyword));
 }
 
 function sortProviders(providers: NearbyProvider[], order: SortOrder) {
@@ -201,7 +185,9 @@ export function SearchResultsPage({
   showFiltersInitially?: boolean;
 }) {
   const view = initialView;
-  const category = initialSearch?.category && CATEGORY_FILTERS[initialSearch.category] ? initialSearch.category : undefined;
+  const categoryId = initialSearch?.category;
+  const categoryFilter = useMemo(() => discoveryCategory(categoryId), [categoryId]);
+  const category = categoryFilter?.id;
   const initialPlace = initialSearch?.location?.trim() ?? "";
 
   const [query, setQuery] = useState(initialSearch?.q?.trim() ?? "");
@@ -425,7 +411,7 @@ export function SearchResultsPage({
   const visibleProviders = useMemo(() => {
     const filtered = loadedProviders.filter((provider) => {
       if (query && !matchesText(provider, query)) return false;
-      if (!matchesCategory(provider, category)) return false;
+      if (!matchesCategory(provider, categoryFilter)) return false;
       if (filters.availability === "today" && provider.nextAvailableSlotBucket !== "TODAY") return false;
       if (
         filters.availability === "week" &&
@@ -438,7 +424,7 @@ export function SearchResultsPage({
       return true;
     });
     return sortProviders(filtered, sort);
-  }, [loadedProviders, query, category, filters.availability, filters.minRating, sort]);
+  }, [loadedProviders, query, categoryFilter, filters.availability, filters.minRating, sort]);
 
   const pinnedProviders = useMemo<NearbyBraider[]>(
     () => visibleProviders.filter(hasMappableLocation),
@@ -451,7 +437,7 @@ export function SearchResultsPage({
     Boolean(query) || Boolean(category) || filters.availability !== "any" || filters.minRating > 0;
   const serverFiltersActive = filters.locationType !== null || filters.acceptingNewClients;
   const nextRadius = widerRadiusKm(filters.radiusKm);
-  const categoryLabel = category ? CATEGORY_FILTERS[category]?.label : undefined;
+  const categoryLabel = categoryFilter?.label;
 
   const where = center ? center.label : "you";
   const title = query

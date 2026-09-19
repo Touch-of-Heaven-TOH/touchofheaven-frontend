@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
 
+// TODO: replace with real API — sample data
+// "Royalty Hair Co" and its services are invented. This section isn't
+// rendered by any page today; wire it to GET /api/v1/braiders/:id before
+// using it.
 const demoServices = [
   {
     name: "Knotless Braids",

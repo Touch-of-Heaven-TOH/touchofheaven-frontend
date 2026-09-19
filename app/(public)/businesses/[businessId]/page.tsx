@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
-import { ProfessionalProfilePage } from "@/features/discovery/DiscoveryModule";
-import { getProfessional } from "@/features/discovery/discovery-data";
+import { notFound } from "next/navigation";
+import { BusinessProfilePage } from "@/features/discovery/BusinessProfile";
+import { loadPublicBusiness } from "@/features/discovery/business-data";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ businessId: string }>;
-}): Promise<Metadata> {
-  const { businessId } = await params;
-  const profile = getProfessional(businessId);
+type Params = { params: Promise<{ businessId: string }> };
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const business = await loadPublicBusiness((await params).businessId);
+  if (!business) notFound();
+  const name = business.profile.professionalName;
   return {
-    title: `${profile.businessName} | Touch of Heaven`,
-    description: `Book with ${profile.businessName} on Touch of Heaven.`,
+    title: `${name} | Touch of Heaven`,
+    description: business.profile.bio ?? `Book with ${name} on Touch of Heaven.`,
   };
 }
 
-export default async function BusinessProfilePage({
-  params,
-}: {
-  params: Promise<{ businessId: string }>;
-}) {
-  const { businessId } = await params;
-  return <ProfessionalProfilePage slug={businessId} />;
+export default async function BusinessProfileRoute({ params }: Params) {
+  const business = await loadPublicBusiness((await params).businessId);
+  if (!business) notFound();
+  return <BusinessProfilePage business={business} section="overview" />;
 }

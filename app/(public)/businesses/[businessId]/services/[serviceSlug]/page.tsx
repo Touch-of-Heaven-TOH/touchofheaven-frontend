@@ -1,30 +1,31 @@
 import type { Metadata } from "next";
-import { ServiceDetailsPage } from "@/features/discovery/DiscoveryModule";
-import {
-  getProfessional,
-  getService,
-} from "@/features/discovery/discovery-data";
+import { notFound } from "next/navigation";
+import { BusinessServicePage } from "@/features/discovery/BusinessProfile";
+import { loadPublicBusiness } from "@/features/discovery/business-data";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ businessId: string; serviceSlug: string }>;
-}): Promise<Metadata> {
+// The segment is named serviceSlug for historical reasons; it holds the
+// service's ID, which is what the booking flow's ?serviceId= expects too.
+type Params = { params: Promise<{ businessId: string; serviceSlug: string }> };
+
+async function load(params: Params["params"]) {
   const { businessId, serviceSlug } = await params;
-  const profile = getProfessional(businessId);
-  const service = getService(profile, serviceSlug);
+  const business = await loadPublicBusiness(businessId);
+  const service = business?.services.find((candidate) => candidate.id === serviceSlug) ?? null;
+  return business && service ? { business, service } : null;
+}
 
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const found = await load(params);
+  if (!found) notFound();
+  const { business, service } = found;
   return {
-    title: `${service.name} | ${profile.businessName}`,
-    description: `${service.description} Book safely on Touch of Heaven.`,
+    title: `${service.name} | ${business.profile.professionalName}`,
+    description: service.description ?? `Book ${service.name} with ${business.profile.professionalName} on Touch of Heaven.`,
   };
 }
 
-export default async function ServiceDetailRoute({
-  params,
-}: {
-  params: Promise<{ businessId: string; serviceSlug: string }>;
-}) {
-  const { businessId, serviceSlug } = await params;
-  return <ServiceDetailsPage slug={businessId} serviceSlug={serviceSlug} />;
+export default async function BusinessServiceRoute({ params }: Params) {
+  const found = await load(params);
+  if (!found) notFound();
+  return <BusinessServicePage business={found.business} service={found.service} />;
 }

@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { DirectBookingPage } from "@/features/discovery/DiscoveryModule";
-import { getProfessional } from "@/features/discovery/discovery-data";
+import { notFound } from "next/navigation";
+import { DirectBookingLinkPage } from "@/features/discovery/BusinessProfile";
+import { loadPublicBusiness } from "@/features/discovery/business-data";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ professionalSlug: string }>;
-}): Promise<Metadata> {
-  const { professionalSlug } = await params;
-  const profile = getProfessional(professionalSlug);
+// The segment holds the business's ID (the same one /businesses/[id] uses).
+type Params = { params: Promise<{ professionalSlug: string }> };
 
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const business = await loadPublicBusiness((await params).professionalSlug);
+  if (!business) notFound();
+  const name = business.profile.professionalName;
   return {
-    title: `Book with ${profile.businessName} | Touch of Heaven`,
-    description: `Open the official Touch of Heaven booking link for ${profile.businessName}.`,
+    title: `Book with ${name} | Touch of Heaven`,
+    description: `The official Touch of Heaven booking link for ${name}.`,
   };
 }
 
-export default async function DirectBookingRoute({
-  params,
-}: {
-  params: Promise<{ professionalSlug: string }>;
-}) {
-  const { professionalSlug } = await params;
-  return <DirectBookingPage slug={professionalSlug} />;
+export default async function DirectBookingRoute({ params }: Params) {
+  const business = await loadPublicBusiness((await params).professionalSlug);
+  if (!business) notFound();
+  return <DirectBookingLinkPage business={business} />;
 }

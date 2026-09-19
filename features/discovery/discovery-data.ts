@@ -1,14 +1,17 @@
+// TODO: replace with real API — sample data
+//
+// Invented businesses, services and reviews from the Codex redesign. The
+// discovery pages (explore, results, map, business profiles) no longer use
+// any of it; they read the backend. What still imports this file:
+//   - features/booking/components/BookingFlow.tsx: demo catalog shown when
+//     live booking data can't load, plus fallback images.
+//   - features/bookings/components/AppointmentDetails.tsx: fallback provider
+//     name, image and service when an appointment lacks them.
+// Both are booking files, left untouched in the discovery clean-up.
 export type DiscoveryImage = {
   src: string;
   alt: string;
   position?: string;
-};
-
-export type DiscoveryCategory = {
-  id: string;
-  label: string;
-  image: DiscoveryImage;
-  href: string;
 };
 
 export type DiscoveryService = {
@@ -80,49 +83,6 @@ export type DiscoveryProfessional = {
 
 const imageBase = "/images/home/images";
 const studioBase = "/images/ai-studio/catalog";
-
-export const discoveryCategories: DiscoveryCategory[] = [
-  {
-    id: "braids-hair",
-    label: "Braids & Hair",
-    href: "/businesses?category=braids-hair",
-    image: {
-      src: `${studioBase}/knotless-small-midback-front.jpg`,
-      alt: "A polished braided hairstyle in a warm salon.",
-      position: "center 34%",
-    },
-  },
-  {
-    id: "nails",
-    label: "Nails",
-    href: "/businesses?category=nails",
-    image: {
-      src: `${imageBase}/pic1.png`,
-      alt: "A clean manicure detail in a beauty studio.",
-      position: "center 45%",
-    },
-  },
-  {
-    id: "barbering",
-    label: "Barbering",
-    href: "/businesses?category=barbering",
-    image: {
-      src: `${imageBase}/pic2.png`,
-      alt: "A barber grooming a client in a modern studio.",
-      position: "center 38%",
-    },
-  },
-  {
-    id: "spa-wellness",
-    label: "Spa & Wellness",
-    href: "/businesses?category=spa-wellness",
-    image: {
-      src: `${imageBase}/hero2.jpg`,
-      alt: "A relaxing wellness appointment in a calm treatment room.",
-      position: "center 42%",
-    },
-  },
-];
 
 const amaraGallery: DiscoveryService["gallery"] = [
   {
@@ -517,67 +477,6 @@ export const discoveryProfessionals: DiscoveryProfessional[] = [
     },
   },
 ];
-
-export const availabilityServices = [
-  {
-    name: "Knotless Braids",
-    business: "Amara Cole",
-    price: 180,
-    time: "Fri, 10:00 AM",
-    image: amaraGallery[0]!,
-    href: "/businesses/amara-braids-beauty/services/medium-knotless-braids",
-  },
-  {
-    name: "Gel Manicure",
-    business: "Nia Brooks",
-    price: 65,
-    time: "Thu, 2:00 PM",
-    image: {
-      src: `${imageBase}/pic1.png`,
-      alt: "Gel manicure appointment.",
-      position: "center 34%",
-    },
-    href: "/businesses/niya-nails-studio",
-  },
-  {
-    name: "Haircut & Beard",
-    business: "Marcus Reed",
-    price: 55,
-    time: "Sat, 11:30 AM",
-    image: {
-      src: `${imageBase}/pic2.png`,
-      alt: "Barber haircut and beard service.",
-      position: "center 35%",
-    },
-    href: "/businesses/marcus-reed-grooming",
-  },
-  {
-    name: "Signature Massage",
-    business: "Solace Day Spa",
-    price: 120,
-    time: "Fri, 1:00 PM",
-    image: {
-      src: `${imageBase}/hero2.jpg`,
-      alt: "Massage appointment.",
-      position: "center 45%",
-    },
-    href: "/businesses/solace-day-spa",
-  },
-];
-
-export const filterDefaults = {
-  date: "Sat, May 24, 2025",
-  time: "Any time",
-  minPrice: "50",
-  maxPrice: "200+",
-  distance: "10 miles",
-  rating: "4.0 & up",
-  types: ["Hair professional", "Nail technician"],
-  locations: ["At business", "Mobile service"],
-  availability: "Any availability",
-  verifiedOnly: true,
-  accessibility: "None selected",
-};
 
 export function getProfessional(slug: string | undefined): DiscoveryProfessional {
   return (

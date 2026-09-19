@@ -21,14 +21,11 @@ import { useToast } from "@/features/studio/components/ui/Toaster";
 import { errorMessage, studioFetcher, studioRequest } from "@/features/studio/lib/api";
 import { formatMoney, parseMoneyToCents } from "@/features/studio/lib/format";
 import type { OwnService } from "@/features/studio/lib/types";
+import { CANCELLATION_POLICIES } from "@/lib/businesses/policies";
 
 type Category = { id: string; name: string; slug: string };
 
-const POLICIES = [
-  { value: "flexible-v1", label: "Flexible", description: "Full refund up to 4 hours before." },
-  { value: "standard-v1", label: "Standard", description: "Full refund up to 24 hours before, 50% after." },
-  { value: "strict-v1", label: "Strict", description: "Full refund up to 72 hours before, 50% up to 24 hours." },
-];
+const POLICIES = CANCELLATION_POLICIES;
 
 const VARIATION_TYPES = {
   LENGTH: "Length",

@@ -25,9 +25,17 @@ export type ReviewItem = {
 
 export type ServiceVariation = {
   id: string;
+  variationType?: string;
   label: string;
   priceDeltaCents: number;
   durationDeltaMins: number;
+};
+
+export type ServiceMediaItem = {
+  id: string;
+  url: string;
+  altText: string;
+  mediaType: "IMAGE" | "VIDEO";
 };
 
 export type ServiceItem = {
@@ -36,5 +44,29 @@ export type ServiceItem = {
   description: string | null;
   basePriceCents: number;
   baseDurationMins: number;
+  depositPercentage: number;
+  /** A policy code such as "standard-v1"; see lib/businesses/policies.ts. */
+  cancellationPolicy: string;
   variations: ServiceVariation[];
+  media: ServiceMediaItem[];
+};
+
+export type PublicLocation = {
+  id: string;
+  locationType: "PUBLIC_SALON" | "PRIVATE_STUDIO";
+  label: string | null;
+  /** Null for a private studio unless the viewer has a confirmed booking. */
+  address: string | null;
+  /** Null for a private studio: its position is never published. */
+  latitude: string | number | null;
+  longitude: string | number | null;
+};
+
+/** Everything a public business page shows, loaded together. */
+export type PublicBusiness = {
+  profile: PublicBraiderProfile;
+  services: ServiceItem[];
+  portfolio: PortfolioMediaItem[];
+  reviews: ReviewItem[];
+  locations: PublicLocation[];
 };

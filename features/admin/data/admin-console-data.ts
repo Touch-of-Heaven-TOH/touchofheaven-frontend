@@ -155,6 +155,10 @@ export function resolveAdminSectionKey(segments?: string[]): AdminSectionKey {
   return aliases[first] ?? "overview";
 }
 
+// TODO: replace with real API — sample data
+// Everything from here down (metrics, table rows, applications, platform
+// health, schedule) is invented for the console mockup. The navigation and
+// section copy above are real configuration.
 export const overviewMetrics: AdminMetric[] = [
   {
     label: "Today's Bookings",

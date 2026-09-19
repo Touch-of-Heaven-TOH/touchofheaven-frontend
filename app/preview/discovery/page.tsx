@@ -64,6 +64,9 @@ export default async function DiscoveryPreviewPage() {
           <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(30deg,rgba(255,255,255,.76)_1px,transparent_1px),linear-gradient(120deg,rgba(255,255,255,.72)_1px,transparent_1px)] [background-size:64px_64px]" />
           <div className="absolute left-8 top-16 h-20 w-44 rotate-[-14deg] rounded-full border border-white/80 bg-white/28" />
           <div className="absolute bottom-7 right-7 h-24 w-36 rotate-[18deg] rounded-full border border-white/80 bg-white/28" />
+          {/* TODO: replace with real API — sample data. These pins are
+              decorative, not real business positions; the real map is
+              /explore/map. */}
           {[
             "left-[28%] top-[38%]",
             "left-[56%] top-[50%]",

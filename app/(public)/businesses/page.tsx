@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
   type DiscoveryRouteSearch,
   SearchResultsPage,
-} from "@/features/discovery/DiscoveryModule";
+} from "@/features/discovery/DiscoveryResults";
 
 export const metadata: Metadata = {
   title: "Professionals near you | Touch of Heaven",

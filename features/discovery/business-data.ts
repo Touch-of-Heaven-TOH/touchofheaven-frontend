@@ -23,8 +23,8 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
  */
 export const loadPublicBusiness = cache(async (businessId: string): Promise<PublicBusiness | null> => {
   // Business IDs are UUIDs. Anything else (an old sample slug such as
-  // "amara-braids-beauty") can't be a business, and the API currently
-  // answers such IDs with a 500 rather than a 404, so don't ask it.
+  // "amara-braids-beauty") can't name a business, so answer without a
+  // round trip. The API says 404 for these too.
   if (!UUID_PATTERN.test(businessId)) return null;
   const base = `/api/v1/braiders/${encodeURIComponent(businessId)}`;
 

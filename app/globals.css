@@ -200,7 +200,20 @@ body {
 }
 
 .toh-marker-photo-placeholder {
+  display: grid;
+  place-items: center;
   background-image: none;
+  background-color: var(--color-brand);
+  color: var(--color-gold-light);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* With a popup open, the pin's own name label would sit underneath it. */
+.toh-map--popups .toh-marker--active .toh-marker-tooltip {
+  opacity: 0;
 }
 
 .toh-marker-dot {
@@ -285,6 +298,34 @@ body {
     opacity: 0;
   }
 }
+/* The discovery map's pin popup (components/map/BusinessMap.tsx). MapLibre
+   draws the box and the pointer; the content is a React card with its own
+   padding, so the box just needs the card's edges and shadow. */
+/* Above the map's own buttons (Locate me, zoom), which sit at z-index 2. */
+.toh-map-popup {
+  z-index: 4;
+}
+
+.toh-map-popup .maplibregl-popup-content {
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.toh-map-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.toh-map-popup.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.toh-map-popup.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: #ffffff;
+}
+
+.toh-map-popup.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.toh-map-popup.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.toh-map-popup.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: #ffffff;
+}
+
 @keyframes slide-up {
   from { transform: translateY(0); }
   to   { transform: translateY(-50%); }

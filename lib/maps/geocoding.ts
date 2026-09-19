@@ -31,6 +31,11 @@ export async function reverseGeocodeCoordinates(
   url.searchParams.set('format', 'jsonv2');
   url.searchParams.set('addressdetails', '1');
   url.searchParams.set('email', NOMINATIM_CONTACT_EMAIL);
+  // Name the place in the visitor's language ("Cameroon", not the local
+  // "Cameroun"), falling back to OpenStreetMap's local names.
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    url.searchParams.set('accept-language', navigator.language);
+  }
 
   const response = await fetch(url.toString());
   if (!response.ok) return null;

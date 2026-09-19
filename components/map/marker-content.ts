@@ -7,6 +7,15 @@ const AVAILABILITY_DOT_COLOR: Record<NextAvailableSlotBucket, string> = {
   NONE: '#9ca3af', // grey
 };
 
+function initialsOf(name: string): string {
+  const letters = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase() ?? '');
+  return letters.join('');
+}
+
 /**
  * Builds the raw HTML content element for a braider's custom marker - a
  * circular photo with a gold ring and an availability dot. Returned as a
@@ -37,7 +46,10 @@ export function buildBraiderMarkerContent(braider: NearbyBraider): HTMLElement {
   if (braider.photo) {
     photo.style.backgroundImage = `url(${braider.photo.url})`;
   } else {
+    // No published photo yet: show the business's initials, matching the
+    // avatar the results list shows for the same business.
     photo.classList.add('toh-marker-photo-placeholder');
+    photo.textContent = initialsOf(braider.professionalName);
   }
 
   const dot = document.createElement('span');

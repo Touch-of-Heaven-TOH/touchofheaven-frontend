@@ -112,7 +112,7 @@ function PolicyPreview({ policy, businessName }: { policy: Policy; businessName:
             <strong>Deposit.</strong>{" "}
             {policy.depositRequired
               ? `A ${policy.depositPercent}% deposit confirms the appointment. The rest is paid at the appointment.`
-              : `New services ask for a ${policy.depositPercent}% deposit unless the service says otherwise.`}
+              : "Some services ask for a deposit to confirm. The booking page shows the amount before anything is paid."}
           </p>
         </div>
 

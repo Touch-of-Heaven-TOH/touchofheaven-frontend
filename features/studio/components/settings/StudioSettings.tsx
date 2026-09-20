@@ -91,7 +91,7 @@ export function StudioSettings() {
 
   return (
     <SettingsFrame
-      current="profile"
+      current="home"
       title="Settings"
       description={`How ${studio.businessName} works, and what clients see.`}
       actions={

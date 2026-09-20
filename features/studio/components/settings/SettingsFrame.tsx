@@ -13,6 +13,7 @@ import {
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import useSWR from "swr";
 import { studioFetcher } from "@/features/studio/lib/api";
 import { useStudio } from "@/features/studio/lib/context";
@@ -157,13 +158,23 @@ export function SettingsFrame({
   actions,
   children,
 }: {
-  current: StudioSettingsSectionKey;
+  /** "home" is the settings hub itself: it owns no section, so none is marked. */
+  current: StudioSettingsSectionKey | "home";
   title: string;
   description?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const sections = useVisibleSettingsSections();
+  const activeChip = useRef<HTMLAnchorElement | null>(null);
+
+  // On mobile the section list scrolls sideways, and the page you are on can
+  // start out past the right edge. Bring it into view so the nav answers
+  // "where am I" without being scrolled first. block: "nearest" keeps this
+  // from dragging the page itself around.
+  useEffect(() => {
+    activeChip.current?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [current, sections.length]);
 
   return (
     <div className="grid gap-5">
@@ -177,14 +188,18 @@ export function SettingsFrame({
           <li aria-hidden="true">
             <ChevronRight size={14} />
           </li>
-          <li>
-            <Link className="font-semibold text-[var(--color-brand)] hover:underline" href="/studio/settings">
-              Settings
-            </Link>
-          </li>
-          <li aria-hidden="true">
-            <ChevronRight size={14} />
-          </li>
+          {current === "home" ? null : (
+            <>
+              <li>
+                <Link className="font-semibold text-[var(--color-brand)] hover:underline" href="/studio/settings">
+                  Settings
+                </Link>
+              </li>
+              <li aria-hidden="true">
+                <ChevronRight size={14} />
+              </li>
+            </>
+          )}
           <li aria-current="page" className="text-[var(--color-text-primary)]">
             {title}
           </li>
@@ -204,6 +219,7 @@ export function SettingsFrame({
                 <li key={section.key}>
                   <Link
                     href={section.href}
+                    ref={active ? activeChip : undefined}
                     aria-current={active ? "page" : undefined}
                     className={`inline-flex min-h-11 w-full shrink-0 items-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] px-3 text-sm font-semibold transition ${
                       active

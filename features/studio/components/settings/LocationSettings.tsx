@@ -224,8 +224,16 @@ export function LocationSettings() {
                           <p className="text-xs font-bold uppercase tracking-wide text-[var(--color-brand)]">
                             {meta.label}
                           </p>
-                          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                            {location.address ?? "Address hidden until a booking is confirmed."}
+                          {/* This list is owner-only, so a missing address is
+                              genuinely missing - not withheld for privacy. */}
+                          <p
+                            className={`mt-1 text-sm ${
+                              location.address
+                                ? "text-[var(--color-text-muted)]"
+                                : "font-semibold text-[var(--color-warning)]"
+                            }`}
+                          >
+                            {location.address ?? "No street address saved yet — add one so clients can find you."}
                           </p>
                         </div>
                       </div>

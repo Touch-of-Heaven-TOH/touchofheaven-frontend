@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { accountContent } from "@/config/page-content";
-
-const content = accountContent.beautyProfile;
+import { BeautyProfileSettings } from "@/features/account/settings/BeautyProfileSettings";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Beauty profile",
+  description: "Hair, scalp and skin details providers use to prepare.",
   robots: { index: false, follow: false },
 };
 
-export default function AccountSettingsBeautyProfilePage() {
-  return <RouteStatusPage content={content} href="/account" />;
+export default function Page() {
+  return <BeautyProfileSettings />;
 }

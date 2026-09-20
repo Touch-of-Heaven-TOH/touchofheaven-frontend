@@ -39,19 +39,33 @@ export function SystemHealth() {
   useEffect(() => {
     let cancelled = false;
 
+    /**
+     * One slow or cold answer is not an outage. A single failed request
+     * used to leave this tile claiming the API was unreachable until
+     * somebody reloaded the page - which is exactly how an indicator
+     * teaches people to ignore it. Try three times, spaced out, before
+     * saying anything is down.
+     */
     async function check() {
-      const startedAt = performance.now();
-      try {
-        const payload = await browserApiFetch<HealthResponse>("/api/v1/health/ready");
-        if (cancelled) return;
-        setHealth({
-          status: "up",
-          responseMs: Math.round(performance.now() - startedAt),
-          database: databaseIsUp(payload),
-        });
-      } catch {
-        if (cancelled) return;
-        setHealth({ status: "down", reason: "No answer from the API." });
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const startedAt = performance.now();
+        try {
+          const payload = await browserApiFetch<HealthResponse>("/api/v1/health/ready");
+          if (cancelled) return;
+          setHealth({
+            status: "up",
+            responseMs: Math.round(performance.now() - startedAt),
+            database: databaseIsUp(payload),
+          });
+          return;
+        } catch {
+          if (cancelled) return;
+          if (attempt === 2) {
+            setHealth({ status: "down", reason: "No answer after three tries." });
+            return;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000 * (attempt + 1)));
+        }
       }
     }
 

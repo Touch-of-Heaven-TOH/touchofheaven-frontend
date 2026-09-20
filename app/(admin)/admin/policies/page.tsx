@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { adminContent } from "@/config/page-content";
-
-const content = adminContent.policies;
+import { PlatformPolicies } from "@/features/admin/platform/PlatformPolicies";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Platform policies",
+  description: "Fees, booking rules and legal documents.",
   robots: { index: false, follow: false },
 };
 
 export default function AdminPoliciesPage() {
-  return <RouteStatusPage content={content} href="/admin" />;
+  return <PlatformPolicies />;
 }

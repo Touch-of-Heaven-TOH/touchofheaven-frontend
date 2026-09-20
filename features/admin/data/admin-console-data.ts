@@ -8,6 +8,7 @@ export const adminNavigationItems: AdminNavigationItem[] = [
   { key: "overview", label: "Overview", href: "/admin", icon: "LayoutDashboard" },
   { key: "bookings", label: "Bookings", href: "/admin/bookings", icon: "CalendarDays" },
   { key: "braiders", label: "Businesses", href: "/admin/businesses", icon: "UserRoundCheck" },
+  { key: "applications", label: "Applications", href: "/admin/applications", icon: "ClipboardList" },
   { key: "clients", label: "Clients", href: "/admin/clients", icon: "UsersRound" },
   { key: "marketplace", label: "Marketplace", href: "/admin/marketplace", icon: "ShoppingCart" },
   { key: "orders", label: "Orders", href: "/admin/orders", icon: "PackageCheck" },
@@ -40,6 +41,11 @@ export const adminSectionContent: Record<
     eyebrow: "Providers",
     title: "Businesses",
     description: "Manage service businesses, applications, provider compliance, and service readiness.",
+  },
+  applications: {
+    eyebrow: "Review",
+    title: "Provider applications",
+    description: "People asking to work on Touch of Heaven, and the decision each one is waiting for.",
   },
   clients: {
     eyebrow: "Customers",

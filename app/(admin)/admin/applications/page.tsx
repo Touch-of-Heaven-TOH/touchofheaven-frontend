@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { adminContent } from "@/config/page-content";
-
-const content = adminContent.applications;
+import { ApplicationsQueue } from "@/features/admin/applications/ApplicationsQueue";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Provider applications",
+  description: "Review people asking to work on Touch of Heaven.",
   robots: { index: false, follow: false },
 };
 
 export default function AdminApplicationsPage() {
-  return <RouteStatusPage content={content} href="/admin" />;
+  return <ApplicationsQueue />;
 }

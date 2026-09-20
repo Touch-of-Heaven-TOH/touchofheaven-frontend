@@ -11,6 +11,7 @@ import {
   CalendarDays,
   ChevronDown,
   CircleAlert,
+  ClipboardList,
   Headphones,
   LayoutDashboard,
   Menu,
@@ -38,6 +39,7 @@ const iconMap = {
   BarChart3,
   CalendarDays,
   CircleAlert,
+  ClipboardList,
   Headphones,
   LayoutDashboard,
   Megaphone,
@@ -55,7 +57,6 @@ function activeKeyFromPath(pathname: string): AdminSectionKey {
   const first = pathname.split("/").filter(Boolean)[1];
   if (!first) return "overview";
   if (first === "appointments" || first === "bookings") return "bookings";
-  if (first === "applications") return "braiders";
   if (first === "payments" || first === "finance" || first === "payouts") return "finance";
   if (first === "customers") return "clients";
   if (first === "analytics") return "reports";
@@ -246,7 +247,12 @@ export function AdminShell({
                   {user.lastName[0]}
                 </span>
                 <span className="hidden text-sm leading-tight md:block">
-                  <span className="block font-bold">Owner</span>
+                  {/* The initials beside this were always real; the name was
+                      hardcoded "Owner", so the console told every admin they
+                      were someone else. */}
+                  <span className="block font-bold">
+                    {user.firstName} {user.lastName}
+                  </span>
                   <span className="block text-xs text-[var(--color-text-muted)]">
                     Touch of Heaven
                   </span>

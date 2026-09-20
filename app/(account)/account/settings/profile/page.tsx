@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { accountContent } from "@/config/page-content";
-
-const content = accountContent.profile;
+import { ProfileSettings } from "@/features/account/settings/ProfileSettings";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Profile",
+  description: "Your name, photo and contact details.",
   robots: { index: false, follow: false },
 };
 
-export default function AccountSettingsProfilePage() {
-  return <RouteStatusPage content={content} href="/account" />;
+export default function Page() {
+  return <ProfileSettings />;
 }

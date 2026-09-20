@@ -10,7 +10,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "e2e:client": "node e2e/settings/client.mjs",
+    "e2e:studio": "node e2e/settings/studio.mjs",
+    "e2e:admin": "node e2e/settings/admin.mjs",
+    "e2e:settings": "npm run e2e:client && npm run e2e:studio && npm run e2e:admin"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.9",

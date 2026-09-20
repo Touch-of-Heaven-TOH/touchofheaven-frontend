@@ -29,6 +29,11 @@ try {
   // --------------------------------------------------- access control
   await signIn(page, state, "customer", "/bookings");
   await open(page, state, "/admin/settings");
+  // The guard redirects, but once the response has started streaming it
+  // arrives client-side rather than as a 307 - so the URL is still /admin
+  // for a moment. Wait for it to settle instead of reading it too early
+  // and calling a working guard a hole.
+  await page.waitForURL((url) => !url.pathname.startsWith("/admin"), { timeout: 60_000 }).catch(() => undefined);
   check("a signed-in client is redirected away from /admin", !page.url().includes("/admin"), page.url().replace(BASE, ""));
 
   await signIn(page, state, "admin", "/admin/settings");
@@ -144,11 +149,13 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, state, "/admin/applications");
   await page.getByRole("heading", { name: "Provider applications", level: 1 }).waitFor({ timeout: WAIT_TIMEOUT });
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  check("applications: no sideways scrolling at 390px", overflow <= 0, `${overflow}px`);
   await page.getByRole("tab", { name: "All" }).click();
   await page.waitForTimeout(2500);
   check("applications: the table becomes cards on a phone", (await page.locator("ul[role=list] > li").count()) > 0);
+  // Measured once the rows are actually on the page: a width taken while
+  // the list is still empty is not the layout anyone will see.
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  check("applications: no sideways scrolling at 390px", overflow <= 0, `${overflow}px`);
 } catch (error) {
   check("admin suite crashed", false, error.message.split("\n")[0]);
 } finally {

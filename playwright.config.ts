@@ -14,7 +14,8 @@ export default defineConfig({
   timeout: 60_000,
   expect: { timeout: 10_000 },
   use: {
-    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
+    // The web app runs on 3001; 3000 is the API it talks to.
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3001',
     trace: 'on-first-retry',
   },
   projects: [
@@ -23,8 +24,8 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
+        command: 'npm run dev -- --port 3001',
+        url: 'http://localhost:3001',
         reuseExistingServer: !process.env.CI,
         // Generous: a cold Next.js dev server's first compile can run well
         // past a minute on a slow filesystem (see the "Slow filesystem

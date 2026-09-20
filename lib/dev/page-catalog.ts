@@ -39,6 +39,7 @@ const APPOINTMENT = {
 const BUSINESS_ID = "d56cc0e0-faf2-4d11-b1be-7a0f2bbab841";
 const CLIENT_ID = "1229ba4e-f456-4fc7-bad9-1281cf2d2d49";
 const SERVICE_ID = "2ffa5ff7-b281-413d-8753-a7cd60b26808";
+const APPLICATION_ID = "88a1adf0-55cb-4a39-b05d-b9332a0bc883";
 
 export const pageCatalog: CatalogSection[] = [
   {
@@ -184,6 +185,7 @@ export const pageCatalog: CatalogSection[] = [
       { label: "Reviews", path: "/admin/reviews", as: "admin", status: "demo" },
       { label: "Team", path: "/admin/team", as: "admin", status: "demo" },
       { label: "Applications", path: "/admin/applications", as: "admin", status: "connected", note: "Filter, search, approve and reject" },
+      { label: "Review an application", path: `/admin/applications/${APPLICATION_ID}`, as: "admin", status: "connected", note: "Decrypted address, map pin, approve and reject" },
       { label: "Businesses", path: "/admin/businesses", as: "admin", status: "placeholder", note: "Duplicate of Businesses (console)" },
       { label: "Appointments", path: "/admin/appointments", as: "admin", status: "placeholder", note: "Duplicate of Bookings" },
       { label: "Users", path: "/admin/users", as: "admin", status: "placeholder" },

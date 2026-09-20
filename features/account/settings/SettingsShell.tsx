@@ -34,14 +34,20 @@ export function SettingsShell({
           <li aria-hidden="true">
             <ChevronRight size={14} />
           </li>
-          <li>
-            <Link className="font-semibold text-[var(--color-brand)] hover:underline" href="/account/settings">
-              Settings
-            </Link>
-          </li>
-          <li aria-hidden="true">
-            <ChevronRight size={14} />
-          </li>
+          {/* The hub is the Settings crumb, so linking to it from itself
+              would read "Settings > Settings". */}
+          {current === undefined ? null : (
+            <>
+              <li>
+                <Link className="font-semibold text-[var(--color-brand)] hover:underline" href="/account/settings">
+                  Settings
+                </Link>
+              </li>
+              <li aria-hidden="true">
+                <ChevronRight size={14} />
+              </li>
+            </>
+          )}
           <li aria-current="page" className="text-[var(--color-text-primary)]">
             {title}
           </li>

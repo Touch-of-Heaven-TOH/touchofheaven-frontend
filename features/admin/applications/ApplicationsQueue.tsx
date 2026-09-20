@@ -235,10 +235,13 @@ function QueueTable({ applications }: { applications: ApplicationListItem[] }) {
         {applications.map((application) => (
           <li
             key={application.id}
-            className="rounded-md border border-[var(--color-border)] bg-white p-4"
+            // A grid item defaults to min-width:auto, so one long unbroken
+            // string - an email address - makes the card refuse to shrink
+            // and pushes the whole page sideways on a phone.
+            className="min-w-0 rounded-md border border-[var(--color-border)] bg-white p-4"
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <Link
                   href={`/admin/applications/${application.id}`}
                   className="font-bold text-[var(--color-brand)] hover:underline"

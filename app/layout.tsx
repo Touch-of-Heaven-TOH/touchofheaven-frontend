@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Libre_Caslon_Text } from "next/font/google";
+import { MaintenanceBanner } from "@/components/layout/MaintenanceBanner";
 import { brandAssets, siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -56,6 +57,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${displaySerif.variable} h-full antialiased`}>
       <body className="min-h-full bg-[var(--color-page)] text-[var(--color-text-primary)]">
+        {/* Above everything, on every page, because that is what an admin
+            switching maintenance mode on is asking for. */}
+        <MaintenanceBanner />
         {children}
       </body>
     </html>

@@ -2,6 +2,7 @@ export type AdminSectionKey =
   | "overview"
   | "bookings"
   | "braiders"
+  | "applications"
   | "clients"
   | "marketplace"
   | "orders"

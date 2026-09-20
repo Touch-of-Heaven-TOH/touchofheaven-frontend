@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { adminContent } from "@/config/page-content";
-
-const content = adminContent.applicationDetail;
+import { ApplicationReview } from "@/features/admin/applications/ApplicationReview";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Review application",
   robots: { index: false, follow: false },
 };
 
-type AdminApplicationDetailPageProps = {
-  params: Promise<{ applicationId: string }>;
-};
-
-export default async function AdminApplicationDetailPage({
+export default async function AdminApplicationReviewPage({
   params,
-}: AdminApplicationDetailPageProps) {
+}: {
+  params: Promise<{ applicationId: string }>;
+}) {
   const { applicationId } = await params;
-  return (
-    <RouteStatusPage
-      content={{
-        ...content,
-        description: `${content.description} (application ${applicationId})`,
-      }}
-      href="/admin/applications"
-    />
-  );
+  return <ApplicationReview applicationId={applicationId} />;
 }

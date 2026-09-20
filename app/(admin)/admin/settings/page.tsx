@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { adminContent } from "@/config/page-content";
-
-const content = adminContent.settings;
+import { AdminSettingsDashboard } from "@/features/admin/settings/AdminSettingsDashboard";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Admin settings",
+  description: "How the platform runs, and what is waiting on you.",
   robots: { index: false, follow: false },
 };
 
 export default function AdminSettingsPage() {
-  return <RouteStatusPage content={content} href="/admin" />;
+  return <AdminSettingsDashboard />;
 }

@@ -49,10 +49,12 @@ if (!apiUp || !webUp) {
 
 console.log("\nRunning the end-to-end settings checks against the running stack...\n");
 
-const child = spawn(
-  process.platform === "win32" ? "npx.cmd" : "npx",
-  ["playwright", "test", "tests/e2e/settings.spec.ts"],
-  { stdio: "inherit", env: { ...process.env, E2E_BASE_URL: WEB, E2E_API_URL: API } },
-);
+// shell: true because on Windows `npx` is a .cmd, which Node refuses to
+// spawn directly (EINVAL).
+const child = spawn("npx playwright test tests/e2e/settings.spec.ts", {
+  stdio: "inherit",
+  shell: true,
+  env: { ...process.env, E2E_BASE_URL: WEB, E2E_API_URL: API },
+});
 
 child.on("exit", (code) => process.exit(code ?? 1));

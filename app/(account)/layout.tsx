@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { accountNavigation } from "@/config/navigation";
 import { DashboardShell } from "@/components/layout/DashboardShell";
+import { ToastProvider } from "@/components/feedback/ToastProvider";
 import { requireUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function AccountLayout({
   const currentPath = (await headers()).get("x-toh-pathname") ?? "/account";
 
   if (currentPath.startsWith("/bookings/")) {
-    return <>{children}</>;
+    return <ToastProvider>{children}</ToastProvider>;
   }
 
   return (
@@ -30,7 +31,7 @@ export default async function AccountLayout({
       tone="account"
       user={user}
     >
-      {children}
+      <ToastProvider>{children}</ToastProvider>
     </DashboardShell>
   );
 }

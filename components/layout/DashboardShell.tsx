@@ -98,7 +98,7 @@ export function DashboardShell({
           } ${sidebarToneClassName[tone]}`}
         >
           <Link
-            className={`flex items-center gap-3 font-semibold ${
+            className={`flex min-h-11 items-center gap-3 font-semibold ${
               isDarkSidebar ? "text-white" : "text-[var(--color-text-primary)]"
             }`}
             href="/"
@@ -126,7 +126,7 @@ export function DashboardShell({
               return (
                 <Link
                   aria-current={isActive ? "page" : undefined}
-                  className={`inline-flex min-h-10 shrink-0 items-center whitespace-nowrap rounded-md px-3 text-sm font-semibold ${
+                  className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-md px-3 text-sm font-semibold ${
                     isActive ? linkTone.active : linkTone.inactive
                   }`}
                   href={item.href}

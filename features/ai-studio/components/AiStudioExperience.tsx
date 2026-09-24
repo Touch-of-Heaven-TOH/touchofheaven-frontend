@@ -226,14 +226,54 @@ function StyleCard({
         </span>
       </span>
       <span className="block p-3">
-        <span className="block text-sm font-bold text-[var(--color-text-primary)]">
-          {style.name}
+        <span className="flex flex-wrap items-center gap-1.5">
+          <span className="text-sm font-bold text-[var(--color-text-primary)]">
+            {style.name}
+          </span>
+          {/* A unisex style is listed under both Women and Men. Without
+              this, seeing the same style in both places looks like the
+              filter is broken. */}
+          {style.audience === "UNISEX" ? (
+            <span className="rounded-full bg-[var(--color-brand-soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-brand)]">
+              Works for all
+            </span>
+          ) : null}
         </span>
         <span className="mt-1 block truncate text-xs text-[var(--color-text-muted)]">
           {categoryLabel(style)}
         </span>
       </span>
     </button>
+  );
+}
+
+/**
+ * Shown when the catalogue genuinely has nothing to show. It distinguishes
+ * "there are no men's styles yet" from "your search matched nothing",
+ * because those need different things from the reader.
+ */
+function EmptyCatalogue({
+  audience,
+  narrowedByFilters,
+}: {
+  audience: "ALL" | "WOMEN" | "MEN";
+  narrowedByFilters: boolean;
+}) {
+  const label = audience === "WOMEN" ? "women's" : audience === "MEN" ? "men's" : "";
+
+  return (
+    <div className="rounded-md border border-dashed border-[var(--color-border)] bg-white p-10 text-center">
+      <p className="font-bold text-[var(--color-text-primary)]">
+        {narrowedByFilters
+          ? "Nothing matches that search."
+          : `No ${label} styles available yet.`.replace("  ", " ")}
+      </p>
+      <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+        {narrowedByFilters
+          ? "Try a different category, or clear the search."
+          : "Check back soon — new styles are added regularly."}
+      </p>
+    </div>
   );
 }
 
@@ -617,9 +657,14 @@ export function AiStudioExperience({
     fetchAiStudioStyles(activeAudience === "ALL" ? {} : { audience: activeAudience })
       .then((items) => {
         if (!live) return;
-        const next = items.length > 0 ? items : fallbackAiStudioStyles;
-        setStyles(next);
-        setCatalogSource(items.length > 0 ? "backend" : "fallback");
+        // An empty answer is an answer. Substituting the sample catalogue
+        // here is what put women's braiding styles under "Men": there are
+        // no men's styles yet, the backend correctly returned none, and
+        // the fallback quietly filled the gap with the wrong ones. Only a
+        // failed request falls back now - an empty catalogue shows an
+        // empty catalogue.
+        setStyles(items);
+        setCatalogSource("backend");
         setCatalogError(null);
         setActiveCategory("All");
       })
@@ -1005,6 +1050,11 @@ export function AiStudioExperience({
             <div className="mt-5">
               {loadingStyles ? (
                 <SkeletonGrid />
+              ) : filteredStyles.length === 0 ? (
+                <EmptyCatalogue
+                  audience={activeAudience}
+                  narrowedByFilters={styles.length > 0}
+                />
               ) : (
                 <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
                   {filteredStyles.map((style) => (

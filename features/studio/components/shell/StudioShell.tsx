@@ -588,7 +588,10 @@ function AccountMenu({ name }: { name: string }) {
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label="Account menu"
-        className="flex items-center gap-3 rounded-full p-0.5 hover:bg-[var(--color-brand-soft)] lg:rounded-xl lg:py-1 lg:pr-2 lg:pl-1"
+        // On a phone this is an avatar on its own, which left to itself is a
+        // 40px target. The hit area is widened to 44px without growing the
+        // avatar; from lg up the button carries a name and needs no padding.
+        className="flex min-h-11 min-w-11 items-center justify-center gap-3 rounded-full p-0.5 hover:bg-[var(--color-brand-soft)] lg:min-h-0 lg:min-w-0 lg:justify-start lg:rounded-xl lg:py-1 lg:pr-2 lg:pl-1"
       >
         <Avatar name={name} size="sm" />
         <span className="hidden min-w-0 text-left lg:block">

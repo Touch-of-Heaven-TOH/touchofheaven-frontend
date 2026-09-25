@@ -103,6 +103,7 @@ export const pageCatalog: CatalogSection[] = [
       { label: "Security and sessions", path: "/account/settings/security", as: "customer", status: "connected" },
       { label: "Team invitations", path: "/team-invitations", as: "customer", status: "connected" },
       { label: "Business application (old form)", path: "/professional-application", as: "customer", status: "connected", note: "Duplicate of the setup wizard" },
+      { label: "My portfolio", path: "/account/portfolio", as: "customer", status: "connected", note: "Own looks, visibility per photo; upload needs R2 keys" },
       { label: "Settings hub", path: "/account/settings", as: "customer", status: "connected", note: "Completion badges from your real profile" },
       { label: "Account overview", path: "/account", as: "customer", status: "placeholder" },
       { label: "Account appointments", path: "/account/appointments", as: "customer", status: "placeholder", note: "Use My bookings" },

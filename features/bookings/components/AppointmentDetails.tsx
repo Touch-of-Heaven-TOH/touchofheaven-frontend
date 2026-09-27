@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
 import { brandAssets } from "@/config/site";
+import { AfterAppointment } from "@/features/bookings/components/AfterAppointment";
 import { AppointmentChangeRequests } from "@/features/bookings/components/AppointmentChangeRequests";
 import { browserApiFetch } from "@/lib/api/browser";
 import { ApiClientError } from "@/lib/api/errors";
@@ -778,6 +779,12 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
                     Copy code
                   </button>
                 </DetailPanel>
+              ) : null}
+              {view.status === "COMPLETED" ? (
+                <AfterAppointment
+                  appointmentId={view.id}
+                  providerName={view.providerName}
+                />
               ) : null}
               <InfoRow
                 icon={<Clock size={28} aria-hidden="true" />}

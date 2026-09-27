@@ -553,6 +553,28 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
   );
   const confirmed = view.status === "CONFIRMED";
 
+  // Neither the live appointment nor a saved copy of it. Every field below
+  // would be invented - a provider name, a price, a time none of which are
+  // this person's - so say plainly that it could not be loaded.
+  if (!loading && !apiAppointment && !storedAppointment) {
+    return (
+      <div className="min-h-dvh bg-[var(--color-page)] text-[var(--color-text-primary)]">
+        <Header />
+        <main className="mx-auto w-full max-w-[720px] px-5 py-16">
+          <h1 className="font-serif text-2xl font-semibold">
+            We couldn&apos;t load this appointment
+          </h1>
+          <p className="mt-3 text-[var(--color-text-muted)]">
+            {error ?? "It may have been cancelled, or the link may be wrong."}
+          </p>
+          <Link className="btn-primary mt-6 inline-flex" href="/bookings">
+            Back to my bookings
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-dvh bg-[var(--color-page)] text-[var(--color-text-primary)]">
       <Header />

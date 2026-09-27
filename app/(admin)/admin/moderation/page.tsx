@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { adminContent } from "@/config/page-content";
-
-const content = adminContent.moderation;
+import { PortfolioModeration } from "@/features/admin/moderation/PortfolioModeration";
 
 export const metadata: Metadata = {
-  title: content.title,
-  description: content.description,
+  title: "Portfolio moderation",
+  description: "Decide whether a client's photo may go on a provider's public profile.",
   robots: { index: false, follow: false },
 };
 
 export default function AdminModerationPage() {
-  return <RouteStatusPage content={content} href="/admin" />;
+  return <PortfolioModeration />;
 }

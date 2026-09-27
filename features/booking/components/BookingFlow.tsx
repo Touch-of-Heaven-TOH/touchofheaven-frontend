@@ -1660,6 +1660,7 @@ function TimeStep({
   selectedDate,
   setSelectedDate,
   slots,
+  slotsFailed,
   selectedSlot,
   setSelectedSlot,
 }: {
@@ -1669,6 +1670,7 @@ function TimeStep({
   selectedDate: string;
   setSelectedDate: (value: string) => void;
   slots: SlotOption[];
+  slotsFailed: boolean;
   selectedSlot: SlotOption | null;
   setSelectedSlot: (value: SlotOption) => void;
 }) {
@@ -1733,18 +1735,29 @@ function TimeStep({
             <SelectButton selected onClick={() => undefined}>Morning</SelectButton>
             <SelectButton selected={false} onClick={() => undefined}>Afternoon</SelectButton>
           </div>
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {slots.map((slot) => (
-              <SelectButton
-                key={slot.startAt}
-                selected={selectedSlot?.startAt === slot.startAt}
-                disabled={slot.disabled}
-                onClick={() => setSelectedSlot(slot)}
-              >
-                {slot.label}
-              </SelectButton>
-            ))}
-          </div>
+          {slots.length === 0 ? (
+            <p
+              role="status"
+              className="mt-5 rounded-[var(--radius-control)] border border-dashed border-[var(--color-border)] px-4 py-5 text-[var(--color-text-muted)]"
+            >
+              {slotsFailed
+                ? "We couldn't load this provider's times just now. Please try again in a moment."
+                : "No times are free on this day. Try another date, or join the waitlist below."}
+            </p>
+          ) : (
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {slots.map((slot) => (
+                <SelectButton
+                  key={slot.startAt}
+                  selected={selectedSlot?.startAt === slot.startAt}
+                  disabled={slot.disabled}
+                  onClick={() => setSelectedSlot(slot)}
+                >
+                  {slot.label}
+                </SelectButton>
+              ))}
+            </div>
+          )}
           <p className="mt-5 flex items-center gap-2 text-[var(--color-text-muted)]">
             <Clock className="text-[var(--color-gold)]" size={21} aria-hidden="true" />
             {durationLabel(pricing.durationMins)} appointment - Ends around 3:00 PM
@@ -2353,6 +2366,7 @@ export function BookingFlow({
   const [stepFree, setStepFree] = useState(false);
   const [selectedDate, setSelectedDate] = useState(nextSaturdayFromToday);
   const [slotOptions, setSlotOptions] = useState<SlotOption[]>(() => fallbackSlotsFor(nextSaturdayFromToday()));
+  const [slotsFailed, setSlotsFailed] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(() => fallbackSlotsFor(nextSaturdayFromToday())[1] ?? null);
   const [pricing, setPricing] = useState<PricingPreview>(() =>
     computeLocalPrice(
@@ -2575,6 +2589,9 @@ export function BookingFlow({
     const fallback = fallbackSlotsFor(selectedDate);
 
     if (apiMode !== "live" || !isUuid(braiderId) || !isUuid(selectedService.id)) {
+      // Preview mode: the URL carries a slug, not a real business, so this
+      // grid is a showcase rather than anyone's actual availability.
+      setSlotsFailed(false);
       setSlotOptions(fallback);
       setSelectedSlot((current) => current && current.startAt.startsWith(selectedDate) ? current : fallback[1] ?? fallback[0] ?? null);
       return;
@@ -2590,14 +2607,22 @@ export function BookingFlow({
       .then((result) => {
         if (cancelled) return;
         const liveSlots = result.slots.map((slot) => ({ startAt: slot, label: slotLabel(slot) }));
-        const nextSlots = liveSlots.length ? liveSlots : fallback;
-        setSlotOptions(nextSlots);
-        setSelectedSlot((current) => current && nextSlots.some((slot) => slot.startAt === current.startAt) ? current : nextSlots.find((slot) => slot.label === "10:00 AM") ?? nextSlots[0] ?? null);
+        // No invented times for a real business. A day with nothing free
+        // is shown as having nothing free - substituting a demo grid here
+        // would let someone pick an hour this provider never offered.
+        setSlotsFailed(false);
+        setSlotOptions(liveSlots);
+        setSelectedSlot((current) =>
+          current && liveSlots.some((slot) => slot.startAt === current.startAt)
+            ? current
+            : liveSlots[0] ?? null,
+        );
       })
       .catch(() => {
         if (!cancelled) {
-          setSlotOptions(fallback);
-          setSelectedSlot((current) => current && current.startAt.startsWith(selectedDate) ? current : fallback[1] ?? fallback[0] ?? null);
+          setSlotsFailed(true);
+          setSlotOptions([]);
+          setSelectedSlot(null);
         }
       });
 
@@ -2818,6 +2843,7 @@ export function BookingFlow({
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           slots={slotOptions}
+          slotsFailed={slotsFailed}
           selectedSlot={selectedSlot}
           setSelectedSlot={setSelectedSlot}
         />

@@ -1,40 +1,29 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { accountContent } from "@/config/page-content";
+import { redirect } from "next/navigation";
+import { AccountHome } from "@/features/account/overview/AccountHome";
 
 type AccountPageProps = {
   params: Promise<{ section?: string[] }>;
 };
 
-// Every /account/settings/* path now has its own page.tsx (see
-// app/(account)/account/settings/*/page.tsx), which Next.js always
-// resolves before this catch-all - so this function only ever sees the
-// segments those literal routes don't own: no segments (overview),
-// /appointments, or a genuinely unrecognized path, which falls back to
-// overview rather than a hard 404.
-function contentKey(segments: string[] | undefined): keyof typeof accountContent {
-  if (!segments?.length) return "overview";
-  if (segments[0] === "appointments") return "appointments";
+// Every /account/settings/* path has its own page.tsx, which Next.js
+// resolves before this catch-all - so this only ever sees no segments
+// (the account home), /appointments, or an unrecognized path.
 
-  return "overview";
-}
-
-export async function generateMetadata({
-  params,
-}: AccountPageProps): Promise<Metadata> {
-  const content = accountContent[contentKey((await params).section)];
-  return {
-    title: content.title,
-    description: content.description,
-    robots: { index: false, follow: false },
-  };
-}
+export const metadata: Metadata = {
+  title: "Account",
+  description: "Your appointments, saved looks and anything that needs you.",
+  robots: { index: false, follow: false },
+};
 
 export default async function AccountPage({ params }: AccountPageProps) {
-  const content = accountContent[contentKey((await params).section)];
+  const segments = (await params).section;
 
-  if (!content) notFound();
+  // Bookings have lived at /bookings since that page was built; this keeps
+  // any old link working rather than showing a second, emptier version.
+  if (segments?.[0] === "appointments") redirect("/bookings");
 
-  return <RouteStatusPage content={content} href="/book" />;
+  // An unrecognized path lands on the account home rather than a 404 -
+  // the same behaviour this route had before, now with a real page.
+  return <AccountHome />;
 }

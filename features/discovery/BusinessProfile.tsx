@@ -25,6 +25,7 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { ClientShell, classNames } from "@/features/discovery/DiscoveryShell";
 import { providerInitials } from "@/features/discovery/nearby";
+import { SaveProviderButton } from "@/features/discovery/SaveProviderButton";
 import { cancellationPolicyFor } from "@/lib/businesses/policies";
 import type {
   PublicBusiness,
@@ -243,6 +244,10 @@ function ProfileHeader({ business, section }: { business: PublicBusiness; sectio
           </div>
         </div>
         <div className="flex items-start gap-3">
+          <SaveProviderButton
+            braiderId={profile.braiderId}
+            professionalName={profile.professionalName}
+          />
           <button
             type="button"
             onClick={() => void share()}

@@ -4,7 +4,6 @@ import {
   called,
   createRecorder,
   instrument,
-  open,
   reload,
   signIn,
   WAIT_TIMEOUT,

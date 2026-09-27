@@ -116,7 +116,9 @@ export function StudioPortfolio() {
     studioFetcher,
   );
 
-  const items = portfolio.data?.items ?? [];
+  // Memoised so the filtered list below is not rebuilt on every render:
+  // `?? []` produces a new array each time otherwise.
+  const items = useMemo(() => portfolio.data?.items ?? [], [portfolio.data]);
   const counts = portfolio.data?.counts;
   const available = consents.data?.consents ?? [];
 

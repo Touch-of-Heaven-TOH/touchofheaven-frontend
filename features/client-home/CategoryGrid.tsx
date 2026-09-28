@@ -45,7 +45,9 @@ export function CategoryGrid({
   categories: HomeCategory[];
   failed: boolean;
   onRetry: () => void;
-  /** The mobile design shows eight tiles; desktop shows six. */
+  /** How many tiles exist at all. The design shows eight on a phone and
+   * six on a wide screen; the last two are hidden by CSS from lg up
+   * rather than rendered a second time in a parallel list. */
   limit?: number;
 }) {
   if (failed) {
@@ -74,10 +76,15 @@ export function CategoryGrid({
       role="list"
       className="grid grid-cols-4 gap-3 sm:gap-4 lg:grid-cols-6 lg:gap-5"
     >
-      {shown.map((category) => {
+      {shown.map((category, index) => {
         const Icon = ICONS[category.iconKey] ?? Sparkles;
         return (
-          <li key={category.id} className="min-w-0">
+          <li
+            key={category.id}
+            className={
+              index >= 6 ? "min-w-0 lg:hidden" : "min-w-0"
+            }
+          >
             {/* The whole tile is the link, not just the icon. */}
             <Link
               href={categoryHref(category.slug)}

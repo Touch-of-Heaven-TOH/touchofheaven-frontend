@@ -93,24 +93,12 @@ function HomeBody({
         {loading ? (
           <TileSkeleton />
         ) : (
-          <>
-            <div className="lg:hidden">
-              <CategoryGrid
-                categories={data?.categories ?? []}
-                failed={data?.categoriesFailed ?? false}
-                onRetry={onRetry}
-                limit={8}
-              />
-            </div>
-            <div className="hidden lg:block">
-              <CategoryGrid
-                categories={data?.categories ?? []}
-                failed={data?.categoriesFailed ?? false}
-                onRetry={onRetry}
-                limit={6}
-              />
-            </div>
-          </>
+          <CategoryGrid
+            categories={data?.categories ?? []}
+            failed={data?.categoriesFailed ?? false}
+            onRetry={onRetry}
+            limit={8}
+          />
         )}
       </section>
 

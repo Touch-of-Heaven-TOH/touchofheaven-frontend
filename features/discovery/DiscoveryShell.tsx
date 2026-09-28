@@ -96,11 +96,22 @@ export function ClientShell({
   const pathname = usePathname();
   const viewer = useViewer();
   const nav = [
-    { label: "Home", href: "/for-clients", icon: Home },
+    { label: "Home", href: viewer ? "/home" : "/for-clients", icon: Home },
     { label: "Explore", href: "/explore", icon: Search },
     { label: "Bookings", href: "/bookings", icon: Calendar },
     { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
     { label: "Market", href: "/marketplace", icon: ShoppingBag },
+    { label: "Profile", href: "/account", icon: User },
+  ];
+
+  // The phone's five destinations, in the order the design fixes them.
+  // AI Studio sits in the centre as a raised action; Market is
+  // deliberately not one of the five - it is reachable from the header.
+  const mobileNav = [
+    { label: "Home", href: viewer ? "/home" : "/for-clients", icon: Home },
+    { label: "Search", href: "/explore", icon: Search },
+    { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
+    { label: "Activity", href: "/bookings", icon: Calendar },
     { label: "Profile", href: "/account", icon: User },
   ];
   const isExploreActive =
@@ -162,7 +173,7 @@ export function ClientShell({
           </nav>
           <div className="flex items-center gap-2 sm:gap-4">
             {viewer ? (
-              <HeaderIcon href="/account/settings/beauty-profile?saved=professionals" label="Saved">
+              <HeaderIcon href="/saved" label="Saved professionals">
                 <Heart size={24} aria-hidden="true" />
               </HeaderIcon>
             ) : null}
@@ -176,7 +187,7 @@ export function ClientShell({
             </Link>
             {viewer ? (
               <>
-                <HeaderIcon href="/account/settings/notifications" label="Notification settings">
+                <HeaderIcon href="/notifications" label="Notifications">
                   <Bell size={24} aria-hidden="true" />
                 </HeaderIcon>
                 <Link
@@ -187,7 +198,7 @@ export function ClientShell({
                   <span className="max-w-[10rem] truncate font-semibold">{viewer.firstName}</span>
                   <ChevronDown size={18} aria-hidden="true" />
                 </Link>
-                <Link href="/account" aria-label="Your account" className="md:hidden">
+                <Link href="/account" aria-label="Your account" className="grid size-11 place-items-center md:hidden">
                   <ViewerAvatar firstName={viewer.firstName} lastName={viewer.lastName} size="sm" />
                 </Link>
               </>
@@ -212,16 +223,37 @@ export function ClientShell({
         aria-label="Mobile client navigation"
       >
         <div className="mx-auto grid max-w-md grid-cols-5 items-end gap-1">
-          {nav.filter((item) => item.label !== "Market").map((item) => {
+          {mobileNav.map((item) => {
             const Icon = item.icon;
             const active =
-              item.label === "Explore"
+              item.label === "Search"
                 ? isExploreActive
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            // AI Studio is the raised centre action in the design. It keeps
+            // a real text label and accessible name - a floating icon with
+            // no word is not navigable by everyone.
+            if (item.label === "AI Studio") {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex min-h-14 flex-col items-center justify-end gap-1 text-[0.72rem] font-medium text-[var(--color-brand)]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="-mt-7 grid size-14 place-items-center rounded-full border-4 border-[var(--color-page)] bg-[var(--color-brand)] text-[var(--color-gold)] shadow-[0_6px_18px_rgba(43,23,36,0.25)]"
+                  >
+                    <Icon size={24} />
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            }
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={classNames(
                   "flex min-h-14 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] text-[0.72rem] font-medium",
                   active ? "text-[var(--color-brand)]" : "text-[var(--color-text-muted)]",

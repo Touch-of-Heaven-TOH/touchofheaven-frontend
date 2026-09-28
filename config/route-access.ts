@@ -91,6 +91,9 @@ export const routeAccessRules: RouteAccessRule[] = [
 
 export const protectedRoutePrefixes = [
   "/account",
+  "/home",
+  "/saved",
+  "/notifications",
   "/client-onboarding",
   "/book",
   "/bookings",

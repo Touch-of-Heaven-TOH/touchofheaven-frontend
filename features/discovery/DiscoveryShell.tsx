@@ -111,7 +111,7 @@ export function ClientShell({
     { label: "Home", href: viewer ? "/home" : "/for-clients", icon: Home },
     { label: "Search", href: "/explore", icon: Search },
     { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
-    { label: "Activity", href: "/bookings", icon: Calendar },
+    { label: "Activity", href: "/activity", icon: Calendar },
     { label: "Profile", href: "/account", icon: User },
   ];
   const isExploreActive =

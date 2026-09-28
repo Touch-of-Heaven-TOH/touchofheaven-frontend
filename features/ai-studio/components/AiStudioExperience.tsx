@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -49,12 +49,34 @@ import type {
   AiStudioStyle,
 } from "@/features/ai-studio/types";
 import { getClientEnv } from "@/lib/env/client";
+import { ApiClientError } from "@/lib/api/errors";
 
 type Stage = "choose" | "photo" | "review" | "processing" | "result";
 type UploadStatus = "idle" | "validating" | "ready" | "uploading" | "error";
 
 const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
+
+/** A queued generation is watched for about a minute before the page
+ * stops waiting and says where the preview went. */
+const GENERATION_POLL_ATTEMPTS = 20;
+const GENERATION_POLL_INTERVAL_MS = 3000;
+
+const wait = (ms: number) =>
+  new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
 const colorGroups = ["Black", "Brown", "Blonde", "Blends"] as const;
+
+/**
+ * What to show a person when an attempt fails. Backend messages are
+ * written for end users, so they are shown as-is rather than replaced by
+ * a guess about the cause.
+ */
+function errorMessage(error: unknown, fallback: string): string {
+  if (error instanceof ApiClientError) return error.message || fallback;
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+}
 
 function categoryLabel(style: AiStudioStyle) {
   const detail = [style.density, style.length, style.parting].filter(Boolean).join(" · ");
@@ -621,6 +643,7 @@ export function AiStudioExperience({
     useState<AiStudioSession | null>(null);
   const [previousSessions, setPreviousSessions] = useState<AiStudioSession[]>([]);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [processingNote, setProcessingNote] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
   const [creditsUnavailable, setCreditsUnavailable] = useState(false);
 
@@ -760,6 +783,24 @@ export function AiStudioExperience({
     setGenerationSession(null);
   }
 
+  async function refreshBalance() {
+    try {
+      const credits = await fetchAiStudioCredits();
+      setBalance(credits.balance);
+      setCreditsUnavailable(false);
+    } catch {
+      setCreditsUnavailable(true);
+    }
+  }
+
+  async function refreshSessions() {
+    try {
+      setPreviousSessions(await fetchAiStudioSessions());
+    } catch {
+      // The looks list is not worth an error of its own.
+    }
+  }
+
   async function handleFile(file: File) {
     setUploadStatus("validating");
     setUploadError(null);
@@ -830,7 +871,14 @@ export function AiStudioExperience({
     setUploadStatus("uploading");
     setStage("processing");
     setUploadError(null);
+    setProcessingNote(null);
 
+    // The balance is never adjusted by hand here. The credit is spent
+    // inside the backend's own transaction, and an attempt can fail on
+    // either side of that, so guessing produced a figure that drifted
+    // from the truth: a refund for a credit that was really spent, or an
+    // extra credit for an attempt that never reached the server.
+    // Re-reading the balance afterwards is the only version that matches.
     try {
       const upload = await requestAiStudioUploadUrl({
         filename: sanitizeFilename(`${selectedStyle.slug}.jpg`),
@@ -844,7 +892,7 @@ export function AiStudioExperience({
       });
 
       if (!uploadResponse.ok) {
-        throw new Error("Photo upload failed.");
+        throw new Error("We couldn't upload that photo. Please try again.");
       }
 
       const generation = await startAiStudioGeneration({
@@ -855,22 +903,65 @@ export function AiStudioExperience({
         selectedLength: selectedLengthValue,
       });
 
-      setBalance((current) =>
-        typeof current === "number" ? Math.max(0, current - 1) : current,
-      );
-      const session = await fetchAiStudioSession(generation.sessionId);
-      setGenerationSession(session);
-      setStage(session.status === "COMPLETED" ? "result" : "processing");
-    } catch {
+      void refreshBalance();
+      setUploadStatus("ready");
+      await watchGeneration(generation.sessionId);
+    } catch (error) {
       setUploadStatus("error");
       setStage("review");
-      setUploadError(
-        "AI generation is not available from the local backend yet. Your style and photo preview are still here.",
-      );
-      setBalance((current) =>
-        typeof current === "number" ? current + 1 : current,
-      );
+      // Say what actually happened. The backend writes its messages for
+      // people to read, and claiming a cause we have not established -
+      // as a blanket "not available locally" did - sends someone looking
+      // in the wrong place.
+      setUploadError(errorMessage(error, "We couldn't create that preview. Please try again."));
+      void refreshBalance();
     }
+  }
+
+  /**
+   * A generation is queued, not instant: the backend creates the session
+   * PENDING and a worker fills it in. Without watching for that, the page
+   * showed "processing" forever on a credit that had genuinely been
+   * spent - and in an environment with no worker configured, always.
+   */
+  async function watchGeneration(sessionId: string) {
+    for (let attempt = 0; attempt < GENERATION_POLL_ATTEMPTS; attempt += 1) {
+      let session: AiStudioSession;
+      try {
+        session = await fetchAiStudioSession(sessionId);
+      } catch {
+        // A single failed read is not a failed generation; the work
+        // carries on server-side, so try again rather than giving up.
+        await wait(GENERATION_POLL_INTERVAL_MS);
+        continue;
+      }
+
+      setGenerationSession(session);
+
+      if (session.status === "COMPLETED") {
+        setStage("result");
+        void refreshSessions();
+        return;
+      }
+      if (session.status === "FAILED") {
+        setStage("review");
+        setUploadStatus("error");
+        setUploadError(
+          session.errorMessage ??
+            "That preview could not be generated. Your credit has been returned.",
+        );
+        void refreshBalance();
+        return;
+      }
+
+      await wait(GENERATION_POLL_INTERVAL_MS);
+    }
+
+    // Still queued. The credit is spent and the session is real, so this
+    // says where it went rather than spinning indefinitely.
+    setProcessingNote(
+      "This is taking longer than usual. Your preview is still queued - it will appear under “My looks” when it is ready.",
+    );
   }
 
   async function handleShare() {
@@ -1291,6 +1382,18 @@ export function AiStudioExperience({
             </button>
           )}
         </div>
+
+        {/* A queued generation is a real state with a real credit behind
+            it, so it says where the preview went rather than leaving a
+            spinner turning with no end. */}
+        {processingNote ? (
+          <p
+            role="status"
+            className="mt-3 rounded-md bg-[var(--color-brand-soft)] px-3 py-2 text-sm text-[var(--color-text-primary)]"
+          >
+            {processingNote}
+          </p>
+        ) : null}
       </div>
 
       <AuthGateModal

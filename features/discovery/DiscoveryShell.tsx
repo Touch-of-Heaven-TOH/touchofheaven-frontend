@@ -112,7 +112,7 @@ export function ClientShell({
     { label: "Search", href: "/explore", icon: Search },
     { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
     { label: "Activity", href: "/activity", icon: Calendar },
-    { label: "Profile", href: "/account", icon: User },
+    { label: "Profile", href: "/profile", icon: User },
   ];
   const isExploreActive =
     pathname.startsWith("/explore") ||

@@ -93,6 +93,7 @@ export const protectedRoutePrefixes = [
   "/account",
   "/home",
   "/activity",
+  "/profile",
   "/saved",
   "/notifications",
   "/client-onboarding",

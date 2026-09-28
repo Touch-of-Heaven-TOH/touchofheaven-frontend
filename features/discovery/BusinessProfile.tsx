@@ -25,6 +25,7 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { ClientShell, classNames } from "@/features/discovery/DiscoveryShell";
 import { providerInitials } from "@/features/discovery/nearby";
+import { RecordProfileView } from "@/features/client-home/RecordProfileView";
 import { SaveProviderButton } from "@/features/discovery/SaveProviderButton";
 import { cancellationPolicyFor } from "@/lib/businesses/policies";
 import type {
@@ -672,6 +673,8 @@ function StickyBookingBar({ href }: { href: string }) {
 export function BusinessProfilePage({ business, section = "overview" }: { business: PublicBusiness; section?: ProfileSection }) {
   return (
     <ClientShell>
+      {/* So the client home's "Recently viewed" can actually fill. */}
+      <RecordProfileView braiderId={business.profile.braiderId} />
       <ProfileHeader business={business} section={section} />
       <div className="mx-auto max-w-[1500px] px-4 pb-28 pt-8 sm:px-6 md:px-10 lg:pb-12">
         {section === "overview" ? <OverviewSection business={business} /> : null}

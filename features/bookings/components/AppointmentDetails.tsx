@@ -305,7 +305,6 @@ function Header() {
   const nav = [
     { label: "Home", href: "/for-clients" },
     { label: "Explore", href: "/explore" },
-    { label: "Bookings", href: "/bookings" },
     { label: "AI Studio", href: "/ai-studio" },
     { label: "Market", href: "/marketplace" },
   ];
@@ -328,13 +327,7 @@ function Header() {
         <nav className="hidden items-center gap-9 text-base font-semibold lg:flex">
           {nav.map((item) => (
             <Link
-              aria-current={item.label === "Bookings" ? "page" : undefined}
-              className={classNames(
-                "border-b-2 px-1 py-7 transition-colors",
-                item.label === "Bookings"
-                  ? "border-[var(--color-brand)] text-[var(--color-brand)]"
-                  : "border-transparent text-[var(--color-text-primary)] hover:text-[var(--color-brand)]",
-              )}
+              className="border-b-2 border-transparent px-1 py-7 text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-brand)]"
               href={item.href}
               key={item.href}
             >

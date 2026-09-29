@@ -659,7 +659,6 @@ function DesktopClientHeader() {
   const nav = [
     { label: "Home", href: "/for-clients" },
     { label: "Explore", href: "/explore" },
-    { label: "Bookings", href: "/bookings" },
     { label: "AI Studio", href: "/ai-studio" },
   ];
 
@@ -670,9 +669,7 @@ function DesktopClientHeader() {
         <nav className="flex items-stretch gap-8" aria-label="Client navigation">
           {nav.map((item) => {
             const active =
-              item.label === "Bookings"
-                ? pathname.startsWith("/book") || pathname.startsWith("/bookings")
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

@@ -95,13 +95,12 @@ export function ClientShell({
 }) {
   const pathname = usePathname();
   const viewer = useViewer();
-  const nav = [
-    { label: "Home", href: viewer ? "/home" : "/for-clients", icon: Home },
-    { label: "Explore", href: "/explore", icon: Search },
-    { label: "Bookings", href: "/bookings", icon: Calendar },
-    { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
-    { label: "Market", href: "/marketplace", icon: ShoppingBag },
-    { label: "Profile", href: "/account", icon: User },
+  // The desktop header's links, stated outright. This was a slice of a
+  // longer list, so removing one entry silently promoted the next one
+  // into the header instead of shortening it.
+  const desktopNav = [
+    { label: "Explore", href: "/explore" },
+    { label: "AI Studio", href: "/ai-studio" },
   ];
 
   // The phone's five destinations, in the order the design fixes them.
@@ -150,7 +149,7 @@ export function ClientShell({
         <div className="mx-auto flex min-h-[76px] max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
           <BrandMark />
           <nav className="hidden items-stretch gap-8 lg:flex" aria-label="Client navigation">
-            {nav.slice(1, 4).map((item) => {
+            {desktopNav.map((item) => {
               const active =
                 item.label === "Explore"
                   ? isExploreActive

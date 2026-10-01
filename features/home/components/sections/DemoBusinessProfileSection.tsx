@@ -146,7 +146,7 @@ export function DemoBusinessProfileSection() {
                     Book like a real profile page.
                   </h3>
                 </div>
-                <Link className="btn-secondary w-fit" href="/businesses">
+                <Link className="btn-secondary w-fit" href="/explore">
                   View all profiles
                 </Link>
               </div>

@@ -6,11 +6,9 @@ const publicRoutes = [
   "",
   "/about",
   "/how-it-works",
-  "/businesses",
+  "/explore",
   "/beauty",
-  "/for-clients",
   "/legal",
-  "/map",
   "/contact",
 ] as const;
 

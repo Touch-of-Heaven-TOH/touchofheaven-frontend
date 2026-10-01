@@ -23,9 +23,13 @@ type FavoriteProvider = { braiderId: string };
 export function SaveProviderButton({
   braiderId,
   professionalName,
+  compact = false,
 }: {
   braiderId: string;
   professionalName: string;
+  /** Heart only, for sitting over a card image where there is no room
+   * for a word. The accessible name still carries the full meaning. */
+  compact?: boolean;
 }) {
   const favorites = useSWR<{ favorites: FavoriteProvider[] }>(
     "/api/v1/customer/favorites",
@@ -45,8 +49,9 @@ export function SaveProviderButton({
     (entry) => entry.braiderId === braiderId,
   );
 
-  const buttonClass =
-    "inline-flex min-h-12 items-center gap-2 rounded-[var(--radius-control)] border px-5 font-semibold transition";
+  const buttonClass = compact
+    ? "grid size-11 place-items-center rounded-full border bg-white/90 shadow-[var(--shadow-subtle)] backdrop-blur transition"
+    : "inline-flex min-h-12 items-center gap-2 rounded-[var(--radius-control)] border px-5 font-semibold transition";
 
   if (signedOut) {
     return (
@@ -55,7 +60,7 @@ export function SaveProviderButton({
         className={`${buttonClass} border-[var(--color-border)] bg-white hover:border-[var(--color-brand)] hover:text-[var(--color-brand)]`}
       >
         <Heart aria-hidden="true" size={19} />
-        Save
+        {compact ? null : "Save"}
       </Link>
     );
   }
@@ -105,8 +110,9 @@ export function SaveProviderButton({
       >
         <Heart aria-hidden="true" size={19} fill={saved ? "currentColor" : "none"} />
         {/* The word changes, not just the fill - a filled heart alone does
-            not tell you which state you are in. */}
-        {saved ? "Saved" : "Save"}
+            not tell you which state you are in. Over a card image there is
+            no room for it, so the accessible name carries it instead. */}
+        {compact ? null : saved ? "Saved" : "Save"}
       </button>
       {error ? (
         <span role="alert" className="text-xs font-semibold text-[var(--color-danger)]">

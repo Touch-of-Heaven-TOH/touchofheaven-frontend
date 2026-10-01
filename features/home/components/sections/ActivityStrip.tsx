@@ -49,7 +49,7 @@ export function ActivityStrip({ activity }: ActivityStripProps) {
 
         <Link
           className="inline-flex w-fit items-center gap-2 text-sm font-bold text-[var(--color-brand)]"
-          href="/businesses"
+          href="/explore"
         >
           View all activity
           <ArrowRight aria-hidden="true" size={16} />

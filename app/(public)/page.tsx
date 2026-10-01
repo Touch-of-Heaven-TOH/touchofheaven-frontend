@@ -3,6 +3,7 @@ import {
   ActivityStrip,
   BookingProductsInfoSection,
   FeatureShowcaseSection,
+  ForClientsSection,
   HeroSection,
   MarketplaceShowcaseSection,
   MobileAppSection,
@@ -28,6 +29,7 @@ export default async function HomePage() {
       <MarketplaceShowcaseSection />
       <FeatureShowcaseSection />
       <MobileAppSection />
+      <ForClientsSection />
     </>
   );
 }

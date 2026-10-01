@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag, Star } from "lucide-react";
 import { homeMediaAssets } from "@/features/home/config/hero-media";
+import { getPlatformFlags } from "@/lib/platform/flags";
+import { FeatureUnavailable } from "@/components/layout/FeatureUnavailable";
 
 export const metadata: Metadata = {
   title: "Marketplace",
@@ -21,7 +23,20 @@ const products = [
   ["Ankara Market Tote", "African Fashion", "$49.99", "4.8", "86% center"],
 ] as const;
 
-export default function MarketplacePage() {
+export default async function MarketplacePage() {
+  // The switch is the platform's, not the browser's. With the marketplace
+  // off, the route itself stops serving the shop rather than merely
+  // hiding the link to it.
+  const { marketplaceEnabled } = await getPlatformFlags();
+  if (!marketplaceEnabled) {
+    return (
+      <FeatureUnavailable
+        title="The marketplace is closed just now"
+        description="Our shop is temporarily unavailable. Booking, your appointments and everything else are working normally."
+      />
+    );
+  }
+
   return (
     <section className="bg-white">
       <div className="page-container grid gap-8 py-12 md:grid-cols-[0.9fr_1.1fr] md:items-center md:py-16">

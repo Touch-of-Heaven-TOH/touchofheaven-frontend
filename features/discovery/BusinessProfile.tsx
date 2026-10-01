@@ -25,6 +25,7 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { ClientShell, classNames } from "@/features/discovery/DiscoveryShell";
 import { providerInitials } from "@/features/discovery/nearby";
+import { RecordProfileView } from "@/features/client-home/RecordProfileView";
 import { SaveProviderButton } from "@/features/discovery/SaveProviderButton";
 import { cancellationPolicyFor } from "@/lib/businesses/policies";
 import type {
@@ -204,17 +205,25 @@ function useShare(title: string, url: () => string) {
   return { notice, share };
 }
 
-function ProfileHeader({ business, section }: { business: PublicBusiness; section: ProfileSection }) {
+function ProfileHeader({
+  business,
+  section,
+  onSelect,
+}: {
+  business: PublicBusiness;
+  section: ProfileSection;
+  onSelect: (section: ProfileSection) => void;
+}) {
   const { profile } = business;
   const primary = business.locations[0] ?? null;
   const { notice, share } = useShare(profile.professionalName, () => `${window.location.origin}/businesses/${profile.braiderId}`);
   const base = `/businesses/${profile.braiderId}`;
-  const tabs: Array<[ProfileSection, string, string]> = [
-    ["overview", "Overview", base],
-    ["services", `Services (${business.services.length})`, `${base}/services`],
-    ["portfolio", `Portfolio (${business.portfolio.length})`, `${base}/portfolio`],
-    ["reviews", `Reviews (${business.reviews.length})`, `${base}/reviews`],
-    ["credentials", "Credentials", `${base}/credentials`],
+  const tabs: Array<[ProfileSection, string]> = [
+    ["overview", "Overview"],
+    ["services", `Services (${business.services.length})`],
+    ["portfolio", `Portfolio (${business.portfolio.length})`],
+    ["reviews", `Reviews (${business.reviews.length})`],
+    ["credentials", "Credentials"],
   ];
 
   return (
@@ -268,10 +277,11 @@ function ProfileHeader({ business, section }: { business: PublicBusiness; sectio
       ) : null}
       <nav className="border-t border-[var(--color-border)]" aria-label="Business sections">
         <div className="mx-auto flex max-w-[1500px] gap-3 overflow-x-auto px-4 sm:px-6 md:px-10">
-          {tabs.map(([id, label, href]) => (
-            <Link
+          {tabs.map(([id, label]) => (
+            <button
               key={id}
-              href={href}
+              type="button"
+              onClick={() => onSelect(id)}
               aria-current={id === section ? "page" : undefined}
               className={classNames(
                 "inline-flex min-h-14 shrink-0 items-center border-b-2 px-2 text-sm font-semibold md:px-5",
@@ -281,7 +291,7 @@ function ProfileHeader({ business, section }: { business: PublicBusiness; sectio
               )}
             >
               {label}
-            </Link>
+            </button>
           ))}
         </div>
       </nav>
@@ -418,7 +428,7 @@ function OverviewSection({ business }: { business: PublicBusiness }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-serif text-3xl font-semibold">Services</h2>
             {services.length > 4 ? (
-              <Link href={`${base}/services`} className="font-semibold text-[var(--color-brand)] hover:underline">
+              <Link href={`${base}?tab=services`} className="font-semibold text-[var(--color-brand)] hover:underline">
                 View all {services.length} services
               </Link>
             ) : null}
@@ -669,10 +679,30 @@ function StickyBookingBar({ href }: { href: string }) {
   );
 }
 
-export function BusinessProfilePage({ business, section = "overview" }: { business: PublicBusiness; section?: ProfileSection }) {
+export function BusinessProfilePage({
+  business,
+  section: initialSection = "overview",
+}: {
+  business: PublicBusiness;
+  section?: ProfileSection;
+}) {
+  const [section, setSection] = useState<ProfileSection>(initialSection);
+
+  function showSection(next: ProfileSection) {
+    setSection(next);
+    const url =
+      next === "overview"
+        ? window.location.pathname
+        : `${window.location.pathname}?tab=${next}`;
+    window.history.replaceState(null, "", url);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <ClientShell>
-      <ProfileHeader business={business} section={section} />
+      {/* So the client home's "Recently viewed" can actually fill. */}
+      <RecordProfileView braiderId={business.profile.braiderId} />
+      <ProfileHeader business={business} section={section} onSelect={showSection} />
       <div className="mx-auto max-w-[1500px] px-4 pb-28 pt-8 sm:px-6 md:px-10 lg:pb-12">
         {section === "overview" ? <OverviewSection business={business} /> : null}
         {section === "services" ? <ServicesSection business={business} /> : null}
@@ -726,7 +756,7 @@ export function BusinessServicePage({ business, service }: { business: PublicBus
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href={`${base}/services`} className="font-semibold text-[var(--color-brand)] hover:underline">
+              <Link href={`${base}?tab=services`} className="font-semibold text-[var(--color-brand)] hover:underline">
                 Services
               </Link>
             </li>
@@ -836,7 +866,7 @@ export function BusinessServicePage({ business, service }: { business: PublicBus
           <section className="mt-10">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-serif text-3xl font-semibold">More from {profile.professionalName}</h2>
-              <Link href={`${base}/services`} className="font-semibold text-[var(--color-brand)] hover:underline">
+              <Link href={`${base}?tab=services`} className="font-semibold text-[var(--color-brand)] hover:underline">
                 All services
               </Link>
             </div>
@@ -951,7 +981,7 @@ export function DirectBookingLinkPage({ business }: { business: PublicBusiness }
                 </div>
               ) : null}
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link href={`/businesses/${profile.braiderId}/services`} className={classNames(secondaryLink, "inline-flex min-h-14 px-6")}>
+                <Link href={`/businesses/${profile.braiderId}?tab=services`} className={classNames(secondaryLink, "inline-flex min-h-14 px-6")}>
                   View services
                 </Link>
                 <Link href={bookHref(profile.braiderId)} className={classNames(primaryLink, "inline-flex min-h-14 px-6")}>

@@ -35,8 +35,15 @@ export function ProviderRail({ children }: { children: ReactNode }) {
     measure();
     const rail = railRef.current;
     if (!rail) return;
+    // The cards have to be watched, not just the rail. The rail's own box
+    // is a fixed-width cell in the page grid, so it never resizes, while
+    // what decides whether there is anything further to scroll is the
+    // total width of the cards inside it - and those settle after mount.
+    // Observing the rail alone kept that first, premature measurement,
+    // which left the next half enabled on a rail with nothing more to show.
     const observer = new ResizeObserver(measure);
     observer.observe(rail);
+    for (const card of Array.from(rail.children)) observer.observe(card);
     return () => observer.disconnect();
   }, [measure]);
 

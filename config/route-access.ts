@@ -91,6 +91,7 @@ export const routeAccessRules: RouteAccessRule[] = [
 
 export const protectedRoutePrefixes = [
   "/account",
+  "/ai-studio/my-looks",
   "/home",
   "/activity",
   "/profile",

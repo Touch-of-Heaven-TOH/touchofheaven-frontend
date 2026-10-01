@@ -1,16 +1,18 @@
 "use client";
 
-import { ArrowRight, CalendarDays, MapPin, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, MapPin, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
+import { PlatformSearch } from "@/components/search/PlatformSearch";
 import { ClientShell } from "@/features/discovery/DiscoveryShell";
 import {
   CLIENT_HOME_KEY,
   clientHomeFetcher,
   professionalHref,
-  searchHref,
   type ClientHome as ClientHomeData,
+  type HomeCategory,
+  type HomeProfessional,
 } from "@/features/client-home/api";
 import { CategoryGrid } from "@/features/client-home/CategoryGrid";
 import {
@@ -31,12 +33,6 @@ import {
  * interaction genuinely differs: the recommendation strip is a snapping
  * carousel on a phone and a grid on a wide screen.
  */
-
-const DATE_OPTIONS = [
-  { value: "any", label: "Any date" },
-  { value: "today", label: "Today" },
-  { value: "tomorrow", label: "Tomorrow" },
-];
 
 export function ClientHome() {
   const { data, error, isLoading, mutate } = useSWR<ClientHomeData>(
@@ -82,6 +78,32 @@ function HomeBody({
 }) {
   const city = data ? `${data.location.city}, ${data.location.region}` : "";
 
+  // Everyone the payload knows about, each person once.
+  const everyone = useMemo(() => {
+    const seen = new Map<string, HomeProfessional>();
+    for (const item of [...(data?.recommendations ?? []), ...(data?.nearby ?? [])]) {
+      if (!seen.has(item.id)) seen.set(item.id, item);
+    }
+    return [...seen.values()];
+  }, [data]);
+
+  const newProfessionals = useMemo(
+    () => everyone.filter((item) => item.rating.count === 0).slice(0, 8),
+    [everyone],
+  );
+
+  const categoryRails = useMemo(
+    () =>
+      (data?.categories ?? [])
+        .filter((category) => BUSINESS_TYPE_SLUGS.includes(category.slug))
+        .map((category) => ({
+          category,
+          items: everyone.filter((item) => inCategory(item, category)).slice(0, 8),
+        }))
+        .filter(({ items }) => items.length > 0),
+    [data, everyone],
+  );
+
   return (
     <div className="grid gap-8 py-6 lg:py-8">
       <Hero city={city} loading={loading} />
@@ -109,6 +131,43 @@ function HomeBody({
           ) : null}
 
           <Recommended data={data} loading={loading} onRetry={onRetry} />
+
+          {/* New: professionals nobody has reviewed yet. That is the only
+              honest reading of "new" in this payload - there is no joined
+              date on a professional. */}
+          <ProfessionalRail
+            id="new-heading"
+            title="New on Touch of Heaven"
+            items={newProfessionals}
+            loading={loading}
+            emptyMessage=""
+          />
+
+          {/* One row per category the backend sends, filled from the same
+              nearby professionals. Categories with nobody in them are
+              skipped rather than shown empty. */}
+          {categoryRails.map(({ category, items }) => (
+            <ProfessionalRail
+              key={category.id}
+              id={`category-${category.slug}-heading`}
+              title={category.name}
+              items={items}
+              loading={false}
+              emptyMessage=""
+            />
+          ))}
+
+          {/* Trending: who clients have actually been opening lately,
+              counted from recently-viewed rows. Empty until the platform
+              has traffic, and it fills by itself after that. */}
+          <ProfessionalRail
+            id="trending-heading"
+            title="Trending near you"
+            items={data?.trending ?? []}
+            loading={loading}
+            emptyMessage=""
+          />
+
           <Nearby data={data} loading={loading} />
         </div>
 
@@ -117,25 +176,17 @@ function HomeBody({
           <AiStudioCard data={data} />
         </aside>
       </div>
+
+      <Testimonials data={data} loading={loading} />
     </div>
   );
 }
 
 function Hero({ city, loading }: { city: string; loading: boolean }) {
-  const [query, setQuery] = useState("");
-  const [where, setWhere] = useState("");
-  const [date, setDate] = useState("any");
-
   return (
     <section className="grid gap-5">
       <div className="hidden lg:block">
-        <h1 className="font-serif text-4xl leading-tight font-semibold text-[var(--color-text-primary)] xl:text-5xl">
-          Book beauty and wellness near you
-        </h1>
-        <p className="mt-2 text-lg text-[var(--color-text-muted)]">
-          Discover trusted braiders, nail technicians, barbers and spa
-          professionals.
-        </p>
+        
       </div>
 
       {/* The location the results are actually anchored to, stated rather
@@ -145,62 +196,7 @@ function Hero({ city, loading }: { city: string; loading: boolean }) {
         {loading ? "Finding your area…" : city}
       </p>
 
-      <form
-        action={searchHref({ q: query, location: where, date })}
-        className="grid gap-2 rounded-[var(--radius-panel,16px)] border border-[var(--color-border)] bg-white p-2 shadow-[var(--shadow-subtle)] lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_minmax(0,11rem)_auto] lg:items-center lg:gap-0 lg:rounded-full lg:p-1.5"
-      >
-        <label className="sr-only" htmlFor="home-q">
-          Service or professional
-        </label>
-        <div className="flex min-w-0 items-center gap-2 px-3">
-          <Search aria-hidden="true" className="size-5 shrink-0 text-[var(--color-text-muted)]" />
-          <input
-            id="home-q"
-            name="q"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search services or professionals"
-            className="min-h-11 w-full bg-transparent text-sm outline-none"
-          />
-        </div>
-
-        <label className="sr-only" htmlFor="home-where">
-          Location
-        </label>
-        <input
-          id="home-where"
-          name="location"
-          value={where}
-          onChange={(event) => setWhere(event.target.value)}
-          placeholder={city || "Location"}
-          className="min-h-11 min-w-0 border-t border-[var(--color-border)] bg-transparent px-3 text-sm outline-none lg:border-t-0 lg:border-l"
-        />
-
-        <label className="sr-only" htmlFor="home-date">
-          Date
-        </label>
-        <select
-          id="home-date"
-          name="date"
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
-          className="min-h-11 min-w-0 border-t border-[var(--color-border)] bg-transparent px-3 text-sm outline-none lg:border-t-0 lg:border-l"
-        >
-          {DATE_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit" className="btn-primary min-h-12 lg:rounded-full lg:px-8">
-          Search
-        </button>
-      </form>
-
-      <p className="hidden text-center text-sm text-[var(--color-text-muted)] lg:block">
-        Trusted professionals. Simple booking. Protected appointments.
-      </p>
+      <PlatformSearch locationPlaceholder={city || "Location"} />
     </section>
   );
 }
@@ -261,6 +257,79 @@ function RecentlyViewed({ data }: { data: ClientHomeData }) {
       </ul>
     </section>
   );
+}
+
+/**
+ * One row of professionals: a snapping carousel on a phone, a grid on a wide
+ * screen. Every row below the search bar uses this, so they stay in step.
+ */
+function ProfessionalRail({
+  id,
+  title,
+  items,
+  loading,
+  emptyMessage,
+}: {
+  id: string;
+  title: string;
+  items: HomeProfessional[];
+  loading: boolean;
+  emptyMessage: string;
+}) {
+  // A row with nothing in it is noise, so it does not render at all.
+  if (!loading && items.length === 0) return null;
+
+  return (
+    <section aria-labelledby={id} className="grid min-w-0 gap-4">
+      <SectionHeading id={id} title={title} href="/explore" />
+      {loading ? (
+        <CardSkeleton />
+      ) : (
+        <>
+          <ul
+            role="list"
+            className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] lg:hidden"
+          >
+            {items.map((item) => (
+              <li key={item.id} className="w-[82%] shrink-0 snap-start sm:w-[48%]">
+                <ProfessionalCard item={item} />
+              </li>
+            ))}
+          </ul>
+          <ul role="list" className="hidden gap-4 lg:grid lg:grid-cols-2 xl:grid-cols-4">
+            {items.map((item) => (
+              <li key={item.id} className="min-w-0">
+                <ProfessionalCard item={item} />
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Does this professional work in this category?
+ *
+ * Matched against their own specialties, which is the only thing the home
+ * payload says about what they do. Nothing is invented: a category with no
+ * matching professional simply does not get a row.
+ */
+/**
+ * The categories that get a row of their own.
+ *
+ * These are kinds of business - a nail bar, a barber shop, a spa - which is
+ * what someone is choosing between. The rest of the backend's categories
+ * are hairstyles (braids, cornrows, twists, locs), and a row per hairstyle
+ * is a different page than this one.
+ */
+const BUSINESS_TYPE_SLUGS = ["nails", "barbers", "spa-wellness", "makeup"];
+
+function inCategory(item: HomeProfessional, category: HomeCategory) {
+  const haystack = item.specialties.join(" ").toLowerCase();
+  const words = category.name.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 2);
+  return words.some((word) => haystack.includes(word));
 }
 
 function Recommended({
@@ -430,6 +499,63 @@ function AiStudioCard({ data }: { data: ClientHomeData | undefined }) {
         {resuming ? "Continue" : "Open AI Studio"}
         <ArrowRight aria-hidden="true" className="size-4" />
       </Link>
+    </section>
+  );
+}
+
+/**
+ * What clients say, across the whole platform.
+ *
+ * Every quote is a verified review of a real appointment - the model will
+ * not hold anything else - so this stays empty until there are reviews
+ * rather than showing written-up praise in the meantime.
+ */
+function Testimonials({
+  data,
+  loading,
+}: {
+  data: ClientHomeData | undefined;
+  loading: boolean;
+}) {
+  const items = data?.testimonials ?? [];
+  if (loading || items.length === 0) return null;
+
+  return (
+    <section aria-labelledby="testimonials-heading" className="grid min-w-0 gap-4">
+      <SectionHeading id="testimonials-heading" title="What clients are saying" />
+      <ul
+        role="list"
+        className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] lg:grid lg:snap-none lg:grid-cols-3 lg:overflow-visible"
+      >
+        {items.slice(0, 6).map((item) => (
+          <li
+            key={item.id}
+            className="w-[82%] shrink-0 snap-start sm:w-[48%] lg:w-auto lg:min-w-0"
+          >
+            <figure className="flex h-full flex-col gap-3 rounded-[var(--radius-panel,16px)] border border-[var(--color-border)] bg-white p-5 shadow-[var(--shadow-subtle)]">
+              <div
+                className="flex gap-0.5 text-[var(--color-gold)]"
+                aria-label={`${item.rating} out of 5`}
+              >
+                {Array.from({ length: item.rating }, (_, index) => (
+                  <Star key={index} aria-hidden="true" className="size-4 fill-current" />
+                ))}
+              </div>
+              <blockquote className="flex-1 text-sm leading-6 text-[var(--color-text-primary)]">
+                {item.body}
+              </blockquote>
+              <figcaption className="text-xs text-[var(--color-text-muted)]">
+                <span className="font-bold text-[var(--color-text-primary)]">
+                  {item.reviewerFirstName ?? "A client"}
+                </span>
+                {" · "}
+                {item.serviceName}
+                {item.professionalName ? ` with ${item.professionalName}` : null}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

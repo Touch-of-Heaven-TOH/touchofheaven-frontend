@@ -23,7 +23,7 @@ export const discoveryCategories: DiscoveryCategory[] = [
   {
     id: "braids-hair",
     label: "Braids & Hair",
-    href: "/businesses?category=braids-hair",
+    href: "/explore?category=braids-hair",
     keywords: ["braid", "cornrow", "loc", "twist", "silk press", "hair", "weave", "wig", "natural"],
     image: {
       src: `${studioBase}/knotless-small-midback-front.jpg`,
@@ -34,7 +34,7 @@ export const discoveryCategories: DiscoveryCategory[] = [
   {
     id: "nails",
     label: "Nails",
-    href: "/businesses?category=nails",
+    href: "/explore?category=nails",
     keywords: ["nail", "manicure", "pedicure", "gel", "acrylic"],
     image: {
       src: `${imageBase}/pic1.png`,
@@ -45,7 +45,7 @@ export const discoveryCategories: DiscoveryCategory[] = [
   {
     id: "barbering",
     label: "Barbering",
-    href: "/businesses?category=barbering",
+    href: "/explore?category=barbering",
     keywords: ["barber", "fade", "beard", "shave", "haircut"],
     image: {
       src: `${imageBase}/pic2.png`,
@@ -56,7 +56,7 @@ export const discoveryCategories: DiscoveryCategory[] = [
   {
     id: "spa-wellness",
     label: "Spa & Wellness",
-    href: "/businesses?category=spa-wellness",
+    href: "/explore?category=spa-wellness",
     keywords: ["spa", "massage", "facial", "wax", "lash", "brow", "wellness"],
     image: {
       src: `${imageBase}/hero2.jpg`,

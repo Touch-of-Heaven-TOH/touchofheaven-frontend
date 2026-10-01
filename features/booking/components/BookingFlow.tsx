@@ -27,7 +27,6 @@ import {
   Plus,
   Save,
   Scissors,
-  Search,
   Share2,
   ShieldCheck,
   ShoppingBag,
@@ -590,7 +589,7 @@ function fallbackSlotsFor(date: string): SlotOption[] {
 
 function LogoMark({ withName = true }: { withName?: boolean }) {
   return (
-    <Link href="/for-clients" aria-label="Touch of Heaven home" className="flex items-center gap-3">
+    <Link href="/" aria-label="Touch of Heaven home" className="flex items-center gap-3">
       <span className="relative grid h-11 w-16 shrink-0 place-items-center font-serif text-[2.15rem] leading-none text-[var(--color-gold)]">
         <span className="absolute left-1 top-0">T</span>
         <span className="absolute left-6 top-1">O</span>
@@ -657,8 +656,7 @@ function HeaderIcon({
 function DesktopClientHeader() {
   const pathname = usePathname();
   const nav = [
-    { label: "Home", href: "/for-clients" },
-    { label: "Explore", href: "/explore" },
+    { label: "Home", href: "/" },
     { label: "AI Studio", href: "/ai-studio" },
   ];
 
@@ -736,8 +734,7 @@ function MobileBookingHeader({ onBack }: { onBack: () => void }) {
 
 function MobileBottomNav({ active = "Bookings" }: { active?: string }) {
   const items = [
-    { label: "Home", href: "/for-clients", icon: Home },
-    { label: "Explore", href: "/explore", icon: Search },
+    { label: "Home", href: "/", icon: Home },
     { label: "Bookings", href: "/bookings", icon: Calendar },
     { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
     { label: "Profile", href: "/account", icon: User },
@@ -748,7 +745,7 @@ function MobileBottomNav({ active = "Bookings" }: { active?: string }) {
       className="fixed inset-x-0 bottom-0 z-[var(--z-header)] border-t border-[var(--color-border)] bg-[var(--color-page)]/98 px-3 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] pt-2 shadow-[0_-10px_35px_rgba(43,23,36,0.08)] backdrop-blur-xl lg:hidden"
       aria-label="Mobile client navigation"
     >
-      <div className="mx-auto grid max-w-md grid-cols-5 items-end gap-1">
+      <div className="mx-auto grid max-w-md grid-cols-4 items-end gap-1">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.label === active;
@@ -2254,7 +2251,7 @@ function ConfirmationStep({
 
       <div className="mt-6 grid gap-3 text-[var(--color-brand)] sm:grid-cols-2 lg:grid-cols-4">
         <ActionLink href="/bookings" icon={<Calendar />} label="Add to calendar" />
-        <ActionLink href="/map" icon={<MapPin />} label="Get directions" />
+        <ActionLink href="/explore?view=map" icon={<MapPin />} label="Get directions" />
         <ActionLink href="/messages" icon={<MessageCircle />} label="Message Amara" />
         <ActionLink href="/bookings" icon={<Share2 />} label="Share details" />
       </div>
@@ -2262,7 +2259,7 @@ function ConfirmationStep({
         <Link href={`/bookings/${appointmentId}`} className="inline-flex min-h-14 items-center justify-center rounded-[var(--radius-control)] bg-[var(--color-brand)] px-5 text-lg font-semibold text-white">
           View appointment
         </Link>
-        <Link href="/for-clients" className="inline-flex min-h-14 items-center justify-center rounded-[var(--radius-control)] border border-[var(--color-brand)] px-5 text-lg font-semibold text-[var(--color-brand)]">
+        <Link href="/" className="inline-flex min-h-14 items-center justify-center rounded-[var(--radius-control)] border border-[var(--color-brand)] px-5 text-lg font-semibold text-[var(--color-brand)]">
           Back to Home
         </Link>
       </div>

@@ -16,7 +16,6 @@ import {
   MapPin,
   MessageCircle,
   Navigation,
-  Search,
   ShieldCheck,
   ShoppingBag,
   Sparkles,
@@ -303,8 +302,7 @@ function buildView(
 
 function Header() {
   const nav = [
-    { label: "Home", href: "/for-clients" },
-    { label: "Explore", href: "/explore" },
+    { label: "Home", href: "/" },
     { label: "AI Studio", href: "/ai-studio" },
     { label: "Market", href: "/marketplace" },
   ];
@@ -312,7 +310,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--color-border)] bg-white/94 backdrop-blur">
       <div className="mx-auto flex min-h-20 max-w-[1500px] items-center justify-between gap-5 px-5 lg:px-10">
-        <Link href="/for-clients" className="flex items-center gap-4">
+        <Link href="/" className="flex items-center gap-4">
           <Image
             alt="Touch of Heaven"
             className="object-contain"
@@ -447,8 +445,7 @@ function ActionLink({
 
 function MobileBottomNav() {
   const nav = [
-    { label: "Home", icon: Home, href: "/for-clients" },
-    { label: "Explore", icon: Search, href: "/explore" },
+    { label: "Home", icon: Home, href: "/" },
     { label: "Market", icon: ShoppingBag, href: "/marketplace", featured: true },
     { label: "AI Studio", icon: Sparkles, href: "/ai-studio" },
     { label: "Profile", icon: User, href: "/account" },
@@ -456,7 +453,7 @@ function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-border)] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_34px_rgba(43,23,36,0.12)] backdrop-blur lg:hidden">
-      <div className="mx-auto grid max-w-lg grid-cols-5 items-end">
+      <div className="mx-auto grid max-w-lg grid-cols-4 items-end">
         {nav.map((item) => {
           const Icon = item.icon;
           return (
@@ -679,7 +676,7 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-3">
                       <ActionLink href="/messages" icon={<MessageCircle size={20} />} label="Message" />
-                      <ActionLink href="/map" icon={<Navigation size={20} />} label="Directions" />
+                      <ActionLink href="/explore?view=map" icon={<Navigation size={20} />} label="Directions" />
                       <ActionLink href="/bookings" icon={<Calendar size={20} />} label="Add to calendar" />
                     </div>
                   </div>
@@ -720,7 +717,7 @@ export function AppointmentDetails({ appointmentId }: { appointmentId: string })
                   </div>
                 </div>
                 <Link
-                  href="/map"
+                  href="/explore?view=map"
                   className="mt-5 flex items-center justify-end gap-2 font-semibold text-[var(--color-brand)]"
                 >
                   View full directions <ChevronRight size={18} aria-hidden="true" />

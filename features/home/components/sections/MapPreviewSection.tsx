@@ -17,11 +17,11 @@ export function MapPreviewSection() {
             for filters, geolocation, and verified public profiles.
           </p>
           <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-            <Link className="btn-primary" href="/map">
+            <Link className="btn-primary" href="/explore?view=map">
               <LocateFixed aria-hidden="true" size={18} />
               Open discovery
             </Link>
-            <Link className="btn-secondary" href="/businesses">
+            <Link className="btn-secondary" href="/explore">
               <MapPinned aria-hidden="true" size={18} />
               Browse all businesses
             </Link>
@@ -60,7 +60,7 @@ export function MapPreviewSection() {
             </p>
             <Link
               className="pointer-events-auto mt-3 inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand)]"
-              href="/map"
+              href="/explore?view=map"
             >
               Use discovery tools
               <ExternalLink aria-hidden="true" size={15} />

@@ -41,6 +41,23 @@ export type HomeRecentlyViewed = {
   viewedAt: string;
 };
 
+/**
+ * A verified review shown as social proof on the home page.
+ *
+ * Every one is tied to a completed appointment by the data model, so this
+ * cannot be filled with written copy - it fills as real appointments are
+ * reviewed.
+ */
+export type HomeTestimonial = {
+  id: string;
+  rating: number;
+  body: string;
+  createdAt: string;
+  reviewerFirstName: string | null;
+  serviceName: string;
+  professionalName: string | null;
+};
+
 export type HomeAppointment = {
   id: string;
   startAt: string;
@@ -66,6 +83,11 @@ export type ClientHome = {
   recommendations: HomeProfessional[];
   nearbyFailed: boolean;
   recentlyViewed: HomeRecentlyViewed[];
+  /** Most-viewed professionals in the last 30 days, by distinct clients. */
+  trending: HomeProfessional[];
+  trendingFailed: boolean;
+  testimonials: HomeTestimonial[];
+  testimonialsFailed: boolean;
   upcomingAppointment: HomeAppointment | null;
   aiStudio: { available: boolean; hasDraft: boolean; draftId: string | null };
   featureFlags: {
@@ -94,20 +116,9 @@ export function bookHref(braiderId: string) {
 /** Selecting a tile is a search with that category applied, so the result
  * is a shareable URL rather than hidden component state. */
 export function categoryHref(slug: string) {
+  // /businesses is the results page. /explore reads no parameters at all, so
+  // every category tile used to land on the same unfiltered browse page.
   return `/explore?category=${encodeURIComponent(slug)}`;
-}
-
-export function searchHref(params: {
-  q?: string;
-  location?: string;
-  date?: string;
-}) {
-  const search = new URLSearchParams();
-  if (params.q?.trim()) search.set("q", params.q.trim());
-  if (params.location?.trim()) search.set("location", params.location.trim());
-  if (params.date && params.date !== "any") search.set("date", params.date);
-  const query = search.toString();
-  return query ? `/explore?${query}` : "/explore";
 }
 
 export function formatDistance(km: number) {

@@ -13,11 +13,7 @@ export default async function PublicLayout({
     currentPath === "/ai-studio" || currentPath.startsWith("/ai-studio/");
   const isDiscoveryApp =
     currentPath === "/explore" ||
-    currentPath.startsWith("/explore/") ||
-    currentPath === "/businesses" ||
     currentPath.startsWith("/businesses/") ||
-    currentPath === "/map" ||
-    currentPath.startsWith("/map/") ||
     currentPath.startsWith("/book-with/");
   const hidePublicChrome = isStudioApp || isDiscoveryApp;
 

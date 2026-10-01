@@ -1,4 +1,3 @@
-export { DiscoverySearch } from "@/features/home/components/DiscoverySearch";
 export { FeatureShowcaseSection } from "@/features/home/components/FeatureShowcase";
 export { FinalCallToAction } from "@/features/home/components/FinalCallToAction";
 export { HeroSection } from "@/features/home/components/HeroSection";
@@ -9,6 +8,7 @@ export { ActivityStrip } from "@/features/home/components/sections/ActivityStrip
 export { BookingProductsInfoSection } from "@/features/home/components/sections/BookingProductsInfoSection";
 export { CommunityLooksSection } from "@/features/home/components/sections/CommunityLooksSection";
 export { DemoBusinessProfileSection } from "@/features/home/components/sections/DemoBusinessProfileSection";
+export { ForClientsSection } from "@/features/home/components/sections/ForClientsSection";
 export { MapPreviewSection } from "@/features/home/components/sections/MapPreviewSection";
 export { MarketplaceShowcaseSection } from "@/features/home/components/sections/MarketplacePreviewSection";
 export { MobileAppSection } from "@/features/home/components/sections/MobileAppSection";

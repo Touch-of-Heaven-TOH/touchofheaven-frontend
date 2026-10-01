@@ -568,7 +568,7 @@ export function ClientOnboardingWizard({
     } catch {
       return;
     }
-    router.push(isPreview ? "/for-clients" : "/account");
+    router.push(isPreview ? "/" : "/account");
   }
 
   function handleVerifyPhone() {
@@ -608,7 +608,7 @@ export function ClientOnboardingWizard({
             currentStep={currentStep}
             onBack={handleBack}
             onContinue={handleContinue}
-            onSkip={() => router.push("/for-clients")}
+            onSkip={() => router.push("/")}
             saveState={saveState}
           />
         </section>
@@ -631,7 +631,7 @@ export function ClientOnboardingWizard({
             currentStep={currentStep}
             onBack={handleBack}
             onContinue={handleContinue}
-            onSkip={() => router.push("/for-clients")}
+            onSkip={() => router.push("/")}
             saveState={saveState}
           />
         </main>
@@ -1910,7 +1910,7 @@ function CompleteStep({ draft }: { draft: DraftState }) {
       icon: Search,
       title: "Explore professionals",
       text: "Find and connect with verified professionals who match your preferences.",
-      href: "/for-clients",
+      href: "/",
     },
     {
       icon: Sparkles,
@@ -1988,7 +1988,7 @@ function CompleteStep({ draft }: { draft: DraftState }) {
       </div>
 
       <div className="mx-auto grid w-full max-w-4xl gap-4 md:grid-cols-2">
-        <Link className="btn-primary min-h-16 text-xl" href="/for-clients">
+        <Link className="btn-primary min-h-16 text-xl" href="/">
           Explore Touch of Heaven
         </Link>
         <Link className="btn-secondary min-h-16 text-xl" href="/account/settings/profile">

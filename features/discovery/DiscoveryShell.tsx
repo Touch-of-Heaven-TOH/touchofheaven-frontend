@@ -26,7 +26,7 @@ export function classNames(...values: Array<string | false | null | undefined>) 
 export function BrandMark({ name = true }: { name?: boolean }) {
   return (
     <Link
-      href="/for-clients"
+      href="/"
       aria-label="Touch of Heaven home"
       className="flex min-w-0 items-center gap-3 text-[var(--color-text-primary)]"
     >
@@ -98,16 +98,13 @@ export function ClientShell({
   // The desktop header's links, stated outright. This was a slice of a
   // longer list, so removing one entry silently promoted the next one
   // into the header instead of shortening it.
-  const desktopNav = [
-    { label: "Explore", href: "/explore" },
-    { label: "AI Studio", href: "/ai-studio" },
-  ];
+  const desktopNav = [{ label: "AI Studio", href: "/ai-studio" }];
 
   // The phone's five destinations, in the order the design fixes them.
   // AI Studio sits in the centre as a raised action; Market is
   // deliberately not one of the five - it is reachable from the header.
   const mobileNav = [
-    { label: "Home", href: viewer ? "/home" : "/for-clients", icon: Home },
+    { label: "Home", href: viewer ? "/home" : "/", icon: Home },
     { label: "Search", href: "/explore", icon: Search },
     { label: "AI Studio", href: "/ai-studio", icon: Sparkles },
     { label: "Activity", href: "/activity", icon: Calendar },
@@ -126,13 +123,6 @@ export function ClientShell({
         <header className="border-b border-[var(--color-border)] bg-[var(--color-page)]/95">
           <div className="mx-auto flex min-h-[84px] max-w-7xl items-center justify-between px-5 md:px-10">
             <BrandMark />
-            <Link
-              href="/explore"
-              className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white px-4 text-sm font-semibold text-[var(--color-brand)]"
-            >
-              <Search size={18} aria-hidden="true" />
-              Explore
-            </Link>
           </div>
         </header>
         {children}
@@ -151,9 +141,7 @@ export function ClientShell({
           <nav className="hidden items-stretch gap-8 lg:flex" aria-label="Client navigation">
             {desktopNav.map((item) => {
               const active =
-                item.label === "Explore"
-                  ? isExploreActive
-                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}

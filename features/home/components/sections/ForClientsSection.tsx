@@ -1,20 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
-import { ProviderRail } from "@/features/home/components/ProviderRail";
 import Link from "next/link";
-import {
-  MapPin,
-  ShoppingBag,
-  Star,
-} from "lucide-react";
+import { ShoppingBag, Star } from "lucide-react";
 import { brandAssets } from "@/config/site";
 
-export const metadata: Metadata = {
-  title: "For Clients",
-  description:
-    "Find trusted beauty businesses, barbers, nail techs, and authentic African products with Touch of Heaven.",
-};
+/*
+ * The client-facing pitch that used to be its own page at /for-clients.
+ * It closes the home page now, just above the footer: one home page for
+ * clients rather than two that had to be kept in step with each other.
+ */
 
+// Only the phone preview reads these now; the provider rail that used the
+// full list has been removed from the section.
 const featuredProviders = [
   {
     name: "Touched by Tee",
@@ -65,11 +61,6 @@ const productCards = [
   },
 ] as const;
 
-
-
-
-
-
 function ClientPhonePreview() {
   return (
     <div className="relative mx-auto w-full max-w-[310px] rounded-[38px] border-[10px] border-[#1f1720] bg-[#1f1720] p-2 shadow-[0_28px_80px_rgba(43,23,36,0.28)]">
@@ -117,7 +108,7 @@ function ClientPhonePreview() {
               </span>
             </div>
           ))}
-          <Link className="btn-primary w-full" href="/map">
+          <Link className="btn-primary w-full" href="/explore?view=map">
             Open map
           </Link>
         </div>
@@ -126,68 +117,9 @@ function ClientPhonePreview() {
   );
 }
 
-export default function ForClientsPage() {
+export function ForClientsSection() {
   return (
     <div className="bg-[var(--color-page)]">
-     
-      <section className="page-container py-14 md:py-18">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--color-gold)]">
-              Trusted providers
-            </p>
-            <h2 className="mt-2 font-serif text-4xl font-semibold text-[var(--color-brand-strong)] md:text-5xl">
-              Top professionals near you.
-            </h2>
-          </div>
-          <ProviderRail>
-          {featuredProviders.map((provider) => (
-            <li
-              className="w-[82%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2rem)/3)]"
-              key={provider.name}
-            >
-            <article className="h-full overflow-hidden rounded-md border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
-              <div className="relative aspect-[16/10] bg-[var(--color-brand-soft)]">
-                <Image
-                  alt={`Finished style from ${provider.name}`}
-                  className="object-cover"
-                  fill
-                  sizes="(max-width: 1024px) 92vw, 360px"
-                  src={provider.image}
-                />
-              </div>
-              <div className="p-5">
-                <h3 className="text-xl font-bold text-[var(--color-brand-strong)]">
-                  {provider.name}
-                </h3>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                  {provider.service}
-                </p>
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-[var(--color-text-muted)]">
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin aria-hidden="true" size={15} />
-                    {provider.location}
-                  </span>
-                  <span className="inline-flex items-center gap-1 font-bold text-[var(--color-brand-strong)]">
-                    <Star
-                      aria-hidden="true"
-                      className="fill-[var(--color-gold)] text-[var(--color-gold)]"
-                      size={15}
-                    />
-                    {provider.rating} ({provider.reviews})
-                  </span>
-                </div>
-                <Link className="btn-primary mt-5 w-full" href="/businesses">
-                  View profile
-                </Link>
-              </div>
-            </article>
-            </li>
-          ))}
-          </ProviderRail>
-        </div>
-      </section>
-      
       <section className="bg-white py-14 md:py-18">
         <div className="page-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
@@ -197,12 +129,6 @@ export default function ForClientsPage() {
             <h2 className="mt-2 font-serif text-4xl font-semibold leading-tight text-[var(--color-brand-strong)] md:text-5xl">
               Choose by service, location, time, or the look you already saved.
             </h2>
-            <p className="mt-4 text-base leading-7 text-[var(--color-text-muted)]">
-              The client side is designed for fast discovery: clear provider
-              cards, strong search filters, direct booking paths, and product
-              shopping without bouncing between different apps.
-            </p>
-           
           </div>
           <ClientPhonePreview />
         </div>
@@ -218,11 +144,6 @@ export default function ForClientsPage() {
               <h2 className="mt-2 font-serif text-4xl font-semibold leading-tight text-[var(--color-brand-strong)] md:text-5xl">
                 Shop the products that support your appointment.
               </h2>
-              <p className="mt-4 text-base leading-7 text-[var(--color-text-muted)]">
-                Hair bundles, oils, bonnets, spices, drinks, and everyday
-                African essentials sit beside booking so the whole beauty
-                routine feels connected.
-              </p>
               <Link className="btn-primary mt-6" href="/marketplace">
                 Shop marketplace <ShoppingBag aria-hidden="true" size={17} />
               </Link>
@@ -242,7 +163,7 @@ export default function ForClientsPage() {
                       src={product.image}
                     />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-sm font-bold text-[var(--color-brand-strong)]">
                       {product.name}
                     </h3>

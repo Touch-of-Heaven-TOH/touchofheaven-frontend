@@ -64,7 +64,7 @@ export function TopBusinessesSection({ businesses }: TopBraidersSectionProps) {
           <Link
             aria-label="Browse all businesses on the platform"
             className="absolute right-0 top-1/2 z-10 hidden size-10 -translate-y-1/2 translate-x-1/2 place-items-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-brand)] shadow-[var(--shadow-subtle)] transition hover:bg-[var(--color-brand-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)] md:grid"
-            href="/businesses"
+            href="/explore"
           >
             <ArrowLeft aria-hidden="true" size={18} />
           </Link>

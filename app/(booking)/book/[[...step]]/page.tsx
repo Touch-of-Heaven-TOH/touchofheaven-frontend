@@ -89,5 +89,5 @@ export default async function BookingPage({ params }: BookingPageProps) {
 
   if (!content) notFound();
 
-  return <RouteStatusPage content={content} href="/businesses" />;
+  return <RouteStatusPage content={content} href="/explore" />;
 }

@@ -59,7 +59,7 @@ export function MyBookings() {
             My Bookings
           </h1>
         </div>
-        <Link href="/businesses" className="btn-primary">
+        <Link href="/explore" className="btn-primary">
           Book new appointment
         </Link>
       </div>

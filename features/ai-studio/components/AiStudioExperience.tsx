@@ -27,6 +27,7 @@ import {
   type DragEvent,
   type KeyboardEvent,
 } from "react";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { brandAssets } from "@/config/site";
 import {
   fetchAiStudioCredits,
@@ -993,12 +994,16 @@ export function AiStudioExperience({
               />
             </span>
           </Link>
-          <nav className="flex rounded-md bg-[var(--color-brand-soft)] p-1 text-sm font-semibold">
-            <Link className="rounded px-4 py-2 text-[var(--color-brand-strong)]" href="/ai-studio">
-              Create
-            </Link>
-            <Link className="rounded px-4 py-2 text-[var(--color-text-muted)]" href="/account">
-              My looks
+          {/* Site navigation, the same two destinations the client shell
+              shows. Create / My looks are this page's own modes, so they
+              live with the page content rather than in the site header. */}
+          <nav className="hidden items-stretch gap-8 lg:flex" aria-label="Site navigation">
+            <Link
+              aria-current="page"
+              className="inline-flex min-h-11 items-center border-b-2 border-[var(--color-brand)] px-1 text-base font-semibold text-[var(--color-brand)]"
+              href="/ai-studio"
+            >
+              AI Studio
             </Link>
           </nav>
           <div className="flex justify-end">
@@ -1014,55 +1019,34 @@ export function AiStudioExperience({
       <div className="mx-auto w-full max-w-[1360px] px-4 py-8 md:px-8 md:py-12">
         <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <section className="min-w-0">
+            {/* The page's two modes, above the heading they belong to, on
+                every size. In the site header they read as site navigation,
+                which they are not. */}
+            <nav
+              aria-label="Studio mode"
+              className="mb-6 inline-flex rounded-full bg-[var(--color-brand-soft)] p-1 text-sm font-semibold"
+            >
+              <Link
+                aria-current="page"
+                className="min-h-11 rounded-full bg-white px-5 py-2 text-[var(--color-brand-strong)] shadow-[var(--shadow-subtle)]"
+                href="/ai-studio"
+              >
+                Create
+              </Link>
+              <Link
+                className="min-h-11 rounded-full px-5 py-2 text-[var(--color-text-muted)] transition hover:text-[var(--color-brand-strong)]"
+                href="/ai-studio/my-looks"
+              >
+                My looks
+              </Link>
+            </nav>
+
             <div className="grid gap-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-brand)]">
-                Touch of Heaven Studio
-              </p>
-              <h1 className="font-serif text-4xl font-semibold leading-tight md:text-5xl">
-                Create your next look
-              </h1>
+              
               <p className="max-w-2xl text-sm leading-6 text-[var(--color-text-muted)] md:text-base">
                 Move at your own pace. Your final selection stays visible before
                 you spend a credit.
               </p>
-            </div>
-
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold">1. Choose and personalize</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-                Upload a hairstyle you saved, or explore the imported catalogue
-                and personalize your color.
-              </p>
-            </div>
-
-            <button
-              className="mt-6 grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-md border border-[var(--color-border)] bg-white/70 p-5 text-left transition hover:border-[var(--color-brand)] md:grid-cols-[auto_1fr_auto] md:gap-5"
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <span className="grid size-14 place-items-center rounded-md bg-[var(--color-brand)] text-white">
-                <ImagePlus aria-hidden="true" size={24} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-lg font-bold">
-                  Upload your own inspiration
-                </span>
-                <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">
-                  Use a hairstyle photo you already love. Touch of Heaven will
-                  keep it local until you sign in and confirm.
-                </span>
-              </span>
-              <span className="hidden text-sm font-bold text-[var(--color-text-muted)] md:inline">
-                Coming soon
-              </span>
-            </button>
-
-            <div className="my-8 flex items-center gap-4">
-              <span className="h-px flex-1 bg-[var(--color-border)]" />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-text-muted)]">
-                Or pick from one of these
-              </span>
-              <span className="h-px flex-1 bg-[var(--color-border)]" />
             </div>
 
             <div className="grid gap-3 md:grid-cols-[1fr_auto]">
@@ -1126,11 +1110,6 @@ export function AiStudioExperience({
 
             <div className="mt-4 flex items-center justify-between gap-4 text-sm text-[var(--color-text-muted)]">
               <p>{filteredStyles.length} looks</p>
-              {catalogSource === "fallback" ? (
-                <p className="text-xs font-semibold text-[var(--color-copper)]">
-                  Imported Brane references
-                </p>
-              ) : null}
             </div>
             {catalogError ? (
               <p className="mt-2 rounded-md bg-[var(--color-warning-soft)] p-3 text-sm text-[var(--color-warning)]">
@@ -1158,6 +1137,42 @@ export function AiStudioExperience({
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* The other way in, below the catalogue rather than above it.
+                The catalogue is what works today, so it takes the first slot.
+                This is not wired to anything yet - /api/v1/studio/generate
+                takes a catalogue styleId, not an uploaded style - so it no
+                longer opens the photo picker while saying "Coming soon".
+                That picker set the file as the visitor's own photo and
+                jumped to review, which is a different thing entirely. */}
+            <div className="my-8 flex items-center gap-4">
+              <span className="h-px flex-1 bg-[var(--color-border)]" />
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-text-muted)]">
+                Or bring your own
+              </span>
+              <span className="h-px flex-1 bg-[var(--color-border)]" />
+            </div>
+
+            <div
+              aria-disabled="true"
+              className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-md border border-dashed border-[var(--color-border)] bg-white/50 p-5 md:grid-cols-[auto_1fr_auto] md:gap-5"
+            >
+              <span className="grid size-14 place-items-center rounded-md bg-[var(--color-brand-soft)] text-[var(--color-brand)]">
+                <ImagePlus aria-hidden="true" size={24} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-lg font-bold">
+                  Upload your own inspiration
+                </span>
+                <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">
+                  Bring a hairstyle photo you already love instead of picking
+                  from the catalogue.
+                </span>
+              </span>
+              <span className="shrink-0 justify-self-start rounded-full bg-[var(--color-brand-soft)] px-3 py-1 text-sm font-bold text-[var(--color-brand-strong)] md:justify-self-end">
+                Coming soon
+              </span>
             </div>
 
             {selectedStyle ? (
@@ -1286,7 +1301,7 @@ export function AiStudioExperience({
                     type="button"
                     onClick={() =>
                       router.push(
-                        `/businesses?style=${selectedStyle?.slug ?? ""}&q=${encodeURIComponent(
+                        `/explore?style=${selectedStyle?.slug ?? ""}&q=${encodeURIComponent(
                           selectedStyle?.name ?? "",
                         )}`,
                       )
@@ -1401,6 +1416,13 @@ export function AiStudioExperience({
         open={authOpen}
         onClose={() => setAuthOpen(false)}
       />
+
+      {/* The public layout hides its chrome for this page because the studio
+          draws its own header. The footer is still wanted, so it is rendered
+          here - desktop only, as on the other client surfaces. */}
+      <div className="hidden lg:block">
+        <PublicFooter />
+      </div>
     </div>
   );
 }

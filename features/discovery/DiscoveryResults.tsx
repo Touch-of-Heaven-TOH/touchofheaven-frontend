@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   Calendar,
@@ -26,7 +25,22 @@ import {
   ProviderListCard,
   ProviderPopup,
 } from "@/features/discovery/ProviderCards";
-import { SearchCard, type DiscoverySearchInput } from "@/features/discovery/SearchCard";
+import { PlatformSearch } from "@/components/search/PlatformSearch";
+import {
+  DEFAULT_FILTERS,
+  FilterSelect,
+  FiltersDialog,
+  LOCATION_TYPE_OPTIONS,
+  type Filters,
+} from "@/features/discovery/sections/FiltersBar";
+import {
+  formatSearchDate,
+  isExactDate,
+  matchesSearchDate,
+  type SearchDate,
+} from "@/components/search/search-date";
+
+type DiscoverySearchInput = { query: string; location: string };
 import { discoveryCategory, type DiscoveryCategory } from "@/features/discovery/categories";
 import {
   DEFAULT_SEARCH_RADIUS_KM,
@@ -71,10 +85,15 @@ const RealMap = dynamic(() => import("@/components/map/BusinessMap"), {
   ),
 });
 
+export type DiscoveryView = "grid" | "map";
+
 export type DiscoveryRouteSearch = {
   q?: string;
   location?: string;
   category?: string;
+  /** From the shared search bar: "today" or "week" seeds the availability
+   *  filter, so a date chosen before searching is not silently dropped. */
+  date?: string;
 };
 
 // How long to wait for the device location before searching the default
@@ -90,31 +109,8 @@ type SearchCenter = {
   source: CenterSource;
 };
 
-type AvailabilityFilter = "any" | "today" | "week";
 type SortOrder = "distance" | "rating" | "soonest";
 
-type Filters = {
-  radiusKm: number;
-  locationType: DiscoveryLocationType | null;
-  acceptingNewClients: boolean;
-  availability: AvailabilityFilter;
-  minRating: number;
-};
-
-const DEFAULT_FILTERS: Filters = {
-  radiusKm: DEFAULT_SEARCH_RADIUS_KM,
-  locationType: null,
-  acceptingNewClients: false,
-  availability: "any",
-  minRating: 0,
-};
-
-const LOCATION_TYPE_OPTIONS: Array<{ value: DiscoveryLocationType | null; label: string }> = [
-  { value: null, label: "Any" },
-  { value: "PUBLIC_SALON", label: "Salon" },
-  { value: "PRIVATE_STUDIO", label: "Private studio" },
-  { value: "MOBILE", label: "Comes to you" },
-];
 
 const LOCATION_MESSAGES: Record<DeviceLocationError["reason"], string> = {
   denied: "Location access is blocked for this site. Allow it in your browser settings, or search for a place.",
@@ -166,11 +162,19 @@ function sortProviders(providers: NearbyProvider[], order: SortOrder) {
   return sorted;
 }
 
-function resultsQueryString(search: { q?: string; location?: string; category?: string }) {
+function resultsQueryString(search: {
+  q?: string;
+  location?: string;
+  category?: string;
+  date?: string;
+  view?: DiscoveryView;
+}) {
   const params = new URLSearchParams();
   if (search.q) params.set("q", search.q);
   if (search.location) params.set("location", search.location);
   if (search.category) params.set("category", search.category);
+  if (search.date && search.date !== "any") params.set("date", search.date);
+  if (search.view === "map") params.set("view", "map");
   const query = params.toString();
   return query ? `?${query}` : "";
 }
@@ -181,10 +185,10 @@ export function SearchResultsPage({
   showFiltersInitially = false,
 }: {
   initialSearch?: DiscoveryRouteSearch;
-  initialView?: "grid" | "map";
+  initialView?: DiscoveryView;
   showFiltersInitially?: boolean;
 }) {
-  const view = initialView;
+  const [view, setView] = useState<DiscoveryView>(initialView);
   const categoryId = initialSearch?.category;
   const categoryFilter = useMemo(() => discoveryCategory(categoryId), [categoryId]);
   const category = categoryFilter?.id;
@@ -198,7 +202,16 @@ export function SearchResultsPage({
   const [locating, setLocating] = useState(!initialPlace);
   const [lookingUpPlace, setLookingUpPlace] = useState(Boolean(initialPlace));
   const [locationNotice, setLocationNotice] = useState<string | null>(null);
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<Filters>(() => {
+    // A date chosen in the search bar arrives as ?date=today|week and seeds
+    // the availability filter, so the visitor sees it already applied rather
+    // than having to set it a second time.
+    const date = initialSearch?.date;
+    if (date === "today" || date === "week" || (date && isExactDate(date))) {
+      return { ...DEFAULT_FILTERS, availability: date as SearchDate };
+    }
+    return DEFAULT_FILTERS;
+  });
   const [sort, setSort] = useState<SortOrder>("distance");
   const [filtersOpen, setFiltersOpen] = useState(showFiltersInitially);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -306,13 +319,22 @@ export function SearchResultsPage({
     // was opened with, and the callbacks are stable.
   }, [initialPlace, moveTo, applyDeviceFix, applyFallbackCity]);
 
-  function replaceUrl(next: { q: string; location: string }) {
+  function replaceUrl(next: { q: string; location: string; view?: DiscoveryView }) {
     const url = `${window.location.pathname}${resultsQueryString({
       q: next.q || undefined,
       location: next.location || undefined,
       category,
+      date: filters.availability,
+      view: next.view ?? view,
     })}`;
     window.history.replaceState(null, "", url);
+  }
+
+  // Switching view is a state change now, not a navigation, so the filters,
+  // the scroll position and the loaded providers all survive it.
+  function showView(next: DiscoveryView) {
+    setView(next);
+    replaceUrl({ q: query, location: place, view: next });
   }
 
   async function locateMe() {
@@ -412,14 +434,7 @@ export function SearchResultsPage({
     const filtered = loadedProviders.filter((provider) => {
       if (query && !matchesText(provider, query)) return false;
       if (!matchesCategory(provider, categoryFilter)) return false;
-      if (filters.availability === "today" && provider.nextAvailableSlotBucket !== "TODAY") return false;
-      if (
-        filters.availability === "week" &&
-        provider.nextAvailableSlotBucket !== "TODAY" &&
-        provider.nextAvailableSlotBucket !== "THIS_WEEK"
-      ) {
-        return false;
-      }
+      if (!matchesSearchDate(filters.availability, provider)) return false;
       if (filters.minRating > 0 && (provider.rating.average ?? 0) < filters.minRating) return false;
       return true;
     });
@@ -465,8 +480,6 @@ export function SearchResultsPage({
     replaceUrl({ q: "", location: place });
   }
 
-  const queryString = resultsQueryString({ q: query || undefined, location: place || undefined, category });
-
   const emptyState = (
     <ResultsMessage
       icon={<SearchX size={26} aria-hidden="true" />}
@@ -511,7 +524,7 @@ export function SearchResultsPage({
   const listBody = nearby.error ? (
     errorState
   ) : showSkeleton ? (
-    <div className={view === "map" ? "grid gap-3" : "grid gap-5 md:grid-cols-2 xl:grid-cols-3"} role="status" aria-label="Loading providers">
+    <div className={view === "map" ? "grid gap-3" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"} role="status" aria-label="Loading providers">
       {Array.from({ length: view === "map" ? 3 : 6 }, (_, index) => (
         <ProviderCardSkeleton key={index} layout={view === "map" ? "list" : "grid"} />
       ))}
@@ -520,7 +533,7 @@ export function SearchResultsPage({
     emptyState
   ) : (
     <>
-      <ul role="list" className={view === "map" ? "grid gap-3" : "grid gap-5 md:grid-cols-2 xl:grid-cols-3"}>
+      <ul role="list" className={view === "map" ? "grid gap-3" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"}>
         {visibleProviders.map((provider) => (
           <li key={provider.id}>
             {view === "map" ? (
@@ -552,12 +565,18 @@ export function SearchResultsPage({
       <div className="border-b border-[var(--color-border)] bg-white/72">
         <div className="mx-auto grid max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-10">
           <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
-            <SearchCard
+            <PlatformSearch
               key={`${query}|${place}`}
               initialQuery={query}
               initialLocation={place}
+              initialDate={filters.availability}
               compact
-              onSearch={(input) => void runSearch(input)}
+              onSearch={(value) => {
+                // The date field and the Availability filter are the same
+                // thing shown twice; keep them in step.
+                setFilters((current) => ({ ...current, availability: value.date }));
+                void runSearch({ query: value.q, location: value.location });
+              }}
               onUseMyLocation={() => void locateMe()}
             />
             <div className="flex gap-3 overflow-x-auto pb-1">
@@ -577,11 +596,19 @@ export function SearchResultsPage({
                 icon={<Calendar size={18} aria-hidden="true" />}
                 label="Availability"
                 value={filters.availability}
-                onChange={(value) => setFilters((current) => ({ ...current, availability: value as AvailabilityFilter }))}
+                onChange={(value) => setFilters((current) => ({ ...current, availability: value as SearchDate }))}
                 options={[
                   { value: "any", label: "Any time" },
                   { value: "today", label: "Opening today" },
                   { value: "week", label: "Opening this week" },
+                  ...(isExactDate(filters.availability)
+                    ? [
+                        {
+                          value: filters.availability,
+                          label: `Free by ${formatSearchDate(filters.availability)}`,
+                        },
+                      ]
+                    : []),
                 ]}
               />
               <FilterSelect
@@ -644,11 +671,12 @@ export function SearchResultsPage({
             ) : null}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href={`/explore/map${queryString}`}
+            <button
+              type="button"
+              onClick={() => showView("map")}
               aria-current={view === "map" ? "page" : undefined}
               className={classNames(
-                "inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border px-4 text-sm font-semibold",
+                "inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border px-4 text-sm font-semibold lg:hidden",
                 view === "map"
                   ? "border-[var(--color-brand)] bg-[var(--color-brand)] text-white"
                   : "border-[var(--color-border)] bg-white text-[var(--color-brand)]",
@@ -656,12 +684,13 @@ export function SearchResultsPage({
             >
               <MapIcon size={18} aria-hidden="true" />
               Map
-            </Link>
-            <Link
-              href={`/businesses${queryString}`}
+            </button>
+            <button
+              type="button"
+              onClick={() => showView("grid")}
               aria-current={view === "grid" ? "page" : undefined}
               className={classNames(
-                "inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border px-4 text-sm font-semibold",
+                "inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border px-4 text-sm font-semibold lg:hidden",
                 view === "grid"
                   ? "border-[var(--color-brand)] bg-[var(--color-brand)] text-white"
                   : "border-[var(--color-border)] bg-white text-[var(--color-brand)]",
@@ -669,7 +698,7 @@ export function SearchResultsPage({
             >
               <ListIcon size={18} aria-hidden="true" />
               List view
-            </Link>
+            </button>
             <label className="flex items-center gap-2 text-sm">
               <span>Sort by</span>
               <select
@@ -685,17 +714,24 @@ export function SearchResultsPage({
           </div>
         </div>
 
-        {view === "map" ? (
-          <div className="grid overflow-hidden rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)] lg:min-h-[660px] lg:grid-cols-[420px_minmax(0,1fr)]">
-            <aside
-              aria-label="Providers on the map"
-              className="order-2 max-h-none overflow-auto border-t border-[var(--color-border)] p-4 lg:order-1 lg:max-h-[680px] lg:border-t-0 lg:border-r"
-            >
-              {listBody}
-            </aside>
+        {/* Results and map together, the way a local-search page reads: you
+            see where while you read who. The map is a column from lg up
+            rather than a view you switch to; below that the toggle above
+            picks one, because both at once on a phone helps nobody. */}
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
+          <div className={view === "map" ? "hidden lg:block" : undefined}>
+            {listBody}
+          </div>
+
+          <div
+            className={classNames(
+              "overflow-hidden rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)] lg:sticky lg:top-24",
+              view === "map" ? "" : "hidden lg:block",
+            )}
+          >
             <div
               ref={mapPanelRef}
-              className="relative order-1 h-[58vh] min-h-[380px] scroll-mt-24 lg:order-2 lg:h-auto lg:min-h-[560px]"
+              className="relative h-[62vh] min-h-[420px] scroll-mt-24 lg:h-[calc(100dvh-11rem)] lg:min-h-[560px]"
             >
               <RealMap
                 braiders={pinnedProviders}
@@ -726,9 +762,7 @@ export function SearchResultsPage({
               />
             </div>
           </div>
-        ) : (
-          listBody
-        )}
+        </div>
       </div>
 
       <FiltersDialog
@@ -855,184 +889,5 @@ function MapStatus({
   if (!content) return null;
   return (
     <div className="pointer-events-none absolute inset-x-3 bottom-10 z-[3] flex justify-center">{content}</div>
-  );
-}
-
-function FilterSelect({
-  icon,
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  options: Array<{ value: string; label: string }>;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="relative inline-flex min-h-12 shrink-0 items-center gap-2 rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white pl-4 pr-9 text-sm font-semibold shadow-[var(--shadow-subtle)] focus-within:border-[var(--color-brand)]">
-      {icon}
-      <span className="sr-only">{label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 cursor-pointer appearance-none bg-transparent pr-1 font-semibold outline-none"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute right-3" />
-    </label>
-  );
-}
-
-type DialogFilters = Pick<Filters, "locationType" | "acceptingNewClients">;
-
-function FiltersDialog({
-  open,
-  filters,
-  onClose,
-  onApply,
-}: {
-  open: boolean;
-  filters: Filters;
-  onClose: () => void;
-  onApply: (filters: DialogFilters) => void;
-}) {
-  if (!open) return null;
-  return (
-    <FiltersDialogPanel
-      initial={{ locationType: filters.locationType, acceptingNewClients: filters.acceptingNewClients }}
-      onClose={onClose}
-      onApply={onApply}
-    />
-  );
-}
-
-function FiltersDialogPanel({
-  initial,
-  onClose,
-  onApply,
-}: {
-  initial: DialogFilters;
-  onClose: () => void;
-  onApply: (filters: DialogFilters) => void;
-}) {
-  const [draft, setDraft] = useState<DialogFilters>(initial);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
-
-  return (
-    <div className="fixed inset-0 z-[var(--z-overlay,60)] flex justify-end bg-black/45">
-      <button type="button" aria-label="Close filters" className="hidden flex-1 sm:block" onClick={onClose} />
-      <section
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="filters-title"
-        className="flex h-dvh w-full flex-col bg-[var(--color-page)] shadow-[var(--shadow-soft)] sm:max-w-lg"
-      >
-        <header className="flex min-h-[76px] items-center justify-between gap-3 border-b border-[var(--color-border)] px-5">
-          <button
-            type="button"
-            aria-label="Close filters"
-            onClick={onClose}
-            className="grid h-11 w-11 place-items-center rounded-[var(--radius-control)] hover:bg-[var(--color-brand-soft)]"
-          >
-            <X size={26} aria-hidden="true" />
-          </button>
-          <h2 id="filters-title" className="font-serif text-3xl font-semibold">
-            More filters
-          </h2>
-          <button
-            type="button"
-            onClick={() => setDraft({ locationType: null, acceptingNewClients: false })}
-            className="min-h-11 rounded-[var(--radius-control)] px-3 font-semibold text-[var(--color-copper)]"
-          >
-            Clear all
-          </button>
-        </header>
-
-        <div className="min-h-0 flex-1 overflow-y-auto p-5">
-          <div className="overflow-hidden rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white">
-            <fieldset className="border-b border-[var(--color-border)] p-5">
-              <legend className="sr-only">Where the service happens</legend>
-              <p aria-hidden="true" className="mb-4 text-lg font-semibold">Where the service happens</p>
-              <div className="flex flex-wrap gap-2">
-                {LOCATION_TYPE_OPTIONS.map((option) => {
-                  const active = draft.locationType === option.value;
-                  return (
-                    <button
-                      key={option.label}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => setDraft((current) => ({ ...current, locationType: option.value }))}
-                      className={classNames(
-                        "inline-flex min-h-11 items-center rounded-[var(--radius-control)] border px-4 text-sm font-semibold transition",
-                        active
-                          ? "border-[var(--color-brand)] bg-[var(--color-brand)] text-white"
-                          : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-brand)]",
-                      )}
-                    >
-                      {option.label}
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="mt-3 text-sm text-[var(--color-text-muted)]">
-                Private studios show an approximate area until a booking is confirmed.
-              </p>
-            </fieldset>
-            <div className="flex items-center justify-between gap-4 p-5">
-              <div>
-                <p id="accepting-label" className="text-lg font-semibold">Taking new clients</p>
-                <p className="text-sm text-[var(--color-text-muted)]">Hide businesses that only see existing clients.</p>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={draft.acceptingNewClients}
-                aria-labelledby="accepting-label"
-                onClick={() => setDraft((current) => ({ ...current, acceptingNewClients: !current.acceptingNewClients }))}
-                className={classNames(
-                  "relative h-8 w-14 shrink-0 rounded-full transition",
-                  draft.acceptingNewClients ? "bg-[var(--color-brand)]" : "bg-[var(--color-skeleton)]",
-                )}
-              >
-                <span
-                  className={classNames(
-                    "absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-all",
-                    draft.acceptingNewClients ? "left-7" : "left-1",
-                  )}
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <footer className="grid grid-cols-[0.8fr_1.2fr] gap-3 border-t border-[var(--color-border)] bg-[var(--color-page)] p-5">
-          <button type="button" onClick={onClose} className="min-h-12 rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white font-semibold">
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={() => onApply(draft)}
-            className="min-h-12 rounded-[var(--radius-control)] bg-[var(--color-brand)] font-bold text-white transition hover:bg-[var(--color-brand-strong)]"
-          >
-            Show results
-          </button>
-        </footer>
-      </section>
-    </div>
   );
 }

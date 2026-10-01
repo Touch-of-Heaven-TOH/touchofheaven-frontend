@@ -35,6 +35,52 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.pinimg.com" },
     ],
   },
+  async redirects() {
+    return [
+      // /for-clients was a second client home page. Its content is now the
+      // closing section of /, so the old URL keeps working for bookmarks
+      // and anything already linking to it.
+      { source: "/for-clients", destination: "/", permanent: true },
+
+      // Discovery used to be six routes rendering two components, with two
+      // byte-identical pairs among them. It is one page now: /explore, where
+      // browse is the no-query state and the map is ?view=map. These keep
+      // every old link, bookmark and indexed URL working.
+      { source: "/businesses", destination: "/explore", permanent: true },
+      { source: "/explore/search", destination: "/explore", permanent: true },
+      {
+        source: "/explore/filters",
+        destination: "/explore?filters=open",
+        permanent: true,
+      },
+      { source: "/explore/map", destination: "/explore?view=map", permanent: true },
+      { source: "/map", destination: "/explore?view=map", permanent: true },
+
+      // The business profile's tabs were five routes rendering one component
+      // with a different section prop. They are tabs on one page now, named
+      // by ?tab=, so these keep every old profile link working.
+      {
+        source: "/businesses/:businessId/services",
+        destination: "/businesses/:businessId?tab=services",
+        permanent: true,
+      },
+      {
+        source: "/businesses/:businessId/portfolio",
+        destination: "/businesses/:businessId?tab=portfolio",
+        permanent: true,
+      },
+      {
+        source: "/businesses/:businessId/reviews",
+        destination: "/businesses/:businessId?tab=reviews",
+        permanent: true,
+      },
+      {
+        source: "/businesses/:businessId/credentials",
+        destination: "/businesses/:businessId?tab=credentials",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

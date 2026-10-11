@@ -52,7 +52,7 @@ export function BookFlow({ id }: { id: string }) {
   const [serviceId, setServiceId] = useState<string | null>(params.get("service"));
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [pro, setPro] = useState<string | null>(null);
-  const days = useMemo(upcomingDays, []);
+  const [days] = useState(upcomingDays);
   const [day, setDay] = useState<string>(days[0]!);
   const [slot, setSlot] = useState<string | null>(null);
   const [pay, setPay] = useState<"momo" | "orange" | "card">("momo");

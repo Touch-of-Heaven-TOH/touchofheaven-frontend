@@ -227,3 +227,38 @@ export type Message = {
   createdAt: string;
   readAt: string | null;
 };
+
+export type AppointmentDetail = {
+  id: string;
+  status: string;
+  startAt: string;
+  endAt: string;
+  durationMins: number;
+  computedPriceCents: number;
+  depositPaidCents: number;
+  balanceDueCents: number;
+  checkInCode: string | null;
+  completedAt: string | null;
+  cancelledAt: string | null;
+  cancellationReason: string | null;
+  serviceId?: string;
+  teamMemberName?: string | null;
+  reviewed?: boolean;
+  business: { id: string; name: string; professionalName: string; phone: string | null; timezone: string };
+  location: { label: string; locationType: string };
+  cancellationPolicy: { key: string; label: string; description: string };
+  snapshot: {
+    serviceName: string;
+    braiderName: string;
+    braiderLocationDescription: string | null;
+    variationSelections: unknown;
+  } | null;
+  pendingChangeRequest: {
+    id: string;
+    type: "RESCHEDULE" | "CANCELLATION";
+    requestedStartAt: string | null;
+    reason: string;
+    createdAt: string;
+  } | null;
+  canRequestChange: boolean;
+};

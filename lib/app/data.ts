@@ -6,6 +6,7 @@ import type {
   Address,
   AppNearbyBusiness,
   Appointment,
+  AppointmentDetail,
   BusinessLocation,
   BusinessProfile,
   Cart,
@@ -148,6 +149,22 @@ export function useAppointments(signedIn: boolean, status?: "upcoming" | "comple
     quiet,
   );
   return { appointments: data?.appointments ?? [], isLoading, refresh: mutate };
+}
+
+export function useAppointment(id: string) {
+  const { data, error, isLoading, mutate } = useSWR(
+    `/api/v1/bookings/${id}`,
+    (path: string) => apiGet<{ appointment: AppointmentDetail }>(path),
+    quiet,
+  );
+  return { appointment: data?.appointment ?? null, error, isLoading, refresh: mutate };
+}
+
+export async function submitReview(appointmentId: string, rating: number, reviewBody: string) {
+  await browserApiFetch(`/api/v1/bookings/${appointmentId}/review`, {
+    method: "POST",
+    body: { rating, reviewBody },
+  });
 }
 
 const FAVORITES_KEY = "/api/v1/customer/favorites";

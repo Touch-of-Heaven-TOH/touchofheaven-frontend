@@ -400,6 +400,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* Desktop pages carry their own heading and the sidebar does navigation. */
+  @media (min-width: 900px) {
+    .toh-topbar {
+      display: none;
+    }
+  }
   .toh-shell--studio .toh-topbar {
     background: var(--color-studio);
   }

@@ -54,6 +54,11 @@ function isFocusRoute(pathname: string) {
   return /^\/businesses\/[^/]+\/book(\/|$)/.test(pathname) || pathname.startsWith("/checkout");
 }
 
+/** Pages not yet redesigned: they bring no page frame of their own. */
+function isLegacyRoute(pathname: string) {
+  return /^\/(account\/(settings|portfolio)|disputes|support|professional-application|team-invitations)(\/|$)/.test(pathname);
+}
+
 type ConversationSummary = { unreadCount?: number };
 
 function useUnreadMessages(signedIn: boolean) {
@@ -146,7 +151,16 @@ export function AppShell({ user, children }: { user: SafeUser | null; children: 
         </aside>
       )}
 
-      <div className="toh-main">{children}</div>
+      <div className="toh-main">{isLegacyRoute(pathname) ? (
+          <div className="toh-page toh-legacy">
+            <Link href="/account" className="toh-legacy__back toh-only-phone">
+              <Icon name="chevL" size={18} /> Profile
+            </Link>
+            {children}
+          </div>
+        ) : (
+          children
+        )}</div>
 
       {focus ? null : (
         <nav className="toh-tabbar" aria-label="Main">

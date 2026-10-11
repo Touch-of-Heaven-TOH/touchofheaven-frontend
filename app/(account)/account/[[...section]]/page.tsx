@@ -1,40 +1,23 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
-import { accountContent } from "@/config/page-content";
+import { redirect } from "next/navigation";
+import { ProfileScreen } from "@/features/app/profile/ProfileScreen";
 
 type AccountPageProps = {
   params: Promise<{ section?: string[] }>;
 };
 
-// Every /account/settings/* path now has its own page.tsx (see
-// app/(account)/account/settings/*/page.tsx), which Next.js always
-// resolves before this catch-all - so this function only ever sees the
-// segments those literal routes don't own: no segments (overview),
-// /appointments, or a genuinely unrecognized path, which falls back to
-// overview rather than a hard 404.
-function contentKey(segments: string[] | undefined): keyof typeof accountContent {
-  if (!segments?.length) return "overview";
-  if (segments[0] === "appointments") return "appointments";
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "Your account, favourites and settings.",
+  robots: { index: false, follow: false },
+};
 
-  return "overview";
-}
-
-export async function generateMetadata({
-  params,
-}: AccountPageProps): Promise<Metadata> {
-  const content = accountContent[contentKey((await params).section)];
-  return {
-    title: content.title,
-    description: content.description,
-    robots: { index: false, follow: false },
-  };
-}
-
+// Every /account/settings/* path has its own page.tsx, which Next.js
+// resolves before this catch-all. Bookings moved to the Bookings tab;
+// anything else unrecognised lands on the profile hub.
 export default async function AccountPage({ params }: AccountPageProps) {
-  const content = accountContent[contentKey((await params).section)];
-
-  if (!content) notFound();
-
-  return <RouteStatusPage content={content} href="/book" />;
+  const { section } = await params;
+  if (section?.[0] === "appointments") redirect("/bookings");
+  if (section?.length) redirect("/account");
+  return <ProfileScreen />;
 }

@@ -298,3 +298,16 @@ export function DemoNote({ children }: { children: React.ReactNode }) {
     </p>
   );
 }
+
+const REVIEWER_COLOURS = ["#7a2fe0", "#d9507f", "#17845a", "#c08a24", "#2f6fd6", "#8b5a2b"];
+
+/** A reviewer avatar that reveals nothing about who they are. */
+export function InitialsAvatarSafe({ seed, size = 42 }: { seed: string; size?: number }) {
+  let hash = 0;
+  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return (
+    <span className="toh-avatar" style={{ width: size, height: size, background: REVIEWER_COLOURS[hash % REVIEWER_COLOURS.length] }} aria-hidden="true">
+      <Icon name="user" size={Math.round(size * 0.5)} />
+    </span>
+  );
+}

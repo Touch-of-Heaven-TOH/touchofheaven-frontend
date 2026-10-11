@@ -1,30 +1,17 @@
 import type { Metadata } from "next";
-import {
-  type DiscoveryRouteSearch,
-  SearchResultsPage,
-} from "@/features/discovery/DiscoveryResults";
+import { Suspense } from "react";
+import { BusinessSearch } from "@/features/app/businesses/BusinessSearch";
 
 export const metadata: Metadata = {
-  title: "Professionals near you | Touch of Heaven",
+  title: "Book beauty and wellness near you",
   description:
-    "Browse verified Touch of Heaven beauty and wellness businesses and open public profiles.",
+    "Find verified braiders, barbers, nail techs and spas in Douala and Yaoundé, compare services and book online.",
 };
 
-export default async function BusinessesPage({
-  searchParams,
-}: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const params = (await searchParams) ?? {};
-  const initialSearch: DiscoveryRouteSearch = {
-    q: valueOf(params.q),
-    location: valueOf(params.location),
-    category: valueOf(params.category),
-  };
-
-  return <SearchResultsPage initialSearch={initialSearch} />;
-}
-
-function valueOf(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
+export default function BusinessesPage() {
+  return (
+    <Suspense>
+      <BusinessSearch />
+    </Suspense>
+  );
 }

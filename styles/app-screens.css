@@ -1758,3 +1758,210 @@
     color: #e8a317;
   }
 }
+
+@layer components {
+  /* ---------- messages ---------- */
+  .toh-msgs {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    height: 100dvh;
+    background: var(--color-surface);
+  }
+  .toh-mlist {
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .toh-mlist__hd {
+    padding: 22px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .toh-mlist__hd h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .toh-search--sm {
+    height: 40px;
+    border-radius: 12px;
+  }
+  .toh-mlist__scroll {
+    overflow-y: auto;
+    flex: 1;
+  }
+  .toh-mi {
+    display: flex;
+    gap: 12px;
+    padding: 12px 18px;
+    width: 100%;
+    text-align: left;
+    align-items: center;
+    transition: background 0.12s;
+  }
+  .toh-mi:hover {
+    background: var(--color-surface-strong);
+  }
+  .toh-mi.is-on {
+    background: var(--color-brand-soft);
+  }
+  .toh-mi__t {
+    flex: 1;
+    min-width: 0;
+  }
+  .toh-mi__t b {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .toh-mi__t b small {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 11.5px;
+    flex: none;
+  }
+  .toh-mi__t p {
+    color: var(--color-text-muted);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+  .toh-mi.is-unread .toh-mi__t p {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .toh-mi__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-accent, #d9507f);
+    flex: none;
+  }
+  .toh-mthread {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+  .toh-mthread__none {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    background: var(--color-page);
+  }
+  .toh-mthread__hd {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .toh-mthread__nm {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .toh-mthread__hd small {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .toh-mthread__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--color-page);
+  }
+  .toh-bub {
+    max-width: min(75%, 520px);
+    padding: 11px 15px;
+    border-radius: 18px;
+    line-height: 1.5;
+    font-size: 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .toh-bub.is-them {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-bottom-left-radius: 6px;
+    align-self: flex-start;
+  }
+  .toh-bub.is-me {
+    background: var(--color-brand);
+    color: #fff;
+    border-bottom-right-radius: 6px;
+    align-self: flex-end;
+  }
+  .toh-bub small {
+    display: block;
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+  .toh-qr {
+    display: flex;
+    gap: 8px;
+    padding: 10px 22px 0;
+    overflow-x: auto;
+    background: var(--color-surface);
+  }
+  .toh-comp {
+    display: flex;
+    gap: 10px;
+    padding: 12px 22px 14px;
+    align-items: center;
+    background: var(--color-surface);
+  }
+  .toh-comp input {
+    flex: 1;
+    height: 46px;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-border);
+    padding: 0 18px;
+    outline: none;
+    background: var(--color-surface);
+    min-width: 0;
+    font: inherit;
+  }
+  .toh-comp input:focus {
+    border-color: var(--color-brand);
+  }
+  .toh-comp .toh-btn {
+    width: 46px;
+    height: 46px;
+    padding: 0;
+  }
+  @media (max-width: 899px) {
+    .toh-msgs {
+      grid-template-columns: minmax(0, 1fr);
+      height: calc(100dvh - var(--tabbar-height) - env(safe-area-inset-bottom, 0px));
+    }
+    .toh-msgs.is-thread .toh-mlist,
+    .toh-msgs:not(.is-thread) .toh-mthread {
+      display: none;
+    }
+    .toh-mthread__hd {
+      padding: 10px 12px;
+    }
+    .toh-mthread__body {
+      padding: 16px 14px;
+    }
+    .toh-qr,
+    .toh-comp {
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+    .toh-mlist__hd {
+      padding: 14px var(--toh-pad) 10px;
+    }
+  }
+}

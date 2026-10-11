@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { MessagesView } from "@/features/messaging/components/MessagesView";
-import { requireUser } from "@/lib/auth/session";
-
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
+import { MessagesScreen } from "@/features/app/messages/MessagesScreen";
 
 export const metadata: Metadata = {
   title: "Messages",
-  description: "Message braiders you've booked or reached out to.",
+  description: "Message the businesses you book with.",
   robots: { index: false, follow: false },
 };
 
-export default async function AccountMessagesPage() {
-  const user = await requireUser();
-  return <MessagesView currentUserId={user.id} />;
+export default function AccountMessagesPage() {
+  return (
+    <Suspense>
+      <MessagesScreen />
+    </Suspense>
+  );
 }

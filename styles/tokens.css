@@ -1,38 +1,78 @@
+/* The brand, as the prototypes in /mnt/project-files/prototype define it:
+   plum and violet, rose and gold, on a soft lilac page. Every screen reads
+   these through var(--color-...), so the older names are kept and pointed
+   at the new palette rather than renamed. */
 :root {
-  --color-page: #fffaf7;
+  --color-page: #faf5fc;
   --color-surface: #ffffff;
-  --color-surface-strong: #f4ecef;
-  --color-surface-ink: #2b1724;
-  --color-brand: #5c2747;
-  --color-brand-strong: #3a172d;
-  --color-brand-soft: #efe3ea;
-  --color-accent: #0f766e;
-  --color-accent-soft: #dff5f2;
-  --color-sage: #6f8064;
-  --color-sage-soft: #eef3e9;
-  --color-copper: #8f4a22;
-  --color-copper-soft: #f7e5d6;
-  --color-gold: #c9963c;
-  --color-gold-light: #f4dfa9;
-  --color-text-primary: #251a22;
-  --color-text-muted: #6f5365;
-  --color-text-inverse: #fffaf7;
-  --color-border: #e5d6df;
-  --color-danger: #b42318;
-  --color-danger-soft: #fee4e2;
-  --color-success: #067647;
-  --color-success-soft: #dcfae6;
-  --color-warning: #b54708;
-  --color-warning-soft: #fff3cd;
-  --color-skeleton: #eadde4;
-  --shadow-soft: 0 20px 60px rgba(43, 23, 36, 0.12);
-  --shadow-media: 0 24px 80px rgba(43, 23, 36, 0.18);
-  --shadow-subtle: 0 1px 2px rgba(43, 23, 36, 0.08);
-  --radius-control: 8px;
-  --radius-panel: 8px;
+  --color-surface-strong: #f3ebf9;
+  --color-surface-3: #ece2f5;
+  --color-surface-ink: #24132f;
+  --color-brand: #7a2fe0;
+  --color-brand-strong: #5b1fb4;
+  --color-brand-bright: #a259f2;
+  --color-brand-soft: #efe4fd;
+  /* Secondary emphasis. Was teal; the design's second colour is rose. */
+  --color-accent: #d9507f;
+  --color-accent-soft: #fde7ef;
+  --color-rose: #d9507f;
+  --color-sage: #5f7a57;
+  --color-sage-soft: #e7f1e3;
+  --color-copper: #a8650a;
+  --color-copper-soft: #fcefd6;
+  --color-gold: #c08a24;
+  --color-gold-light: #f6e3b4;
+  --color-star: #e5a00d;
+  /* The marketplace's buy buttons, which follow the store pattern. */
+  --color-cta: #f3c24f;
+  --color-cta-strong: #e99b2f;
+  --color-cta-ink: #2a1a05;
+  --color-text-primary: #24132f;
+  --color-text-muted: #76658a;
+  --color-text-inverse: #ffffff;
+  --color-border: #ebe0f3;
+  --color-border-strong: #d9cbe6;
+  --color-danger: #c8324f;
+  --color-danger-soft: #fde3e9;
+  --color-success: #17845a;
+  --color-success-soft: #dbf3e8;
+  --color-warning: #a8650a;
+  --color-warning-soft: #fcefd6;
+  --color-skeleton: #ece2f5;
+
+  /* Desktop sidebar and the store header. */
+  --color-side: #1b0e2c;
+  --color-side-ink: #f5eefc;
+  --color-side-muted: #b4a2cc;
+  --color-side-active: #3a2160;
+  --color-side-line: #2e1d47;
+  --color-store-head: #1f1033;
+  --color-store-head-2: #33204f;
+
+  /* AI Studio is a dark room inside the light app. */
+  --color-studio: #140b22;
+  --color-studio-surface: #22153b;
+  --color-studio-surface-2: #2c1c4b;
+  --color-studio-line: #3b2862;
+  --color-studio-ink: #f6f0fd;
+  --color-studio-muted: #b7a5d8;
+
+  --shadow-soft: 0 10px 30px rgba(70, 25, 110, 0.1);
+  --shadow-media: 0 24px 60px rgba(70, 25, 110, 0.18);
+  --shadow-subtle: 0 2px 8px rgba(70, 25, 110, 0.08);
+  --radius-control: 12px;
+  --radius-panel: 18px;
   --container-page: 1180px;
   --duration-fast: 150ms;
   --duration-normal: 240ms;
   --z-header: 30;
   --z-overlay: 50;
+  --sidebar-width: 244px;
+  --tabbar-height: 64px;
+}
+
+@media (max-width: 1240px) {
+  :root {
+    --sidebar-width: 78px;
+  }
 }

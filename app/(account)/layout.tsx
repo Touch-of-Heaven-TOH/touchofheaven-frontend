@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { accountNavigation } from "@/config/navigation";
-import { DashboardShell } from "@/components/layout/DashboardShell";
+import { AppShell } from "@/components/app/AppShell";
 import { ToastProvider } from "@/components/feedback/ToastProvider";
+import { ViewerProvider } from "@/components/providers/ViewerProvider";
 import { requireUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -12,26 +11,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AccountLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default async function AccountLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
-  const currentPath = (await headers()).get("x-toh-pathname") ?? "/account";
-
-  if (currentPath.startsWith("/bookings/")) {
-    return <ToastProvider>{children}</ToastProvider>;
-  }
 
   return (
-    <DashboardShell
-      currentPath={currentPath}
-      eyebrow="Customer workspace"
-      navigation={accountNavigation}
-      title="Account"
-      tone="account"
-      user={user}
-    >
-      <ToastProvider>{children}</ToastProvider>
-    </DashboardShell>
+    <ViewerProvider viewer={user}>
+      <ToastProvider>
+        <AppShell user={user}>{children}</AppShell>
+      </ToastProvider>
+    </ViewerProvider>
   );
 }

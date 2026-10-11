@@ -25,6 +25,8 @@ export type NearbyBraider = {
   kind: 'location' | 'serviceArea';
   braiderId: string;
   professionalName: string;
+  /** The shop name customers know; prefer it over professionalName. */
+  businessName?: string | null;
   bio: string | null;
   locationLabel: string | null;
   locationModel: DiscoveryLocationType;

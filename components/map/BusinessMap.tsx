@@ -21,7 +21,7 @@ const KM_PER_DEGREE_LATITUDE = 111.32;
 
 // The public theme's --color-brand. MapLibre paint properties are plain
 // values, so the CSS variable can't be referenced here.
-const SEARCH_AREA_COLOR = '#5c2747';
+const SEARCH_AREA_COLOR = '#7a2fe0';
 const SEARCH_AREA_SOURCE = 'toh-search-area';
 // The popup's offset from its pin plus a little breathing room.
 const POPUP_CLEARANCE_PX = 44;

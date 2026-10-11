@@ -91,7 +91,7 @@ export function BookFlow({ id }: { id: string }) {
   const slots = slotData?.slots ?? [];
 
   useEffect(() => {
-    if (!viewer) router.replace(`/sign-in?callbackUrl=${encodeURIComponent(`/businesses/${id}/book${serviceId ? `?service=${serviceId}` : ""}`)}`);
+    if (!viewer) router.replace(`/customer/sign-in?callbackUrl=${encodeURIComponent(`/businesses/${id}/book${serviceId ? `?service=${serviceId}` : ""}`)}`);
   }, [viewer, router, id, serviceId]);
 
   const team = (business?.team ?? []).filter((member) => member.role !== "RECEPTIONIST");

@@ -70,7 +70,7 @@ export function MarketHeader() {
             <Icon name="search" size={22} />
           </button>
         </form>
-        <Link href={viewer ? "/account" : "/sign-in?callbackUrl=%2Fmarketplace"} className="toh-mh__acc">
+        <Link href={viewer ? "/account" : "/customer/sign-in?callbackUrl=%2Fmarketplace"} className="toh-mh__acc">
           <small>Hello, {viewer?.firstName ?? "sign in"}</small>
           <b>Account</b>
         </Link>

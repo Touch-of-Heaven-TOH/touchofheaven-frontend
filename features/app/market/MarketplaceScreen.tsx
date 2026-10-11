@@ -28,7 +28,7 @@ export function useAddToCart() {
   const [busy, setBusy] = useState<string | null>(null);
   const add = async (product: Product, variantId?: string, quantity = 1) => {
     if (!viewer) {
-      router.push(`/sign-in?callbackUrl=${encodeURIComponent(`/marketplace/products/${product.id}`)}`);
+      router.push(`/customer/sign-in?callbackUrl=${encodeURIComponent(`/marketplace/products/${product.id}`)}`);
       return false;
     }
     const variant =

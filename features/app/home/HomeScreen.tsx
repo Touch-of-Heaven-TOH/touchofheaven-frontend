@@ -124,7 +124,7 @@ export function HomeScreen() {
           {count ? <span className="toh-badge">{count}</span> : null}
         </Link>
         {viewer ? null : (
-          <Link href="/sign-in" className="toh-btn toh-btn--sm">
+          <Link href="/customer/sign-in" className="toh-btn toh-btn--sm">
             Sign in
           </Link>
         )}
@@ -343,7 +343,7 @@ export function HomeScreen() {
             ) : (
               <div className="toh-card toh-nextup">
                 <p className="toh-muted">{viewer ? "No upcoming appointments." : "Sign in to see your appointments."}</p>
-                <Link href={viewer ? "/businesses" : "/sign-in"} className="toh-btn toh-btn--sm">
+                <Link href={viewer ? "/businesses" : "/customer/sign-in"} className="toh-btn toh-btn--sm">
                   {viewer ? "Book something" : "Sign in"}
                 </Link>
               </div>

@@ -37,7 +37,7 @@ export function CartScreen() {
             {!viewer ? (
               <Empty icon="cart" title="Sign in to see your cart">
                 <span>Your cart is saved to your account, on every device.</span>
-                <Link href="/sign-in?callbackUrl=%2Fcart" className="toh-btn toh-btn--cta">
+                <Link href="/customer/sign-in?callbackUrl=%2Fcart" className="toh-btn toh-btn--cta">
                   Sign in
                 </Link>
               </Empty>

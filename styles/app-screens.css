@@ -3134,3 +3134,408 @@
     margin: 4px 0 10px -4px;
   }
 }
+
+@layer components {
+  /* ---------- sign-up and sign-in ---------- */
+  .toh-auth {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    background: var(--color-page);
+    color: var(--color-text-primary);
+  }
+  .toh-auth__side {
+    background: linear-gradient(160deg, #2a1150, #5b21b6 60%, #b03f86);
+    color: #fff;
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+  .toh-auth__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 26px;
+  }
+  .toh-auth__quote {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1.2;
+    max-width: 22ch;
+  }
+  .toh-auth__main {
+    display: flex;
+    justify-content: center;
+    padding: 24px 20px 48px;
+  }
+  .toh-auth__col {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  @media (max-width: 899px) {
+    .toh-auth {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .toh-auth__side {
+      display: none;
+    }
+    .toh-auth__main {
+      padding: 12px 16px 32px;
+    }
+  }
+  .toh-auth__top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+  }
+  .toh-auth__prog {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+  .toh-auth__track {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--color-surface-strong);
+    overflow: hidden;
+  }
+  .toh-auth__track i {
+    display: block;
+    height: 100%;
+    background: var(--color-brand);
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+  .toh-lang {
+    display: inline-flex;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 3px;
+    background: var(--color-surface);
+  }
+  .toh-lang button {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: var(--color-text-muted);
+  }
+  .toh-lang button[aria-pressed="true"] {
+    background: var(--color-text-primary);
+    color: var(--color-page);
+  }
+  .toh-auth__h1 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.08;
+  }
+  .toh-auth__h1 em {
+    color: var(--color-brand);
+  }
+  .toh-auth__h2 {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .toh-auth__lede {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .toh-auth__small {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+  .toh-auth__eyebrow {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-brand);
+  }
+  .toh-collage {
+    position: relative;
+    height: 220px;
+  }
+  .toh-auth__side .toh-collage {
+    height: 380px;
+  }
+  .toh-collage .toh-art {
+    position: absolute;
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(20, 8, 40, 0.25);
+  }
+  .toh-collage__c1 {
+    left: 6%;
+    top: 8%;
+    width: 42%;
+    height: 82%;
+    transform: rotate(-5deg);
+  }
+  .toh-collage__c2 {
+    left: 34%;
+    top: 0;
+    width: 36%;
+    height: 72%;
+    z-index: 2;
+  }
+  .toh-collage__c3 {
+    right: 4%;
+    top: 18%;
+    width: 34%;
+    height: 76%;
+    transform: rotate(5deg);
+  }
+  .toh-proof {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .toh-proof > div {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13.5px;
+  }
+  .toh-proof b {
+    display: block;
+  }
+  .toh-proof > div > span:last-child > span {
+    color: var(--color-text-muted);
+  }
+  .toh-proof__ic {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .toh-tryon {
+    position: relative;
+    aspect-ratio: 1.05;
+    border-radius: 22px;
+  }
+  .toh-tryon__badge {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .toh-tryon__cap {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 14px;
+    padding: 10px 14px;
+  }
+  .toh-pros {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .toh-pro {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+  }
+  .toh-pro__ph {
+    aspect-ratio: 1.2;
+  }
+  .toh-pro__bd {
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12.5px;
+    min-width: 0;
+  }
+  .toh-pro__bd b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .toh-pro .toh-meta {
+    font-size: 11px;
+  }
+  .toh-gifts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toh-gift {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    font-size: 13.5px;
+  }
+  .toh-gift b {
+    display: block;
+    font-size: 14.5px;
+  }
+  .toh-gift > span:last-child > span {
+    color: var(--color-text-muted);
+  }
+  .toh-gift__ic {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    color: #fff;
+  }
+  .toh-gift__ic.is-a {
+    background: linear-gradient(135deg, #a259f2, #7a2fe0);
+  }
+  .toh-gift__ic.is-b {
+    background: linear-gradient(135deg, #e8b54a, #c08a24);
+  }
+  .toh-gift__ic.is-c {
+    background: linear-gradient(135deg, #f07aa2, #d9507f);
+  }
+  .toh-miss {
+    padding: 14px;
+    border-radius: 16px;
+    background: var(--color-surface-strong);
+    font-size: 13.5px;
+  }
+  .toh-miss h4 {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .toh-miss li {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--color-text-muted);
+    padding: 3px 0;
+  }
+  .toh-or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .toh-or::before,
+  .toh-or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+  .toh-hint {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--color-brand-soft);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--color-text-primary);
+  }
+  .toh-hint > .toh-icon {
+    color: var(--color-brand);
+    flex: none;
+    margin-top: 1px;
+  }
+  .toh-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .toh-check input {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    accent-color: var(--color-brand);
+    flex: none;
+  }
+  .toh-pw {
+    position: relative;
+    display: block;
+  }
+  .toh-pw input {
+    padding-right: 46px;
+  }
+  .toh-pw button {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: var(--color-text-muted);
+  }
+  .toh-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding-top: 12px;
+  }
+  .toh-done__av {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--color-surface), 0 0 0 6px var(--color-brand-soft);
+  }
+  .toh-wallet {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #2a1150, #5b21b6 60%, #b03f86);
+    color: #fff;
+  }
+  .toh-wallet > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .toh-wallet b {
+    font-size: 16px;
+  }
+}

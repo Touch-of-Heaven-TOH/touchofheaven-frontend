@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SignInMethods } from "@/features/auth/components/SignInMethods";
+import { Suspense } from "react";
+import { SignInFlow } from "@/features/app/auth/AuthScreens";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function SignInPage() {
-  return <SignInMethods />;
+  return (
+    <Suspense>
+      <SignInFlow />
+    </Suspense>
+  );
 }

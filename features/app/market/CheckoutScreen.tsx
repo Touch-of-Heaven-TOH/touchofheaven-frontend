@@ -33,7 +33,7 @@ export function CheckoutScreen() {
       <Frame count={0}>
         <div className="toh-card">
           <Empty icon="lock" title="Sign in to check out">
-            <Link href="/sign-in?callbackUrl=%2Fcheckout" className="toh-btn toh-btn--cta">
+            <Link href="/customer/sign-in?callbackUrl=%2Fcheckout" className="toh-btn toh-btn--cta">
               Sign in
             </Link>
           </Empty>

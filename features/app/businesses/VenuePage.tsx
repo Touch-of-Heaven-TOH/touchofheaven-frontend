@@ -77,7 +77,7 @@ export function VenuePage({ id }: { id: string }) {
   const deposit = business.policy?.depositPercent ?? services[0]?.depositPercentage ?? 20;
 
   const needSignIn = () => {
-    router.push(`/sign-in?callbackUrl=${encodeURIComponent(`/businesses/${id}`)}`);
+    router.push(`/customer/sign-in?callbackUrl=${encodeURIComponent(`/businesses/${id}`)}`);
   };
 
   const message = async () => {

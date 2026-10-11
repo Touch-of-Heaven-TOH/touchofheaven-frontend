@@ -1,33 +1,12 @@
 import type { Metadata } from "next";
-import {
-  ActivityStrip,
-  BookingProductsInfoSection,
-  FeatureShowcaseSection,
-  HeroSection,
-  MarketplaceShowcaseSection,
-  MobileAppSection,
-  TopBusinessesSection,
-} from "@/features/home";
-import { getHomePageData } from "@/features/home/api/home.queries";
+import { HomeScreen } from "@/features/app/home/HomeScreen";
 
 export const metadata: Metadata = {
-  title: "Beauty, braiding, and marketplace",
+  title: "Beauty, booking and marketplace",
   description:
-    "Book trusted braiding services, explore style inspiration, and preview authentic African marketplace products with Touch of Heaven.",
+    "Try looks in AI Studio, book verified salons, barbers, nail techs and spas in Douala and Yaoundé, and shop beauty products from verified sellers.",
 };
 
-export default async function HomePage() {
-  const homeData = await getHomePageData();
-
-  return (
-    <>
-      <HeroSection />
-      <BookingProductsInfoSection />
-      <ActivityStrip activity={homeData.activity} />
-      <TopBusinessesSection businesses={homeData.featuredBraiders} />
-      <MarketplaceShowcaseSection />
-      <FeatureShowcaseSection />
-      <MobileAppSection />
-    </>
-  );
+export default function HomePage() {
+  return <HomeScreen />;
 }

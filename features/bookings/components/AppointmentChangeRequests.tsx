@@ -4,6 +4,7 @@ import { Calendar, CircleAlert, Clock, XCircle } from "lucide-react";
 import { useState } from "react";
 import { browserApiFetch } from "@/lib/api/browser";
 import { ApiClientError } from "@/lib/api/errors";
+import { formatFcfa } from "@/lib/app/format";
 
 export type PendingChangeRequest = {
   id: string;
@@ -20,13 +21,7 @@ type CancellationQuote = {
   policy: { label: string; description: string };
 };
 
-function money(cents: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: cents % 100 === 0 ? 0 : 2,
-  }).format(cents / 100);
-}
+const money = formatFcfa;
 
 function longDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {

@@ -1,12 +1,15 @@
-import type { Metadata } from "next";
-import { ExploreDiscoveryPage } from "@/features/discovery/DiscoveryModule";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Explore | Touch of Heaven",
-  description:
-    "Discover verified beauty and wellness businesses, compare services, and book with confidence.",
-};
-
-export default function ExplorePage() {
-  return <ExploreDiscoveryPage />;
+// Explore was folded into Businesses: the app has five tabs and no Explore.
+export default async function ExploreRedirect({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries((await searchParams) ?? {})) {
+    if (typeof value === "string") params.set(key, value);
+  }
+  const query = params.toString();
+  redirect(query ? `/businesses?${query}` : "/businesses");
 }

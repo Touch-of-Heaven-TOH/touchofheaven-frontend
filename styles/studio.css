@@ -1,8 +1,7 @@
 /*
  * Business Studio theme.
  *
- * The Studio designs use a deeper burgundy, warm ivory and gold than the
- * public site. Rather than forking every component, the Studio shell adds
+ * The Studio uses a slightly calmer cut of the public brand. Rather than forking every component, the Studio shell adds
  * `.studio-theme` to its root and these variables re-point the shared tokens
  * (styles/tokens.css) for everything rendered inside it. The public site keeps
  * its own palette untouched.
@@ -12,42 +11,44 @@
  */
 @layer base {
   .studio-theme {
-    --color-page: #fbf8f6;
+    /* The business side wears the same brand as the customer app (plum,
+       rose, gold), a shade calmer for long days at the desk. */
+    --color-page: #f9f6fb;
     --color-surface: #ffffff;
-    --color-surface-strong: #f6f1ef;
-    --color-surface-ink: #2a1a1f;
+    --color-surface-strong: #f3ecf8;
+    --color-surface-ink: #22122e;
 
-    --color-brand: #7a1024;
-    --color-brand-strong: #5e0b1b;
-    --color-brand-soft: #f7e9eb;
-    --color-accent: #7a1024;
-    --color-accent-soft: #f7e9eb;
+    --color-brand: #6a28c8;
+    --color-brand-strong: #4f1c9a;
+    --color-brand-soft: #efe4fd;
+    --color-accent: #6a28c8;
+    --color-accent-soft: #efe4fd;
 
-    --color-gold: #c4822f;
-    --color-gold-light: #fbeedd;
-    --color-gold-text: #8f5a1d;
+    --color-gold: #c08a24;
+    --color-gold-light: #f8ecd2;
+    --color-gold-text: #8a5d10;
 
-    --color-text-primary: #1f1a1c;
-    --color-text-muted: #6b5e63;
+    --color-text-primary: #22122e;
+    --color-text-muted: #6c5d80;
     --color-text-inverse: #ffffff;
-    --color-border: #eee4e1;
-    --color-border-strong: #ddd0cc;
+    --color-border: #ebe2f2;
+    --color-border-strong: #d9cbe6;
 
-    --color-success: #2e7440;
-    --color-success-soft: #e8f4ea;
+    --color-success: #17845a;
+    --color-success-soft: #dbf3e8;
     --color-warning: #955012;
     --color-warning-soft: #fcefdd;
-    --color-danger: #9f1631;
-    --color-danger-soft: #fbe9eb;
+    --color-danger: #b4233f;
+    --color-danger-soft: #fde3e9;
     --color-info: #2f5e9a;
     --color-info-soft: #e6eff9;
     --color-copper: #955012;
     --color-copper-soft: #fcefdd;
 
-    --shadow-subtle: 0 1px 2px rgba(42, 26, 31, 0.04), 0 1px 3px rgba(42, 26, 31, 0.04);
-    --shadow-soft: 0 18px 48px rgba(42, 26, 31, 0.14);
-    --radius-control: 8px;
-    --radius-panel: 14px;
+    --shadow-subtle: 0 1px 2px rgba(34, 18, 46, 0.04), 0 1px 3px rgba(34, 18, 46, 0.05);
+    --shadow-soft: 0 18px 48px rgba(70, 25, 110, 0.14);
+    --radius-control: 10px;
+    --radius-panel: 16px;
 
     background: var(--color-page);
     color: var(--color-text-primary);

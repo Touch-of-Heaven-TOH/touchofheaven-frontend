@@ -1,22 +1,20 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { BusinessProfilePage } from "@/features/discovery/BusinessProfile";
-import { loadPublicBusiness } from "@/features/discovery/business-data";
+import { VenuePage } from "@/features/app/businesses/VenuePage";
+import { serverApiFetch } from "@/lib/api/server";
+import type { BusinessProfile } from "@/lib/app/types";
 
 type Params = { params: Promise<{ businessId: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const business = await loadPublicBusiness((await params).businessId);
-  if (!business) notFound();
-  const name = business.profile.professionalName;
-  return {
-    title: `${name} | Touch of Heaven`,
-    description: business.profile.bio ?? `Book with ${name} on Touch of Heaven.`,
-  };
+  try {
+    const business = await serverApiFetch<BusinessProfile>(`/api/v1/braiders/${(await params).businessId}`);
+    const name = business.businessName || business.professionalName;
+    return { title: name, description: business.bio ?? `Book with ${name} on Touch of Heaven.` };
+  } catch {
+    return { title: "Business" };
+  }
 }
 
 export default async function BusinessProfileRoute({ params }: Params) {
-  const business = await loadPublicBusiness((await params).businessId);
-  if (!business) notFound();
-  return <BusinessProfilePage business={business} section="overview" />;
+  return <VenuePage id={(await params).businessId} />;
 }

@@ -31,7 +31,7 @@ export function buildBraiderMarkerContent(braider: NearbyBraider): HTMLElement {
   wrapper.setAttribute(
     'aria-label',
     [
-      braider.professionalName,
+      braider.businessName || braider.professionalName,
       braider.specialties[0],
       `${braider.distanceKm} km away`,
     ]
@@ -49,7 +49,7 @@ export function buildBraiderMarkerContent(braider: NearbyBraider): HTMLElement {
     // No published photo yet: show the business's initials, matching the
     // avatar the results list shows for the same business.
     photo.classList.add('toh-marker-photo-placeholder');
-    photo.textContent = initialsOf(braider.professionalName);
+    photo.textContent = initialsOf(braider.businessName || braider.professionalName);
   }
 
   const dot = document.createElement('span');
@@ -58,7 +58,7 @@ export function buildBraiderMarkerContent(braider: NearbyBraider): HTMLElement {
 
   const tooltip = document.createElement('span');
   tooltip.className = 'toh-marker-tooltip';
-  tooltip.textContent = braider.professionalName;
+  tooltip.textContent = braider.businessName || braider.professionalName;
 
   wrapper.append(photo, dot, tooltip);
   return wrapper;

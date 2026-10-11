@@ -1,30 +1,15 @@
-import type { Metadata } from "next";
-import {
-  type DiscoveryRouteSearch,
-  SearchResultsPage,
-} from "@/features/discovery/DiscoveryResults";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Search professionals | Touch of Heaven",
-  description:
-    "Search Touch of Heaven professionals by service, business, location, rating, price, and availability.",
-};
-
-export default async function ExploreSearchPage({
+// Explore was folded into Businesses: the app has five tabs and no Explore.
+export default async function ExploreRedirect({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const params = (await searchParams) ?? {};
-  const initialSearch: DiscoveryRouteSearch = {
-    q: valueOf(params.q),
-    location: valueOf(params.location),
-    category: valueOf(params.category),
-  };
-
-  return <SearchResultsPage initialSearch={initialSearch} />;
-}
-
-function valueOf(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries((await searchParams) ?? {})) {
+    if (typeof value === "string") params.set(key, value);
+  }
+  const query = params.toString();
+  redirect(query ? `/businesses?${query}` : "/businesses");
 }

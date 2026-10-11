@@ -3,6 +3,8 @@
 @import "../styles/typography.css";
 @import "../styles/utilities.css";
 @import "../styles/studio.css";
+@import "../styles/app.css";
+@import "../styles/app-screens.css";
 
 :root {
   --background: var(--color-page);
@@ -24,7 +26,7 @@
   --color-brand-purple-light: var(--color-brand-purple-light);
   --color-brand: var(--color-brand);
   --color-accent: var(--color-accent);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-ui), "Segoe UI", system-ui, sans-serif;
   --font-display: var(--font-display-serif), Georgia, "Times New Roman", serif;
 }
 

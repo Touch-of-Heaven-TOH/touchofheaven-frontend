@@ -4,7 +4,9 @@ import { getClientEnv } from "@/lib/env/client";
 import type { RequestJson } from "@/lib/api/types";
 import { requestId, toApiUrl, unwrapApiResponse } from "@/lib/api/shared";
 
-let cachedCsrfToken: string | null = null;
+// The promise, not the value: two writes fired together on first load must
+// share one token, or the second /csrf call rotates the cookie under the first.
+let cachedCsrfToken: Promise<string> | null = null;
 
 type BrowserApiInit = Omit<RequestInit, "body"> & {
   body?: RequestJson | FormData;
@@ -15,16 +17,21 @@ type CsrfResponse = {
   csrfToken: string;
 };
 
-async function csrfToken(): Promise<string> {
-  if (cachedCsrfToken) return cachedCsrfToken;
+function csrfToken(): Promise<string> {
+  cachedCsrfToken ??= fetchCsrfToken().catch((error: unknown) => {
+    cachedCsrfToken = null;
+    throw error;
+  });
+  return cachedCsrfToken;
+}
 
+async function fetchCsrfToken(): Promise<string> {
   const env = getClientEnv();
   const response = await fetch(toApiUrl(env.apiUrl, "/api/v1/auth/csrf"), {
     credentials: "include",
     headers: { "X-Request-Id": requestId() },
   });
   const data = await unwrapApiResponse<CsrfResponse>(response);
-  cachedCsrfToken = data.csrfToken;
   return data.csrfToken;
 }
 

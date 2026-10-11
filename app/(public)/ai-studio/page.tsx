@@ -1,76 +1,16 @@
 import type { Metadata } from "next";
-import { AiStudioExperience } from "@/features/ai-studio";
-import { toAiStudioStyle } from "@/features/ai-studio/api/style-mapper";
-import type { RawStyle } from "@/features/ai-studio/api/style-mapper";
-import { fallbackAiStudioStyles } from "@/features/ai-studio/data/fallback-catalog";
-import { serverApiFetch } from "@/lib/api/server";
-import { getCurrentUser } from "@/lib/auth/session";
+import { Suspense } from "react";
+import { StudioScreen } from "@/features/app/studio/StudioScreen";
 
 export const metadata: Metadata = {
-  title: "AI hairstyle studio",
-  description:
-    "Choose a hairstyle, personalize the look, and prepare a secure Touch of Heaven AI preview.",
+  title: "AI Studio",
+  description: "Try a hairstyle, makeup look or nail design, then book a pro who does it.",
 };
 
-type AiStudioPageProps = {
-  searchParams?: Promise<{
-    style?: string;
-    color?: string;
-  }>;
-};
-
-type StylesPayload =
-  | RawStyle[]
-  | {
-      styles?: RawStyle[];
-      items?: RawStyle[];
-    };
-
-function asStyles(payload: StylesPayload) {
-  if (Array.isArray(payload)) return payload;
-  return payload.styles ?? payload.items ?? [];
-}
-
-async function getInitialCatalogue() {
-  try {
-    const rawStyles = asStyles(await serverApiFetch<StylesPayload>("/api/v1/studio/styles"));
-    const styles = rawStyles.map(toAiStudioStyle);
-    if (styles.length > 0) {
-      return {
-        styles,
-        source: "backend" as const,
-        error: null,
-      };
-    }
-  } catch {
-    // The backend AI Studio endpoints are intentionally allowed to arrive later.
-  }
-
-  return {
-    styles: fallbackAiStudioStyles,
-    source: "fallback" as const,
-    error:
-      "Live catalogue is not available locally, so approved imported Brane references are shown.",
-  };
-}
-
-export default async function AiStudioPage({ searchParams }: AiStudioPageProps) {
-  const paramsPromise: Promise<{ style?: string; color?: string }> =
-    searchParams ?? Promise.resolve({});
-  const [user, params, catalogue] = await Promise.all([
-    getCurrentUser(),
-    paramsPromise,
-    getInitialCatalogue(),
-  ]);
-
+export default function AiStudioPage() {
   return (
-    <AiStudioExperience
-      initialCatalogError={catalogue.error}
-      initialCatalogSource={catalogue.source}
-      initialColorId={params.color ?? null}
-      initialStyleId={params.style ?? null}
-      initialStyles={catalogue.styles}
-      initialUser={user}
-    />
+    <Suspense>
+      <StudioScreen />
+    </Suspense>
   );
 }

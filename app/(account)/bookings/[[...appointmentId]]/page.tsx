@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { RouteStatusPage } from "@/components/layout/RouteStatusPage";
 import { accountContent } from "@/config/page-content";
-import { AppointmentDetails } from "@/features/bookings/components/AppointmentDetails";
-import { MyBookings } from "@/features/bookings/components/MyBookings";
+import { AppointmentScreen } from "@/features/app/bookings/AppointmentScreen";
+import { BookingsScreen } from "@/features/app/bookings/BookingsScreen";
 
 export const metadata: Metadata = {
   title: "Bookings",
@@ -18,12 +19,20 @@ export default async function BookingsPage({ params }: BookingsPageProps) {
   const { appointmentId } = await params;
 
   if (!appointmentId?.length) {
-    return <MyBookings />;
+    return (
+      <Suspense>
+        <BookingsScreen />
+      </Suspense>
+    );
   }
 
   if (appointmentId.length === 1) {
-    return <AppointmentDetails appointmentId={appointmentId[0]!} />;
+    return (
+      <Suspense>
+        <AppointmentScreen id={appointmentId[0]!} />
+      </Suspense>
+    );
   }
 
-  return <RouteStatusPage content={accountContent.appointments} href="/book" />;
+  return <RouteStatusPage content={accountContent.appointments} href="/businesses" />;
 }

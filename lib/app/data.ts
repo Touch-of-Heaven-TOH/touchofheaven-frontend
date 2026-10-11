@@ -133,9 +133,54 @@ export function useOrders(signedIn: boolean) {
   return { orders: data?.orders ?? [], isLoading };
 }
 
+export function useOrder(id: string) {
+  const { data, error, isLoading } = useSWR(
+    `/api/v1/commerce/orders/${id}`,
+    (path: string) => apiGet<{ order: Order }>(path),
+    quiet,
+  );
+  return { order: data?.order ?? null, error, isLoading };
+}
+
+export type FulfilmentChoice = "SHIPPING" | "SALON_PICKUP";
+
+/**
+ * Places the order for the whole cart, then (demo only) confirms its payment
+ * through the backend's development-only mock confirm.
+ */
+export async function placeOrder(input: { fulfilmentType: FulfilmentChoice; shippingAddressId?: string }) {
+  const { order } = await browserApiFetch<{ order: Order }>("/api/v1/commerce/checkout", {
+    method: "POST",
+    body: input,
+  });
+  const confirmed = await browserApiFetch<{ order: Order }>(`/api/v1/commerce/orders/${order.id}/mock-confirm`, {
+    method: "POST",
+  });
+  await globalMutate(CART_KEY);
+  return confirmed.order;
+}
+
+export async function createAddress(input: {
+  label: string;
+  recipientName: string;
+  recipientPhone?: string;
+  line1: string;
+  line2?: string;
+  locality: string;
+}) {
+  const result = await browserApiFetch<{ address: Address }>("/api/v1/customer/addresses", {
+    method: "POST",
+    body: { ...input, countryCode: "CM", purpose: "SHIPPING" },
+  });
+  await globalMutate(ADDRESSES_KEY);
+  return result.address;
+}
+
+const ADDRESSES_KEY = "/api/v1/customer/addresses";
+
 export function useAddresses(signedIn: boolean) {
   const { data, isLoading } = useSWR(
-    signedIn ? "/api/v1/customer/addresses" : null,
+    signedIn ? ADDRESSES_KEY : null,
     (path: string) => apiGet<{ addresses: Address[] }>(path),
     quiet,
   );

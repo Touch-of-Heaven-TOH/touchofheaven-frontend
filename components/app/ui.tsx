@@ -197,7 +197,7 @@ export function ProductCard({
       </Link>
       <div className="toh-pc__b">
         <span className="toh-pc__brand">
-          {product.sellerName} <VerifiedMark size={13} />
+          {product.sellerName}
         </span>
         <Link href={`/marketplace/products/${product.id}`} className="toh-pc__nm">
           {product.name}

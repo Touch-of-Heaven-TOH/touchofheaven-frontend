@@ -226,7 +226,7 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
   );
 }
 
-const ORDER_STEPS = ["Ordered", "Packed", "Shipped", "Delivered"];
+const ORDER_STEPS = ["Ordered", "Paid", "Shipped", "Delivered"];
 
 function orderStep(order: Order) {
   const fulfilments = order.sellerGroups.flatMap((group) => group.fulfilments);

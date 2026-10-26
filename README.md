@@ -5,7 +5,7 @@ with Next.js 16 App Router, React 19, Tailwind CSS v4, and strict TypeScript.
 
 The frontend consumes the backend through `/api/v1/*` only. It does not import
 Prisma, query PostgreSQL, duplicate backend business rules, or store session,
-MFA, access, or payment secrets in browser storage.
+MFA, access, or payment secrets in browser storage...
 
 ## Local Setup
 

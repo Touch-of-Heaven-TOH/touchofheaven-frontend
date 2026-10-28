@@ -17,7 +17,7 @@ npm run dev
 
 Run the backend separately from `..\Backend_for_HOF`. In the default split local
 setup, the backend runs at `http://localhost:3000` and this frontend runs at
-`http://localhost:3001`.
+`http://localhost:3001...`.
 
 ## Environment
 
